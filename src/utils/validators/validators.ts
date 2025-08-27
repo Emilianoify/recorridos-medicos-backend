@@ -1,3 +1,9 @@
+import {
+  FrequencyInterval,
+  FrequencyType,
+  NextDateCalculationRule,
+  WeekDay,
+} from '../../enums/Frequency';
 import { UserState } from '../../enums/UserState';
 
 export const isValidEmail = (email: string): boolean => {
@@ -18,3 +24,7 @@ export const isValidUsername = (username: string): boolean => {
 };
 
 export const USER_STATE_VALUES = Object.values(UserState);
+export const NEXT_CALCULATION_VALUES = Object.values(NextDateCalculationRule);
+export const WEEKDAY_VALUES = Object.values(WeekDay);
+export const FREQUENCY_TYPE_VALUES = Object.values(FrequencyType);
+export const FREQUENCY_INTERVAL_VALUES = Object.values(FrequencyInterval);

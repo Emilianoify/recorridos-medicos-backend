@@ -2,6 +2,7 @@ import RoleModel from './role.model';
 import UserModel from './user.model';
 import ProfessionalModel from './professional.model';
 import SpecialtyModel from './specialty.model';
+import FrequencyModel from './frequency.model';
 
 UserModel.belongsTo(RoleModel, {
   foreignKey: 'roleId',
@@ -31,5 +32,17 @@ SpecialtyModel.hasMany(ProfessionalModel, {
   onUpdate: 'CASCADE',
 });
 
-export { RoleModel, UserModel, ProfessionalModel, SpecialtyModel };
-export default { RoleModel, UserModel, ProfessionalModel, SpecialtyModel };
+export {
+  RoleModel,
+  UserModel,
+  ProfessionalModel,
+  SpecialtyModel,
+  FrequencyModel,
+};
+export default {
+  RoleModel,
+  UserModel,
+  ProfessionalModel,
+  SpecialtyModel,
+  FrequencyModel,
+};
