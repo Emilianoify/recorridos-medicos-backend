@@ -10,6 +10,7 @@ import JourneyModel from './journey.model';
 import ConfirmationStatusModel from './confirmationStatus.model';
 import NotCompletedReasonModel from './notCompletedReason.model';
 import RejectionReasonModel from './rejectionReasonModel';
+import VisitModel from './visit.model';
 
 UserModel.belongsTo(RoleModel, {
   foreignKey: 'roleId',
@@ -123,6 +124,125 @@ ZoneModel.hasMany(JourneyModel, {
   onUpdate: 'CASCADE',
 });
 
+VisitModel.belongsTo(PatientModel, {
+  foreignKey: 'patientId',
+  as: 'patient',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+PatientModel.hasMany(VisitModel, {
+  foreignKey: 'patientId',
+  as: 'visits',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+// Visit -> Journey (Muchos a Uno)
+VisitModel.belongsTo(JourneyModel, {
+  foreignKey: 'journeyId',
+  as: 'journey',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+JourneyModel.hasMany(VisitModel, {
+  foreignKey: 'journeyId',
+  as: 'visits',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+// Visit -> ConfirmationStatus (Muchos a Uno)
+VisitModel.belongsTo(ConfirmationStatusModel, {
+  foreignKey: 'confirmationStatusId',
+  as: 'confirmationStatus',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+ConfirmationStatusModel.hasMany(VisitModel, {
+  foreignKey: 'confirmationStatusId',
+  as: 'visits',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+// Visit -> RejectionReason (Muchos a Uno)
+VisitModel.belongsTo(RejectionReasonModel, {
+  foreignKey: 'rejectionReasonId',
+  as: 'rejectionReason',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+RejectionReasonModel.hasMany(VisitModel, {
+  foreignKey: 'rejectionReasonId',
+  as: 'visits',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+// Visit -> NotCompletedReason (Muchos a Uno)
+VisitModel.belongsTo(NotCompletedReasonModel, {
+  foreignKey: 'notCompletedReasonId',
+  as: 'notCompletedReason',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+NotCompletedReasonModel.hasMany(VisitModel, {
+  foreignKey: 'notCompletedReasonId',
+  as: 'visits',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+// Visit -> User (confirmedBy)
+VisitModel.belongsTo(UserModel, {
+  foreignKey: 'confirmedByUserId',
+  as: 'confirmedByUser',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+UserModel.hasMany(VisitModel, {
+  foreignKey: 'confirmedByUserId',
+  as: 'confirmedVisits',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+// Visit -> User (cancelledBy)
+VisitModel.belongsTo(UserModel, {
+  foreignKey: 'cancelledByUserId',
+  as: 'cancelledByUser',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+UserModel.hasMany(VisitModel, {
+  foreignKey: 'cancelledByUserId',
+  as: 'cancelledVisits',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+// Visit -> Visit (auto-referencia para reprogramación)
+VisitModel.belongsTo(VisitModel, {
+  foreignKey: 'rescheduledFromVisitId',
+  as: 'rescheduledFromVisit',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+VisitModel.hasOne(VisitModel, {
+  foreignKey: 'rescheduledFromVisitId',
+  as: 'rescheduledToVisit',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
 export {
   RoleModel,
   UserModel,
@@ -136,6 +256,7 @@ export {
   ConfirmationStatusModel,
   NotCompletedReasonModel,
   RejectionReasonModel,
+  VisitModel,
 };
 
 export default {
@@ -151,4 +272,5 @@ export default {
   ConfirmationStatusModel,
   NotCompletedReasonModel,
   RejectionReasonModel,
+  VisitModel,
 };
