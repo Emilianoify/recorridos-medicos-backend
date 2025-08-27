@@ -29,4 +29,11 @@ export const ERROR_MESSAGES = {
     NO_FIELDS_TO_UPDATE: 'Debe proporcionar al menos un campo para actualizar.',
     UPDATE_FAILED: 'Error al actualizar el perfil.',
   },
+  PATIENT: {
+    EMPTY_PHONE: 'Se debe proporcionar al menos un número de teléfono',
+    MISSING_AUTHORIZATION:
+      'Pacientes activos deben tener fecha de autorización',
+    EXCEDEED_VISIT_LIMIT:
+      'Las visitas realizadas no pueden superar las autorizadas',
+  },
 };

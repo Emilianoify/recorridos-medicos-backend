@@ -2,7 +2,10 @@ import RoleModel from './role.model';
 import UserModel from './user.model';
 import ProfessionalModel from './professional.model';
 import SpecialtyModel from './specialty.model';
+import ZoneModel from './zone.model';
 import FrequencyModel from './frequency.model';
+import HealthcareProviderModel from './healthcareProvider.model';
+import PatientModel from './patient.model';
 
 UserModel.belongsTo(RoleModel, {
   foreignKey: 'roleId',
@@ -32,17 +35,80 @@ SpecialtyModel.hasMany(ProfessionalModel, {
   onUpdate: 'CASCADE',
 });
 
+PatientModel.belongsTo(ZoneModel, {
+  foreignKey: 'zoneId',
+  as: 'zone',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+ZoneModel.hasMany(PatientModel, {
+  foreignKey: 'zoneId',
+  as: 'patients',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+PatientModel.belongsTo(FrequencyModel, {
+  foreignKey: 'frequencyId',
+  as: 'frequency',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+FrequencyModel.hasMany(PatientModel, {
+  foreignKey: 'frequencyId',
+  as: 'patients',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+PatientModel.belongsTo(ProfessionalModel, {
+  foreignKey: 'primaryProfessionalId',
+  as: 'primaryProfessional',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+ProfessionalModel.hasMany(PatientModel, {
+  foreignKey: 'primaryProfessionalId',
+  as: 'primaryPatients',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+PatientModel.belongsTo(HealthcareProviderModel, {
+  foreignKey: 'healthcareProviderId',
+  as: 'healthcareProvider',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+HealthcareProviderModel.hasMany(PatientModel, {
+  foreignKey: 'healthcareProviderId',
+  as: 'patients',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
 export {
   RoleModel,
   UserModel,
   ProfessionalModel,
   SpecialtyModel,
+  ZoneModel,
   FrequencyModel,
+  HealthcareProviderModel,
+  PatientModel,
 };
+
 export default {
   RoleModel,
   UserModel,
   ProfessionalModel,
   SpecialtyModel,
+  ZoneModel,
   FrequencyModel,
+  HealthcareProviderModel,
+  PatientModel,
 };

@@ -1,10 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db';
-import {
-  NextDateCalculationRule,
-  FrequencyType,
-  FrequencyInterval,
-} from '../enums/Frequency';
+import { NextDateCalculationRule, FrequencyType } from '../enums/Frequency';
 import {
   FREQUENCY_INTERVAL_VALUES,
   FREQUENCY_TYPE_VALUES,
@@ -160,45 +156,6 @@ const FrequencyModel = sequelize.define(
         name: 'idx_frequency_type_active',
       },
     ],
-    validate: {
-      // Validación personalizada según el tipo de frecuencia
-      validateFrequencyData() {
-        if (this.frequencyType === FrequencyType.SIMPLE) {
-          if (!this.daysBetweenVisits) {
-            throw new Error(
-              'daysBetweenVisits es requerido para frecuencias SIMPLE'
-            );
-          }
-        }
-
-        if (this.frequencyType === FrequencyType.HOURLY) {
-          if (
-            !this.intervalValue ||
-            this.intervalUnit !== FrequencyInterval.HOURS
-          ) {
-            throw new Error(
-              'intervalValue e intervalUnit=HOURS son requeridos para frecuencias HOURLY'
-            );
-          }
-        }
-
-        if (this.frequencyType === FrequencyType.DAILY_MULTIPLE) {
-          if (!this.visitsPerDay) {
-            throw new Error(
-              'visitsPerDay es requerido para frecuencias DAILY_MULTIPLE'
-            );
-          }
-        }
-
-        if (this.frequencyType === FrequencyType.WEEKLY_PATTERN) {
-          if (!this.weeklyPattern || !Array.isArray(this.weeklyPattern)) {
-            throw new Error(
-              'weeklyPattern es requerido para frecuencias WEEKLY_PATTERN'
-            );
-          }
-        }
-      },
-    },
   }
 );
 
