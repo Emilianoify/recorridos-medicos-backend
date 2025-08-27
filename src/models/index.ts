@@ -11,6 +11,8 @@ import ConfirmationStatusModel from './confirmationStatus.model';
 import NotCompletedReasonModel from './notCompletedReason.model';
 import RejectionReasonModel from './rejectionReasonModel';
 import VisitModel from './visit.model';
+import HolidayModel from './holiday.model';
+import VisitChangeAuditModel from './visitChangeAudit.model';
 
 UserModel.belongsTo(RoleModel, {
   foreignKey: 'roleId',
@@ -243,6 +245,20 @@ VisitModel.hasOne(VisitModel, {
   onUpdate: 'CASCADE',
 });
 
+VisitChangeAuditModel.belongsTo(UserModel, {
+  foreignKey: 'userId',
+  as: 'user',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
+UserModel.hasMany(VisitChangeAuditModel, {
+  foreignKey: 'userId',
+  as: 'auditChanges',
+  onDelete: 'SET NULL',
+  onUpdate: 'CASCADE',
+});
+
 export {
   RoleModel,
   UserModel,
@@ -257,6 +273,8 @@ export {
   NotCompletedReasonModel,
   RejectionReasonModel,
   VisitModel,
+  HolidayModel,
+  VisitChangeAuditModel,
 };
 
 export default {
@@ -273,4 +291,6 @@ export default {
   NotCompletedReasonModel,
   RejectionReasonModel,
   VisitModel,
+  HolidayModel,
+  VisitChangeAuditModel,
 };
