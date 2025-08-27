@@ -1,4 +1,4 @@
-import { UserState } from '@/enums/UserState';
+import { UserState } from '../enums/UserState';
 import { IRole } from './role.interface';
 
 export interface IUser {

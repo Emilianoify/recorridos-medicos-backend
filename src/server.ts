@@ -1,8 +1,11 @@
-import app from '@/app';
-import sequelize, { dbConnection } from '@/config/db';
-import '@/models/index';
-import { ERROR_MESSAGES } from '@/constants/messages/error.messages';
-import createDefaultRoles from '@/utils/seeders/createRole';
+import app from './app';
+import sequelize, { dbConnection } from './config/db';
+import './models/index';
+import { ERROR_MESSAGES } from './constants/messages/error.messages';
+
+import createDefaultRoles from './utils/seeders/createRole';
+import { SUCCESS_MESSAGES } from './constants/messages/success.messages';
+import createDefaultSpecialties from './utils/seeders/createSpecialty';
 
 const PORT = process.env.PORT || 3000;
 
@@ -13,6 +16,7 @@ const initializeDatabase = async (): Promise<void> => {
     await sequelize.sync({ alter: true });
 
     await createDefaultRoles();
+    await createDefaultSpecialties();
 
     console.log(SUCCESS_MESSAGES.DB.DB_UP);
   } catch (error) {

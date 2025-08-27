@@ -1,4 +1,4 @@
-const SUCCESS_MESSAGES = {
+export const SUCCESS_MESSAGES = {
   AUTH: {},
   DB: {
     DB_CONNECTED: 'Conexión a la base de datos establecida correctamente.',

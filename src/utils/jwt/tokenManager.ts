@@ -1,4 +1,4 @@
-import { TokenRevocationReason } from '@/enums/TokenRevocationReason';
+import { TokenRevocationReason } from '../../enums/TokenRevocationReason';
 
 interface RevokedToken {
   token: string;

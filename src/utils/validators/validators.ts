@@ -1,4 +1,4 @@
-import { UserState } from '@/enums/UserState';
+import { UserState } from '../../enums/UserState';
 
 export const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

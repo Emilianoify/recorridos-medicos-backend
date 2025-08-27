@@ -1,5 +1,5 @@
-import { IRole } from '@/interfaces/role.interface';
-import { RoleModel } from '@/models';
+import { IRole } from '../../interfaces/role.interface';
+import { RoleModel } from '../../models';
 
 interface RoleData {
   name: string;

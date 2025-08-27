@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { Sequelize } from 'sequelize';
-import { ERROR_MESSAGES } from '@/constants/messages/error.messages';
+import { ERROR_MESSAGES } from '../constants/messages/error.messages';
 
 const { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS } = process.env;
 

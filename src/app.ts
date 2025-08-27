@@ -4,7 +4,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import { ERROR_MESSAGES } from '@/constants/messages/error.messages';
+import { ERROR_MESSAGES } from './constants/messages/error.messages';
 
 const app = express();
 

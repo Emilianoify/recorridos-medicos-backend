@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import { ERROR_MESSAGES } from '@/constants/messages/error.messages';
-import { HttpStatusCode } from '@/enums/HttpStatusCode';
+import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
+import { HttpStatusCode } from '../../enums/HttpStatusCode';
 
 interface ApiResponse<T = any> {
   payload?: {
