@@ -5,6 +5,7 @@ import {
   NextDateCalculationRule,
   WeekDay,
 } from '../../enums/Frequency';
+import { JourneyStatus } from '../../enums/JourneyStatus';
 import { PatientState } from '../../enums/PatientState';
 import { UserState } from '../../enums/UserState';
 
@@ -32,3 +33,4 @@ export const FREQUENCY_TYPE_VALUES = Object.values(FrequencyType);
 export const FREQUENCY_INTERVAL_VALUES = Object.values(FrequencyInterval);
 export const CONTACT_METHOD_VALUES = Object.values(ContactMethod);
 export const PATIENT_STATE_VALUES = Object.values(PatientState);
+export const JOURNEY_STATUS_VALUES = Object.values(JourneyStatus);

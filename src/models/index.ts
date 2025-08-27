@@ -6,6 +6,7 @@ import ZoneModel from './zone.model';
 import FrequencyModel from './frequency.model';
 import HealthcareProviderModel from './healthcareProvider.model';
 import PatientModel from './patient.model';
+import JourneyModel from './journey.model';
 
 UserModel.belongsTo(RoleModel, {
   foreignKey: 'roleId',
@@ -91,6 +92,34 @@ HealthcareProviderModel.hasMany(PatientModel, {
   onUpdate: 'CASCADE',
 });
 
+JourneyModel.belongsTo(ProfessionalModel, {
+  foreignKey: 'professionalId',
+  as: 'professional',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+ProfessionalModel.hasMany(JourneyModel, {
+  foreignKey: 'professionalId',
+  as: 'journeys',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+JourneyModel.belongsTo(ZoneModel, {
+  foreignKey: 'zoneId',
+  as: 'zone',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
+ZoneModel.hasMany(JourneyModel, {
+  foreignKey: 'zoneId',
+  as: 'journeys',
+  onDelete: 'RESTRICT',
+  onUpdate: 'CASCADE',
+});
+
 export {
   RoleModel,
   UserModel,
@@ -100,6 +129,7 @@ export {
   FrequencyModel,
   HealthcareProviderModel,
   PatientModel,
+  JourneyModel,
 };
 
 export default {
@@ -111,4 +141,5 @@ export default {
   FrequencyModel,
   HealthcareProviderModel,
   PatientModel,
+  JourneyModel,
 };
