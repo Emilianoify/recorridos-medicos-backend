@@ -8,6 +8,7 @@ import { SUCCESS_MESSAGES } from './constants/messages/success.messages';
 import createDefaultSpecialties from './utils/seeders/createSpecialty';
 import createDefaultHealthcareProviders from './utils/seeders/createHealthcareProvider';
 import createDefaultFrequencies from './utils/seeders/createFrequency';
+import createAllAuxiliaryTables from './utils/seeders/createAuxiliaryTables';
 
 const PORT = process.env.PORT || 3000;
 
@@ -20,6 +21,7 @@ const initializeDatabase = async (): Promise<void> => {
     await createDefaultSpecialties();
     await createDefaultFrequencies();
     await createDefaultHealthcareProviders();
+    await createAllAuxiliaryTables();
 
     console.log(SUCCESS_MESSAGES.DB.DB_UP);
   } catch (error) {

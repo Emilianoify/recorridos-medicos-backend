@@ -7,6 +7,9 @@ import FrequencyModel from './frequency.model';
 import HealthcareProviderModel from './healthcareProvider.model';
 import PatientModel from './patient.model';
 import JourneyModel from './journey.model';
+import ConfirmationStatusModel from './confirmationStatus.model';
+import NotCompletedReasonModel from './notCompletedReason.model';
+import RejectionReasonModel from './rejectionReasonModel';
 
 UserModel.belongsTo(RoleModel, {
   foreignKey: 'roleId',
@@ -130,6 +133,9 @@ export {
   HealthcareProviderModel,
   PatientModel,
   JourneyModel,
+  ConfirmationStatusModel,
+  NotCompletedReasonModel,
+  RejectionReasonModel,
 };
 
 export default {
@@ -142,4 +148,7 @@ export default {
   HealthcareProviderModel,
   PatientModel,
   JourneyModel,
+  ConfirmationStatusModel,
+  NotCompletedReasonModel,
+  RejectionReasonModel,
 };
