@@ -99,7 +99,11 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       createdAt: userWithRole.createdAt,
     };
 
-    sendSuccessResponse(res, SUCCESS_MESSAGES.USER.USER_CREATED, responseData);
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.USER.USER_CREATED,
+      responseData
+    );
   } catch (error) {
     return sendInternalErrorResponse(res);
   }
