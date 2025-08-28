@@ -32,13 +32,12 @@ interface RegisterRequest {
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    if (!req.body) {
+    const body = req.body;
+    if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
       return sendBadRequest(res, ERROR_MESSAGES.SERVER.EMPTY_BODY);
     }
 
-    const validRegisterFields: RegisterRequest = UserRegisterSchema.parse(
-      req.body
-    );
+    const validRegisterFields: RegisterRequest = UserRegisterSchema.parse(body);
 
     const {
       username,

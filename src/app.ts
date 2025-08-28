@@ -4,7 +4,12 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import { ERROR_MESSAGES } from './constants/messages/error.messages';
+import authRoutes from './routes/auth.routes';
+import {
+  handleJsonError,
+  handle404,
+  handleServerError,
+} from './middlewares/errorHandlers';
 
 const app = express();
 
@@ -17,12 +22,17 @@ app.use(
 );
 app.use(morgan('dev'));
 app.use(cookieParser());
-app.use(bodyParser.json());
+app.use(
+  express.json({
+    limit: '10mb',
+  })
+);
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// 404 handler
-app.use((_req, res) => {
-  res.status(404).json({ message: ERROR_MESSAGES.ROUTING.NOT_FOUND });
-});
+app.use('/auth', authRoutes);
+
+app.use(handleJsonError);
+app.use(handle404);
+app.use(handleServerError);
 
 export default app;
