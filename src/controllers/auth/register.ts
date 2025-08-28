@@ -18,6 +18,8 @@ import bcrypt from 'bcrypt';
 import { RoleModel, UserModel } from '../../models';
 import { IUser } from '../../interfaces/user.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
+import { ZodError } from 'zod';
+import { UserState } from '../../enums/UserState';
 
 interface RegisterRequest {
   username: string;
@@ -72,6 +74,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       corporative_email,
       password: hashedPassword,
       roleId,
+      state: UserState.ACTIVE,
     })) as Partial<IUser>;
 
     const userWithRole = (await UserModel.findByPk(newUser.id, {
@@ -105,6 +108,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       responseData
     );
   } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.errors[0];
+      return sendBadRequest(res, firstError.message);
+    }
     return sendInternalErrorResponse(res);
   }
 };

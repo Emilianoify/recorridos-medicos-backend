@@ -13,9 +13,10 @@ export const ERROR_MESSAGES = {
       'Password debe tener mínimo 8 caracteres, 1 mayúscula y 1 número.',
     EMPTY_PASSWORD: 'Contraseña no puede estar vacío.',
     SAME_PASSWORD: 'La nueva contraseña debe ser diferente a la actual.',
-    MISSING_PASSWORD_FIELDS:
-      'Contraseña actual y nueva contraseña son requeridas.',
     INVALID_CURRENT_PASSWORD: 'Contraseña actual incorrecta.',
+    CURRENT_PASSWORD_REQUIRED: 'Contraseña actual es requerida',
+    CONFIRM_PASSWORD_REQUIRED: 'Confirmación de contraseña es requerida',
+    PASSWORD_DOESNT_MATCH: 'Las contraseñas no coinciden',
     USERNAME_IN_USE: 'Username ya está en uso.',
     EMAIL_IN_USE: 'Email ya está registrado.',
     ROLE_NOT_FOUND: 'Rol no encontrado.',

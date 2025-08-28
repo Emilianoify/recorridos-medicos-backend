@@ -68,17 +68,27 @@ export const loginSchema = z.object({
     .max(255, ERROR_MESSAGES.AUTH.INVALID_PASSWORD),
 });
 
+interface ChangePassword {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 export const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, 'Password actual es requerido'),
+    currentPassword: z
+      .string()
+      .min(1, ERROR_MESSAGES.AUTH.CURRENT_PASSWORD_REQUIRED),
     newPassword: UserRegisterSchema.password,
-    confirmPassword: z.string().min(1, 'Confirmación de password es requerida'),
+    confirmPassword: z
+      .string()
+      .min(1, ERROR_MESSAGES.AUTH.CONFIRM_PASSWORD_REQUIRED),
   })
-  .refine((data: string) => data.newPassword === data.confirmPassword, {
-    message: 'Las contraseñas no coinciden',
+  .refine((data: ChangePassword) => data.newPassword === data.confirmPassword, {
+    message: ERROR_MESSAGES.AUTH.PASSWORD_DOESNT_MATCH,
     path: ['confirmPassword'],
   });
 
 export const resetPasswordRequestSchema = z.object({
-  email: baseUserSchema.email,
+  email: z.string().email({ message: ERROR_MESSAGES.AUTH.INVALID_EMAIL }),
 });
