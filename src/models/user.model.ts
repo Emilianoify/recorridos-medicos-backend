@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import sequelize from '../config/db';
 import { ERROR_MESSAGES } from '../constants/messages/error.messages';
 import { UserState } from '../enums/UserState';
-import { USER_STATE_VALUES } from '../utils/validators/validators';
+import { USER_STATE_VALUES } from '../utils/validators/enumValidators';
 
 const UserModel = sequelize.define(
   'User',

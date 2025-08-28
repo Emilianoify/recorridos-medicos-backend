@@ -5,7 +5,7 @@ import {
   FREQUENCY_INTERVAL_VALUES,
   FREQUENCY_TYPE_VALUES,
   NEXT_CALCULATION_VALUES,
-} from '../utils/validators/validators';
+} from '../utils/validators/enumValidators';
 
 const FrequencyModel = sequelize.define(
   'Frequency',

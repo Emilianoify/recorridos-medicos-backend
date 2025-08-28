@@ -4,7 +4,7 @@ import { ContactMethod } from '../enums/ContactMethod';
 import {
   CONTACT_METHOD_VALUES,
   PATIENT_STATE_VALUES,
-} from '../utils/validators/validators';
+} from '../utils/validators/enumValidators';
 import { PatientState } from '../enums/PatientState';
 
 const PatientModel = sequelize.define(

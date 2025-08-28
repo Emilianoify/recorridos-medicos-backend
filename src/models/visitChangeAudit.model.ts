@@ -5,7 +5,7 @@ import {
   AUDIT_ACTION_VALUES,
   AUDIT_ENTITY_VALUES,
   CHANGE_REASON_VALUES,
-} from '../utils/validators/validators';
+} from '../utils/validators/enumValidators';
 
 const VisitChangeAuditModel = sequelize.define(
   'VisitChangeAudit',

@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db';
 import { JourneyStatus } from '../enums/JourneyStatus';
-import { JOURNEY_STATUS_VALUES } from '../utils/validators/validators';
+import { JOURNEY_STATUS_VALUES } from '../utils/validators/enumValidators';
 const JourneyModel = sequelize.define(
   'Journey',
   {

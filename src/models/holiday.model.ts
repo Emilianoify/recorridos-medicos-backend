@@ -5,7 +5,7 @@ import {
   COUNTRY_VALUES,
   HOLIDAY_SOURCE_VALUES,
   HOLIDAY_TYPE_VALUES,
-} from '../utils/validators/validators';
+} from '../utils/validators/enumValidators';
 
 const HolidayModel = sequelize.define(
   'Holiday',
