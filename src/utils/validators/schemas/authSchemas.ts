@@ -57,7 +57,7 @@ export const UserRegisterSchema = z.object({
 
 // Esquema para login de usuario
 
-export const loginSchema = z.object({
+export const LoginSchema = z.object({
   username: z
     .string()
     .min(1, ERROR_MESSAGES.AUTH.EMPTY_USERNAME)
@@ -74,7 +74,7 @@ interface ChangePassword {
   confirmPassword: string;
 }
 
-export const changePasswordSchema = z
+export const ChangePasswordSchema = z
   .object({
     currentPassword: z
       .string()
@@ -89,6 +89,6 @@ export const changePasswordSchema = z
     path: ['confirmPassword'],
   });
 
-export const resetPasswordRequestSchema = z.object({
+export const ResetPasswordRequestSchema = z.object({
   email: z.string().email({ message: ERROR_MESSAGES.AUTH.INVALID_EMAIL }),
 });

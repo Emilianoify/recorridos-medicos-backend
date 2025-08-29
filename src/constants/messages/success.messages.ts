@@ -1,5 +1,12 @@
 export const SUCCESS_MESSAGES = {
-  AUTH: {},
+  AUTH: {
+    LOGIN_SUCCESS: 'Sesion iniciada con exito',
+    LOGOUT_SUCCESS: 'Sesión cerrada correctamente.',
+    RECOVERY_EMAIL_SENT: 'Email de recuperación enviado.',
+    PASSWORD_RESET_SUCCESS: 'Contraseña actualizada correctamente.',
+    TOKEN_REFRESHED: 'Token renovado exitosamente.',
+    PASSWORD_CHANGED_SUCCESS: 'Contraseña cambiada exitosamente.',
+  },
   DB: {
     DB_CONNECTED: 'Conexión a la base de datos establecida correctamente.',
     DB_SYNCED: 'Sincronización de base de datos completada.',

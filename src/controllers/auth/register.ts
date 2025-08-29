@@ -63,7 +63,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return sendBadRequest(res, ERROR_MESSAGES.ROLE.ROLE_NOT_FOUND);
     }
 
-    const saltRounds = process.env.SALT_ROUNDS;
+    const saltRounds = parseInt(process.env.SALT_ROUNDS!!);
     const hashedPassword = await bcrypt.hash(password, saltRounds!!);
 
     const newUser = (await UserModel.create({

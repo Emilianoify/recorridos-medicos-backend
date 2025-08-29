@@ -1,5 +1,6 @@
 export const ERROR_MESSAGES = {
   AUTH: {
+    INVALID_CREDENTIALS: 'Usuario y/o contraseña invalidos.',
     INVALID_USERNAME: 'Username debe tener 3-50 caracteres alfanuméricos.',
     INVALID_EMAIL: 'Formato de email inválido.',
     INVALID_PASSWORD: 'Longitud de la contraseña invalida.',
@@ -25,6 +26,20 @@ export const ERROR_MESSAGES = {
     USER_NOT_AUTHENTICATED:
       'Usuario no autenticado. Debe pasar por autenticación primero.',
     USER_NO_ROLE: 'Usuario sin rol asignado. Contacta al administrador.',
+    USER_INACTIVE: 'Usuario inactivo. Contacta al administrador.',
+    USER_BANNED: 'Usuario bloqueado. Contacta al administrador.',
+    REFRESH_TOKEN_REQUIRED: 'Refresh token es requerido.',
+    INVALID_TOKEN_TYPE: 'Tipo de token inválido. Se esperaba refresh token.',
+    REFRESH_TOKEN_EXPIRED: 'Refresh token expirado. Inicia sesión nuevamente.',
+    INVALID_REFRESH_TOKEN: 'Refresh token invalido. Intentelo nuevamente.',
+    MISSING_RESET_FIELDS: 'Token y nueva contraseña son requeridos.',
+    INVALID_RESET_TOKEN: 'Token de recuperación inválido o expirado.',
+    TOKEN_REVOKED: 'Token revocado. Inicia sesión nuevamente.',
+    TOKEN_REQUIRED: 'Token de acceso requerido',
+    TOKEN_NOT_ACTIVE: 'El token no esta activo.',
+    TOKEN_EXPIRED: 'Token expirado',
+    INVALID_TOKEN: 'Token invalido',
+    INVALID_TOKEN_STRUCTURE: 'La estructura del token es invalida.',
   },
   DB: {
     DB_CONNECTION: 'Error al conectar con la base de datos.',
