@@ -8,8 +8,8 @@ import {
   register,
   resetPassword,
 } from '../controllers/auth';
-import authMiddleware from '../middlewares/authMiddleware';
-import checkToken from '../middlewares/checkToken';
+import { authMiddleware } from '../middlewares/authMiddleware';
+import { checkToken } from '../middlewares/checkToken';
 
 const router = Router();
 
