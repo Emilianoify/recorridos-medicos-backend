@@ -1,5 +1,6 @@
 export const ERROR_MESSAGES = {
   AUTH: {
+    IDENTIFIER_REQUIRED: 'Nombre de usuario o email requeridos.',
     INVALID_CREDENTIALS: 'Usuario y/o contraseña invalidos.',
     INVALID_USERNAME: 'Username debe tener 3-50 caracteres alfanuméricos.',
     INVALID_EMAIL: 'Formato de email inválido.',

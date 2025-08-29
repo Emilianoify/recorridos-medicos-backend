@@ -86,9 +86,17 @@ export const ChangePasswordSchema = z
   })
   .refine((data: ChangePassword) => data.newPassword === data.confirmPassword, {
     message: ERROR_MESSAGES.AUTH.PASSWORD_DOESNT_MATCH,
-    path: ['confirmPassword'],
   });
 
 export const ResetPasswordRequestSchema = z.object({
   email: z.string().email({ message: ERROR_MESSAGES.AUTH.INVALID_EMAIL }),
+});
+
+export const ResetPasswordSchema = z.object({
+  token: z
+    .string()
+    .min(1, { message: ERROR_MESSAGES.AUTH.INVALID_TOKEN })
+    .trim(),
+
+  newPassword: UserRegisterSchema.password,
 });

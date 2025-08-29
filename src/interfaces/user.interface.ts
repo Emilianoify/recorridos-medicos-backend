@@ -7,7 +7,7 @@ export interface IUser {
   firstname: string;
   lastname: string;
   corporative_email: string;
-  password?: string;
+  password: string;
   roleId: string;
   lastLogin?: Date | null;
   passwordResetToken?: string | null;
