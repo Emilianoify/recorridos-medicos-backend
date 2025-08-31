@@ -52,6 +52,7 @@ export const ERROR_MESSAGES = {
     JWT_SECRET_MISSING: 'Error de configuración del servidor',
     INVALID_PAGINATION_PARAMETERS: 'Parámetros de paginación inválidos',
     EMPTY_BODY: 'El body no puede estar vacio.',
+    INVALID_BODY: 'Json format error.'
   },
   ROUTING: {
     NOT_FOUND: 'Ruta no encontrada.',
