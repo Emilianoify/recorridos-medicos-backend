@@ -60,6 +60,7 @@ export const ERROR_MESSAGES = {
   ROLE: {
     ROLE_NAME_IN_USE: 'El nombre del Rol esta en uso.',
     INVALID_ROLE_ID: 'ID debe ser un UUID válido.',
+    INVALID_ROLE_STATUS: 'isActive debe ser "true" o "false"',
     ROLE_ID_REQUIRED: 'El ID es requerido para esta busqueda.',
     ROLE_CREATION: 'Error al crear el rol.',
     ROLE_NOT_FOUND: 'Rol no encontrado.',

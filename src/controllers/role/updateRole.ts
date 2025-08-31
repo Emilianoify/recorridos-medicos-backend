@@ -77,7 +77,7 @@ export const updateRole = async (
     sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLE_UPDATED, response);
   } catch (error) {
     if (error instanceof ZodError) {
-      const firstError = error.message[0];
+      const firstError = error.errors[0].message;
       return sendBadRequest(res, firstError);
     }
     return sendInternalErrorResponse(res);
