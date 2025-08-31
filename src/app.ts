@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import authRoutes from './routes/auth.routes';
+import roleRoutes from './routes/role.routes';
 import {
   handleJsonError,
   handle404,
@@ -30,6 +31,7 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/auth', authRoutes);
+app.use('/role', roleRoutes);
 
 app.use(handleJsonError);
 app.use(handle404);

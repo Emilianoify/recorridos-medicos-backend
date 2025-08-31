@@ -52,14 +52,22 @@ export const ERROR_MESSAGES = {
     JWT_SECRET_MISSING: 'Error de configuración del servidor',
     INVALID_PAGINATION_PARAMETERS: 'Parámetros de paginación inválidos',
     EMPTY_BODY: 'El body no puede estar vacio.',
-    INVALID_BODY: 'Json format error.'
+    INVALID_BODY: 'Json format error.',
   },
   ROUTING: {
     NOT_FOUND: 'Ruta no encontrada.',
   },
   ROLE: {
+    ROLE_NAME_IN_USE: 'El nombre del Rol esta en uso.',
+    INVALID_ROLE_ID: 'ID debe ser un UUID válido.',
+    ROLE_ID_REQUIRED: 'El ID es requerido para esta busqueda.',
     ROLE_CREATION: 'Error al crear el rol.',
     ROLE_NOT_FOUND: 'Rol no encontrado.',
+    INVALID_ROLE_NAME_FORMAT: 'El nombre solo puede contener letras y espacios',
+    INVALID_ROLE_NAME: 'El nombre debe tener 2-100 caracteres',
+    INVALID_ROLE_DESCRIPTION:
+      'La descripción no puede exceder los 500 caracteres',
+    ROLE_ALREADY_ACTIVE: 'El rol ya se encuentra activado',
   },
   USER: {
     USER_CREATION: 'Error al crear el usuario.',

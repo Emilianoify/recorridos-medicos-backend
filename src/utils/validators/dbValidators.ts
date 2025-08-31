@@ -46,6 +46,19 @@ export const existingRole = async (roleId: string): Promise<boolean> => {
   }
 };
 
+export const existingRoleName = async (name: string): Promise<boolean> => {
+  try {
+    const found = await RoleModel.findOne({
+      where: { name: name },
+      attributes: ['name'],
+    });
+    return !!found;
+  } catch (error: any) {
+    console.error('Error validating role:', error);
+    return false;
+  }
+};
+
 export const validateRole = async (roleId: string): Promise<boolean> => {
   return await existingRole(roleId);
 };

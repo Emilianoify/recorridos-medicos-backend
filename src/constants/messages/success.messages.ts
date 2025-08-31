@@ -17,6 +17,11 @@ export const SUCCESS_MESSAGES = {
   },
   ROLE: {
     ROLE_CREATED: 'Rol creado correctamente.',
+    ROLES_FETCHED: 'Roles encontrados',
+    ROLE_FOUND: 'Rol encontrado',
+    ROLE_UPDATED: 'Rol actualizado exitosamente.',
+    ROLE_DELETED: 'Rol eliminado exitosamente.',
+    ROLE_RESTORED: 'Rol recuperado exitosamente.',
   },
   USER: {
     USER_CREATED: 'Usuario creado correctamente.',
