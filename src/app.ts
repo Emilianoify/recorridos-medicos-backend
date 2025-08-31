@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import authRoutes from './routes/auth.routes';
 import roleRoutes from './routes/role.routes';
+import specialtyRoutes from './routes/specialty.routes';
+import healthcareProviderRoutes from './routes/healthcare.routes';
 import {
   handleJsonError,
   handle404,
@@ -32,6 +34,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/auth', authRoutes);
 app.use('/role', roleRoutes);
+app.use('/specialty', specialtyRoutes);
+app.use('/healthcare-provider', healthcareProviderRoutes);
 
 app.use(handleJsonError);
 app.use(handle404);

@@ -89,14 +89,28 @@ export const ERROR_MESSAGES = {
     SPECIALTY_NAME_IN_USE: 'El nombre de la especialidad esta en uso.',
     INVALID_SPECIALTY_ID: 'ID debe ser un UUID válido.',
     INVALID_RSPECIALTY_STATUS: 'isActive debe ser "true" o "false"',
-    SPECIALTY_ID_REQUIRED: 'El ID es requerido para esta busqueda.',
+    SPECIALTY_ID_REQUIRED: 'El ID es requerido para esta acción.',
     SPECIALTY_CREATION: 'Error al crear la especialidad.',
     SPECIALTY_NOT_FOUND: 'Especialidad no encontrada.',
     INVALID_SPECIALTY_NAME_FORMAT:
       'El nombre solo puede contener letras, espacios, guiones y paréntesis',
-    INVALID_SPECIALTY_NAME: 'El nombre debe tener 2-100 caracteres',
+    INVALID_SPECIALTY_NAME: 'El nombre debe tener entre 2 y 100 caracteres',
     INVALID_SPECIALTY_DESCRIPTION:
       'La descripción no puede exceder los 500 caracteres',
     SPECIALTY_ALREADY_ACTIVE: 'La especialidad ya se encuentra activado',
+  },
+  HEALTHCARE_PROVIDER: {
+    INVALID_HEALTHCARE_NAME: 'El nombre debe tener entre 2 y 150 caracteres.',
+    HEALTHCARE_NAME_IN_USE: 'El nombre de la obra social/prepaga esta en uso.',
+    HEALTHCARE_ALREADY_ACTIVE: 'La obra social/prepaga ya esta en activa.',
+    HEALTHCARE_ID_REQUIRED: 'El ID es requerido para esta acción',
+    INVALID_HEALTHCARE_ID: 'ID debe ser un UUID válido.',
+    HEALTHCARE_CREATION: 'Error al crear la obra social/prepaga.',
+    HEALTHCARE_NOT_FOUND: 'Obra social/prepaga no encontrada.',
+    INVALID_HEALTHCARE_NAME_FORMAT: 'El nombre contiene caracteres no válidos.',
+    INVALID_HEALTHCARE_CODE: 'El nombre debe tener entre 2 y 20 caracteres.',
+    HEALTHCARE_CODE_IN_USE: 'El codigo ya esta en uso',
+    INVALID_HEALTHCARE_CODE_FORMAT:
+      'El código solo puede contener letras, números, guiones y guiones bajos.',
   },
 };

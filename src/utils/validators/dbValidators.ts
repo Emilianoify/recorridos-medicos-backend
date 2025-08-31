@@ -36,7 +36,7 @@ export const existingEmail = async (email: string): Promise<boolean> => {
 export const existingRole = async (roleId: string): Promise<boolean> => {
   try {
     const found = await RoleModel.findOne({
-      where: { id: roleId, isActive: true },
+      where: { id: roleId },
       attributes: ['id'],
     });
     return !!found;
@@ -68,7 +68,7 @@ export const existingSpecialty = async (
 ): Promise<boolean> => {
   try {
     const found = await SpecialtyModel.findOne({
-      where: { id: specialtyId, isActive: true },
+      where: { id: specialtyId },
       attributes: ['id'],
     });
     return !!found;
@@ -96,7 +96,7 @@ export const existingSpecialtyName = async (
 export const existingZone = async (zoneId: string): Promise<boolean> => {
   try {
     const found = await ZoneModel.findOne({
-      where: { id: zoneId, isActive: true },
+      where: { id: zoneId },
       attributes: ['id'],
     });
     return !!found;
@@ -111,7 +111,7 @@ export const existingFrequency = async (
 ): Promise<boolean> => {
   try {
     const found = await FrequencyModel.findOne({
-      where: { id: frequencyId, isActive: true },
+      where: { id: frequencyId },
       attributes: ['id'],
     });
     return !!found;
@@ -125,8 +125,36 @@ export const existingHealthcareProvider = async (
 ): Promise<boolean> => {
   try {
     const found = await HealthcareProviderModel.findOne({
-      where: { id: providerId, isActive: true },
+      where: { id: providerId },
       attributes: ['id'],
+    });
+    return !!found;
+  } catch (error: any) {
+    return false;
+  }
+};
+
+export const existingHealthcareProviderName = async (
+  name: string
+): Promise<boolean> => {
+  try {
+    const found = await HealthcareProviderModel.findOne({
+      where: { name: name },
+      attributes: ['name'],
+    });
+    return !!found;
+  } catch (error: any) {
+    return false;
+  }
+};
+
+export const existingHealthcareProviderCode = async (
+  code: string
+): Promise<boolean> => {
+  try {
+    const found = await HealthcareProviderModel.findOne({
+      where: { code: code },
+      attributes: ['code'],
     });
     return !!found;
   } catch (error: any) {

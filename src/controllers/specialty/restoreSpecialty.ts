@@ -57,7 +57,7 @@ export const restoreSpecialty = async (
     }
 
     const response = {
-      role: {
+      specialty: {
         id: restoredSpecialty!.id,
         name: restoredSpecialty!.name,
         description: restoredSpecialty!.description,

@@ -36,4 +36,12 @@ export const SUCCESS_MESSAGES = {
     PROFILE_RETRIEVED: 'Perfil obtenido exitosamente.',
     PROFILE_UPDATED: 'Perfil actualizado exitosamente.',
   },
+  HEALTHCARE_PROVIDER: {
+    HEALTHCARE_CREATED: 'Obra social/prepaga creada correctamente.',
+    HEALTHCARE_FETCHED: 'Obras sociales y/o prepagas encontradas.',
+    HEALTHCARE_FOUND: 'Obra social/prepaga encontrada.',
+    HEALTHCARE_UPDATED: 'Obra social/prepaga actualizada correctamente.',
+    HEALTHCARE_DELETED: 'Obra social/prepaga eliminada con exito.',
+    HEALTHCARE_RESTORES: 'Obra social/prepaga restaurada exitosamente.',
+  },
 };
