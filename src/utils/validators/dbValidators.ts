@@ -78,6 +78,21 @@ export const existingSpecialty = async (
   }
 };
 
+export const existingSpecialtyName = async (
+  specialtyName: string
+): Promise<boolean> => {
+  try {
+    const found = await SpecialtyModel.findOne({
+      where: { name: specialtyName },
+      attributes: ['name'],
+    });
+    return !!found;
+  } catch (error: any) {
+    console.error('Error validating specialty:', error);
+    return false;
+  }
+};
+
 export const existingZone = async (zoneId: string): Promise<boolean> => {
   try {
     const found = await ZoneModel.findOne({

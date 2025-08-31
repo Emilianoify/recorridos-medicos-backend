@@ -85,4 +85,18 @@ export const ERROR_MESSAGES = {
     EXCEDEED_VISIT_LIMIT:
       'Las visitas realizadas no pueden superar las autorizadas',
   },
+  SPECIALTY: {
+    SPECIALTY_NAME_IN_USE: 'El nombre de la especialidad esta en uso.',
+    INVALID_SPECIALTY_ID: 'ID debe ser un UUID válido.',
+    INVALID_RSPECIALTY_STATUS: 'isActive debe ser "true" o "false"',
+    SPECIALTY_ID_REQUIRED: 'El ID es requerido para esta busqueda.',
+    SPECIALTY_CREATION: 'Error al crear la especialidad.',
+    SPECIALTY_NOT_FOUND: 'Especialidad no encontrada.',
+    INVALID_SPECIALTY_NAME_FORMAT:
+      'El nombre solo puede contener letras, espacios, guiones y paréntesis',
+    INVALID_SPECIALTY_NAME: 'El nombre debe tener 2-100 caracteres',
+    INVALID_SPECIALTY_DESCRIPTION:
+      'La descripción no puede exceder los 500 caracteres',
+    SPECIALTY_ALREADY_ACTIVE: 'La especialidad ya se encuentra activado',
+  },
 };

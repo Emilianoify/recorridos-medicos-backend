@@ -30,7 +30,6 @@ export const getRoles = async (
       Math.max(1, parseInt(limitQuery as string, 10) || 10)
     );
 
-    // Validar isActive si está presente
     let isActive: boolean | undefined;
     if (isActiveQuery !== undefined) {
       if (isActiveQuery === 'true') {

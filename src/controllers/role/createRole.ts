@@ -27,6 +27,7 @@ export const createRole = async (
 ): Promise<void> => {
   try {
     const body = req.body;
+
     if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
       return sendBadRequest(res, ERROR_MESSAGES.SERVER.EMPTY_BODY);
     }
@@ -47,8 +48,23 @@ export const createRole = async (
       isActive: isActive !== undefined ? isActive : true,
     })) as Partial<IRole>;
 
+    const response = {
+      role: {
+        id: createdRole.id,
+        name: createdRole.name,
+        description: createdRole.description,
+        isActive: createdRole.isActive,
+        createdAt: createdRole.createdAt,
+        updatedAt: createdRole.updatedAt,
+      },
+    };
+
     if (createdRole) {
-      sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLE_CREATED, createdRole);
+      return sendSuccessResponse(
+        res,
+        SUCCESS_MESSAGES.ROLE.ROLE_CREATED,
+        response
+      );
     }
   } catch (error) {
     if (error instanceof ZodError) {

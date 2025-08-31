@@ -23,6 +23,14 @@ export const SUCCESS_MESSAGES = {
     ROLE_DELETED: 'Rol eliminado exitosamente.',
     ROLE_RESTORED: 'Rol recuperado exitosamente.',
   },
+  SPECIALTY: {
+    SPECIALTY_CREATED: 'Especialidad creada correctamente.',
+    SPECIALTIES_FETCHED: 'Especialidades encontradas',
+    SPECIALTY_FOUND: 'Especialidad encontrada',
+    SPECIALTY_UPDATED: 'Especialidad actualizado exitosamente.',
+    SPECIALTY_DELETED: 'Especialidad eliminado exitosamente.',
+    SPECIALTY_RESTORED: 'Especialidad recuperado exitosamente.',
+  },
   USER: {
     USER_CREATED: 'Usuario creado correctamente.',
     PROFILE_RETRIEVED: 'Perfil obtenido exitosamente.',

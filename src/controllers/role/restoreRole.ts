@@ -20,7 +20,7 @@ export const restoreRole = async (
     const { id } = req.params;
 
     if (!id) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ROLE_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ROLE_ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {
@@ -61,7 +61,11 @@ export const restoreRole = async (
       },
     };
 
-    sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLE_RESTORED, response);
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.ROLE.ROLE_RESTORED,
+      response
+    );
   } catch (error) {
     return sendInternalErrorResponse(res);
   }

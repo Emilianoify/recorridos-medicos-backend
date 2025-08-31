@@ -28,7 +28,7 @@ export const updateRole = async (
     const body = req.body;
 
     if (!id) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ROLE_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ROLE_ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {

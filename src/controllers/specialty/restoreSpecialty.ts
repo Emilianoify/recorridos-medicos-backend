@@ -1,0 +1,78 @@
+import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
+import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
+import { AuthRequest } from '../../interfaces/auth.interface';
+import { SpecialtyModel } from '../../models';
+import {
+  sendBadRequest,
+  sendNotFound,
+  sendSuccessResponse,
+  sendInternalErrorResponse,
+} from '../../utils/commons/responseFunctions';
+import { Response } from 'express';
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
+import { ISpecialty } from '../../interfaces/specialty.interface';
+
+export const restoreSpecialty = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return sendBadRequest(
+        res,
+        ERROR_MESSAGES.SPECIALTY.SPECIALTY_ID_REQUIRED
+      );
+    }
+
+    if (!isValidUUID(id)) {
+      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.INVALID_SPECIALTY_ID);
+    }
+    const deletedSpecialty = (await SpecialtyModel.findOne({
+      where: { id },
+      paranoid: false,
+    })) as ISpecialty | null;
+
+    if (!deletedSpecialty) {
+      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.SPECIALTY_NOT_FOUND);
+    }
+
+    if (deletedSpecialty.deletedAt === null) {
+      return sendBadRequest(
+        res,
+        ERROR_MESSAGES.SPECIALTY.SPECIALTY_ALREADY_ACTIVE
+      );
+    }
+
+    await SpecialtyModel.restore({
+      where: { id },
+    });
+
+    const restoredSpecialty = (await SpecialtyModel.findByPk(
+      id
+    )) as unknown as ISpecialty;
+
+    if (!restoredSpecialty) {
+      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.SPECIALTY_NOT_FOUND);
+    }
+
+    const response = {
+      role: {
+        id: restoredSpecialty!.id,
+        name: restoredSpecialty!.name,
+        description: restoredSpecialty!.description,
+        isActive: restoredSpecialty!.isActive,
+        createdAt: restoredSpecialty!.createdAt,
+        updatedAt: restoredSpecialty!.updatedAt,
+      },
+    };
+
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.SPECIALTY.SPECIALTY_RESTORED,
+      response
+    );
+  } catch (error) {
+    return sendInternalErrorResponse(res);
+  }
+};
