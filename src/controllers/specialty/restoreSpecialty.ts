@@ -19,14 +19,11 @@ export const restoreSpecialty = async (
   try {
     const { id } = req.params;
     if (!id) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.SPECIALTY.SPECIALTY_ID_REQUIRED
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.INVALID_SPECIALTY_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.INVALID_ID);
     }
     const deletedSpecialty = (await SpecialtyModel.findOne({
       where: { id },
@@ -34,14 +31,11 @@ export const restoreSpecialty = async (
     })) as ISpecialty | null;
 
     if (!deletedSpecialty) {
-      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.SPECIALTY_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
     }
 
     if (deletedSpecialty.deletedAt === null) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.SPECIALTY.SPECIALTY_ALREADY_ACTIVE
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.ALREADY_ACTIVE);
     }
 
     await SpecialtyModel.restore({
@@ -53,7 +47,7 @@ export const restoreSpecialty = async (
     )) as unknown as ISpecialty;
 
     if (!restoredSpecialty) {
-      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.SPECIALTY_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
     }
 
     const response = {

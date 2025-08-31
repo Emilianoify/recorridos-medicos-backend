@@ -21,19 +21,16 @@ export const deleteSpecialty = async (
     const { id } = req.params;
 
     if (!id) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.SPECIALTY.SPECIALTY_ID_REQUIRED
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.INVALID_SPECIALTY_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.INVALID_ID);
     }
 
     const specialtyExists = await existingSpecialty(id);
     if (!specialtyExists) {
-      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.SPECIALTY_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
     }
 
     const deletedCount = await SpecialtyModel.destroy({
@@ -41,7 +38,7 @@ export const deleteSpecialty = async (
     });
 
     if (deletedCount === 0) {
-      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.SPECIALTY_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
     }
 
     return sendSuccessResponse(

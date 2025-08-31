@@ -26,7 +26,7 @@ const initializeDatabase = async (): Promise<void> => {
     await createDefaultHolidays();
     console.log(SUCCESS_MESSAGES.DB.DB_UP);
   } catch (error) {
-    console.error(ERROR_MESSAGES.DB.DB_CONNECTION, error);
+    console.error(ERROR_MESSAGES.DB.CONNECTION, error);
     throw error;
   }
 };

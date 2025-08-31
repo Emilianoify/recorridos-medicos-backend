@@ -28,14 +28,11 @@ export const updateSpecialty = async (
     const { id } = req.params;
     const body = req.body;
     if (!id) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.SPECIALTY.SPECIALTY_ID_REQUIRED
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.INVALID_SPECIALTY_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.INVALID_ID);
     }
 
     if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
@@ -44,7 +41,7 @@ export const updateSpecialty = async (
 
     const specialtyExists = await existingSpecialty(id);
     if (!specialtyExists) {
-      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.SPECIALTY_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
     }
 
     const validData = updateSpecialtySchema.parse(body);
@@ -52,10 +49,7 @@ export const updateSpecialty = async (
     if (validData.name) {
       const nameExists = await existingSpecialtyName(validData.name);
       if (nameExists) {
-        return sendConflict(
-          res,
-          ERROR_MESSAGES.SPECIALTY.SPECIALTY_NAME_IN_USE
-        );
+        return sendConflict(res, ERROR_MESSAGES.SPECIALTY.NAME_IN_USE);
       }
     }
 
@@ -68,7 +62,7 @@ export const updateSpecialty = async (
     );
 
     if (affectedCount === 0) {
-      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.SPECIALTY_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
     }
 
     const updatedSpecialty = updatedSpecialties[0] as unknown as ISpecialty;

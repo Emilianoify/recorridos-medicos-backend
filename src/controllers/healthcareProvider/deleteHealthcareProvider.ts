@@ -22,23 +22,17 @@ export const deleteHealthcareProvider = async (
     if (!id) {
       return sendBadRequest(
         res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_ID_REQUIRED
+        ERROR_MESSAGES.HEALTHCARE_PROVIDER.ID_REQUIRED
       );
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.INVALID_HEALTHCARE_ID
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.INVALID_ID);
     }
 
     const providerExists = await existingHealthcareProvider(id);
     if (!providerExists) {
-      return sendNotFound(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_NOT_FOUND
-      );
+      return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
     }
 
     const deletedCount = await HealthcareProviderModel.destroy({
@@ -46,10 +40,7 @@ export const deleteHealthcareProvider = async (
     });
 
     if (deletedCount === 0) {
-      return sendNotFound(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_NOT_FOUND
-      );
+      return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
     }
 
     return sendSuccessResponse(

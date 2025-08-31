@@ -38,7 +38,7 @@ export const createRole = async (
 
     const roleExists = await existingRoleName(name);
     if (roleExists) {
-      return sendConflict(res, ERROR_MESSAGES.ROLE.ROLE_NAME_IN_USE);
+      return sendConflict(res, ERROR_MESSAGES.ROLE.NAME_IN_USE);
     }
 
     const createdRole = (await RoleModel.create({

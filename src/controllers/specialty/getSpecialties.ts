@@ -38,10 +38,7 @@ export const getSpecialties = async (
       } else if (isActiveQuery === 'false') {
         isActive = false;
       } else {
-        return sendBadRequest(
-          res,
-          ERROR_MESSAGES.SPECIALTY.SPECIALTY_NOT_FOUND
-        );
+        return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
       }
     }
 

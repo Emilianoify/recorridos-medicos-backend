@@ -106,6 +106,19 @@ export const existingZone = async (zoneId: string): Promise<boolean> => {
   }
 };
 
+export const existingZoneName = async (name: string): Promise<boolean> => {
+  try {
+    const found = await ZoneModel.findOne({
+      where: { name: name },
+      attributes: ['name'],
+    });
+    return !!found;
+  } catch (error: any) {
+    console.error('Error validating zone name:', error);
+    return false;
+  }
+};
+
 export const existingFrequency = async (
   frequencyId: string
 ): Promise<boolean> => {

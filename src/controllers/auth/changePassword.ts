@@ -54,7 +54,7 @@ export const changePassword = async (
     })) as IUser | null;
 
     if (!user) {
-      sendNotFound(res, ERROR_MESSAGES.USER.USER_NOT_FOUND);
+      sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
       return;
     }
 

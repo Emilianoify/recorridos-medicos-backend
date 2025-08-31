@@ -37,7 +37,7 @@ export const getRoles = async (
       } else if (isActiveQuery === 'false') {
         isActive = false;
       } else {
-        return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ROLE_STATUS);
+        return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_STATUS);
       }
     }
 

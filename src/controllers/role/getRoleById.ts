@@ -20,16 +20,16 @@ export const getRoleById = async (
     const { id } = req.params;
 
     if (!id) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ROLE_ID_REQUIRED);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ROLE_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ID);
     }
     const role = (await RoleModel.findByPk(id)) as unknown as IRole;
 
     if (!role) {
-      return sendNotFound(res, ERROR_MESSAGES.ROLE.ROLE_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
 
     const response = {

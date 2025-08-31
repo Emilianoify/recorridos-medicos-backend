@@ -41,7 +41,7 @@ export const getHealthcareProviders = async (
       } else {
         return sendBadRequest(
           res,
-          ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_NOT_FOUND
+          ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND
         );
       }
     }
@@ -80,14 +80,14 @@ export const getHealthcareProviders = async (
     const totalPages = Math.ceil(healthcareProvidersData.count / limit);
 
     const response = {
-      healthcareProvider: healthcareProvidersData.rows.map(
-        (healthcareProvider: IHealthcareProvider | any) => ({
-          id: healthcareProvider.id,
-          name: healthcareProvider.name,
-          code: healthcareProvider.code,
-          isActive: healthcareProvider.isActive,
-          createdAt: healthcareProvider.createdAt,
-          updatedAt: healthcareProvider.updatedAt,
+      healthcareProviders: healthcareProvidersData.rows.map(
+        (healthcareProviders: IHealthcareProvider | any) => ({
+          id: healthcareProviders.id,
+          name: healthcareProviders.name,
+          code: healthcareProviders.code,
+          isActive: healthcareProviders.isActive,
+          createdAt: healthcareProviders.createdAt,
+          updatedAt: healthcareProviders.updatedAt,
         })
       ),
       pagination: {

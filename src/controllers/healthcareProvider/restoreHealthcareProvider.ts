@@ -22,15 +22,12 @@ export const restoreHealthcareProvider = async (
     if (!id) {
       return sendBadRequest(
         res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_ID_REQUIRED
+        ERROR_MESSAGES.HEALTHCARE_PROVIDER.ID_REQUIRED
       );
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.INVALID_HEALTHCARE_ID
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.INVALID_ID);
     }
 
     const deletedProvider = (await HealthcareProviderModel.findOne({
@@ -39,16 +36,13 @@ export const restoreHealthcareProvider = async (
     })) as IHealthcareProvider | null;
 
     if (!deletedProvider) {
-      return sendNotFound(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_NOT_FOUND
-      );
+      return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
     }
 
     if (deletedProvider.deletedAt === null) {
       return sendBadRequest(
         res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_ALREADY_ACTIVE
+        ERROR_MESSAGES.HEALTHCARE_PROVIDER.ALREADY_ACTIVE
       );
     }
 

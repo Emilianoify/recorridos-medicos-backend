@@ -20,11 +20,11 @@ export const restoreRole = async (
     const { id } = req.params;
 
     if (!id) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ROLE_ID_REQUIRED);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ROLE_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ID);
     }
     const deletedRole = (await RoleModel.findOne({
       where: { id },
@@ -32,11 +32,11 @@ export const restoreRole = async (
     })) as IRole | null;
 
     if (!deletedRole) {
-      return sendNotFound(res, ERROR_MESSAGES.ROLE.ROLE_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
 
     if (deletedRole.deletedAt === null) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ROLE_ALREADY_ACTIVE);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ALREADY_ACTIVE);
     }
 
     await RoleModel.restore({
@@ -46,7 +46,7 @@ export const restoreRole = async (
     const restoredRole = (await RoleModel.findByPk(id)) as unknown as IRole;
 
     if (!restoredRole) {
-      return sendNotFound(res, ERROR_MESSAGES.ROLE.ROLE_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
 
     const response = {

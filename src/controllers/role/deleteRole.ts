@@ -21,16 +21,16 @@ export const deleteRole = async (
     const { id } = req.params;
 
     if (!id) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ROLE_ID_REQUIRED);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ROLE_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ID);
     }
 
     const roleExists = await existingRole(id);
     if (!roleExists) {
-      return sendNotFound(res, ERROR_MESSAGES.ROLE.ROLE_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
 
     const deletedCount = await RoleModel.destroy({
@@ -38,7 +38,7 @@ export const deleteRole = async (
     });
 
     if (deletedCount === 0) {
-      return sendNotFound(res, ERROR_MESSAGES.ROLE.ROLE_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
 
     return sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLE_DELETED);

@@ -20,21 +20,18 @@ export const getSpecialtyById = async (
     const { id } = req.params;
 
     if (!id) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.SPECIALTY.SPECIALTY_ID_REQUIRED
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.INVALID_SPECIALTY_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.INVALID_ID);
     }
     const specialty = (await SpecialtyModel.findByPk(
       id
     )) as unknown as ISpecialty;
 
     if (!specialty) {
-      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.SPECIALTY_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
     }
 
     const response = {

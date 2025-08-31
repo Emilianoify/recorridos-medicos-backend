@@ -5,7 +5,7 @@ import { ERROR_MESSAGES } from '../constants/messages/error.messages';
 const { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS } = process.env;
 
 if (!DB_HOST || !DB_PORT || !DB_NAME || !DB_USER || !DB_PASS) {
-  throw new Error(ERROR_MESSAGES.DB.DB_CONNECTION);
+  throw new Error(ERROR_MESSAGES.DB.CONNECTION);
 }
 
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
@@ -25,7 +25,7 @@ export const dbConnection = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
   } catch (error) {
-    console.error(ERROR_MESSAGES.DB.DB_CONNECTION, error);
+    console.error(ERROR_MESSAGES.DB.CONNECTION, error);
     throw error;
   }
 };

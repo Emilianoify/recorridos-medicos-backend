@@ -32,7 +32,7 @@ export const authMiddleware = async (
     })) as IUser | null;
 
     if (!user) {
-      return sendBadRequest(res, ERROR_MESSAGES.USER.USER_NOT_FOUND);
+      return sendBadRequest(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
 
     if (user.state !== UserState.ACTIVE) {

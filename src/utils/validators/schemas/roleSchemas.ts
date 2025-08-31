@@ -5,16 +5,16 @@ import { ERROR_MESSAGES } from '../../../constants/messages/error.messages';
 export const roleBaseSchema = z.object({
   name: z
     .string()
-    .min(2, ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME)
-    .max(100, ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME)
+    .min(2, ERROR_MESSAGES.ROLE.INVALID_NAME)
+    .max(100, ERROR_MESSAGES.ROLE.INVALID_NAME)
     .regex(
       /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-      ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME_FORMAT
+      ERROR_MESSAGES.ROLE.INVALID_NAME_FORMAT
     ),
 
   description: z
     .string()
-    .max(500, ERROR_MESSAGES.ROLE.INVALID_ROLE_DESCRIPTION)
+    .max(500, ERROR_MESSAGES.ROLE.INVALID_DESCRIPTION)
     .optional()
     .nullable(),
 
@@ -27,11 +27,11 @@ export const roleBaseSchema = z.object({
 export const createRoleSchema = roleBaseSchema.extend({
   name: z
     .string()
-    .min(2, ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME)
-    .max(100, ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME)
+    .min(2, ERROR_MESSAGES.ROLE.INVALID_NAME)
+    .max(100, ERROR_MESSAGES.ROLE.INVALID_NAME)
     .regex(
       /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-      ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME_FORMAT
+      ERROR_MESSAGES.ROLE.INVALID_NAME_FORMAT
     ),
 });
 
@@ -41,11 +41,11 @@ export const updateRoleSchema = roleBaseSchema
   .extend({
     name: z
       .string()
-      .min(2, ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME)
-      .max(100, ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME)
+      .min(2, ERROR_MESSAGES.ROLE.INVALID_NAME)
+      .max(100, ERROR_MESSAGES.ROLE.INVALID_NAME)
       .regex(
         /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-        ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME_FORMAT
+        ERROR_MESSAGES.ROLE.INVALID_NAME_FORMAT
       )
       .optional(),
   })
@@ -55,10 +55,10 @@ export const updateRoleSchema = roleBaseSchema
 export const roleNameSchema = z.object({
   name: z
     .string()
-    .min(2, ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME)
-    .max(100, ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME)
+    .min(2, ERROR_MESSAGES.ROLE.INVALID_NAME)
+    .max(100, ERROR_MESSAGES.ROLE.INVALID_NAME)
     .regex(
       /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-      ERROR_MESSAGES.ROLE.INVALID_ROLE_NAME_FORMAT
+      ERROR_MESSAGES.ROLE.INVALID_NAME_FORMAT
     ),
 });

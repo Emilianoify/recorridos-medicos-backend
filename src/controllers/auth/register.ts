@@ -60,7 +60,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     const roleIsValid = await validateRole(roleId);
     if (!roleIsValid) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ROLE_NOT_FOUND);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
 
     const saltRounds = parseInt(process.env.SALT_ROUNDS!!);

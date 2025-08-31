@@ -33,10 +33,7 @@ export const createHealthcareProvider = async (
 
     const nameExists = await existingHealthcareProviderName(name);
     if (nameExists) {
-      return sendConflict(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_NAME_IN_USE
-      );
+      return sendConflict(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NAME_IN_USE);
     }
 
     if (code) {
@@ -44,7 +41,7 @@ export const createHealthcareProvider = async (
       if (codeExists) {
         return sendConflict(
           res,
-          ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_CODE_IN_USE
+          ERROR_MESSAGES.HEALTHCARE_PROVIDER.CODE_IN_USE
         );
       }
     }

@@ -37,7 +37,7 @@ export const createSpecialty = async (
     const specialtyExists = await existingSpecialtyName(name);
 
     if (specialtyExists) {
-      return sendConflict(res, ERROR_MESSAGES.SPECIALTY.SPECIALTY_NAME_IN_USE);
+      return sendConflict(res, ERROR_MESSAGES.SPECIALTY.NAME_IN_USE);
     }
 
     const createdSpecialty = (await SpecialtyModel.create({

@@ -31,7 +31,7 @@ export const updateHealthcareProvider = async (
     if (!id) {
       return sendBadRequest(
         res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_ID_REQUIRED
+        ERROR_MESSAGES.HEALTHCARE_PROVIDER.ID_REQUIRED
       );
     }
 
@@ -40,10 +40,7 @@ export const updateHealthcareProvider = async (
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.INVALID_HEALTHCARE_ID
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.INVALID_ID);
     }
 
     const validData = updateHealthcareProviderSchema.parse(body);
@@ -52,10 +49,7 @@ export const updateHealthcareProvider = async (
 
     const providerExists = await existingHealthcareProvider(id);
     if (!providerExists) {
-      return sendNotFound(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_NOT_FOUND
-      );
+      return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
     }
 
     if (name) {
@@ -63,7 +57,7 @@ export const updateHealthcareProvider = async (
       if (nameExists) {
         return sendConflict(
           res,
-          ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_NAME_IN_USE
+          ERROR_MESSAGES.HEALTHCARE_PROVIDER.NAME_IN_USE
         );
       }
     }
@@ -78,7 +72,7 @@ export const updateHealthcareProvider = async (
         if (codeExists) {
           return sendConflict(
             res,
-            ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_CODE_IN_USE
+            ERROR_MESSAGES.HEALTHCARE_PROVIDER.CODE_IN_USE
           );
         }
       }
@@ -91,10 +85,7 @@ export const updateHealthcareProvider = async (
       });
 
     if (affectedCount === 0) {
-      return sendNotFound(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_NOT_FOUND
-      );
+      return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
     }
 
     const updatedProvider =

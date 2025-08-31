@@ -28,11 +28,11 @@ export const updateRole = async (
     const body = req.body;
 
     if (!id) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ROLE_ID_REQUIRED);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ROLE_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ID);
     }
 
     if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
@@ -41,7 +41,7 @@ export const updateRole = async (
 
     const roleExists = await existingRole(id);
     if (!roleExists) {
-      return sendNotFound(res, ERROR_MESSAGES.ROLE.ROLE_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
 
     const validData = updateRoleSchema.parse(body);
@@ -49,7 +49,7 @@ export const updateRole = async (
     if (validData.name) {
       const nameExists = await existingRoleName(validData.name);
       if (nameExists) {
-        return sendConflict(res, ERROR_MESSAGES.ROLE.ROLE_NAME_IN_USE);
+        return sendConflict(res, ERROR_MESSAGES.ROLE.NAME_IN_USE);
       }
     }
 
@@ -59,7 +59,7 @@ export const updateRole = async (
     });
 
     if (affectedCount === 0) {
-      return sendNotFound(res, ERROR_MESSAGES.ROLE.ROLE_NOT_FOUND);
+      return sendNotFound(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
 
     const updatedRole = updatedRoles[0] as unknown as IRole;

@@ -44,4 +44,17 @@ export const SUCCESS_MESSAGES = {
     HEALTHCARE_DELETED: 'Obra social/prepaga eliminada con exito.',
     HEALTHCARE_RESTORES: 'Obra social/prepaga restaurada exitosamente.',
   },
+  ZONE: {
+    CREATED: 'Zona creada exitosamente',
+    UPDATED: 'Zona actualizada exitosamente',
+    DELETED: 'Zona eliminada exitosamente',
+    RESTORED: 'Zona restaurada exitosamente',
+    FETCHED: 'Zona(s) obtenida(s) exitosamente',
+    ACTIVATED: 'Zona activada exitosamente',
+    DEACTIVATED: 'Zona desactivada exitosamente',
+    POLYGON_UPDATED: 'Polígono de zona actualizado exitosamente',
+    POLYGON_REMOVED: 'Polígono de zona removido exitosamente',
+    STATUS_UPDATED: 'Estado de zona actualizado exitosamente',
+    COORDINATES_UPDATED: 'Coordenadas de la zona actualizadas.',
+  },
 };

@@ -22,15 +22,12 @@ export const getHealthcareProviderById = async (
     if (!id) {
       return sendBadRequest(
         res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_ID_REQUIRED
+        ERROR_MESSAGES.HEALTHCARE_PROVIDER.ID_REQUIRED
       );
     }
 
     if (!isValidUUID(id)) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.INVALID_HEALTHCARE_ID
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.INVALID_ID);
     }
 
     const provider = (await HealthcareProviderModel.findByPk(id, {
@@ -38,10 +35,7 @@ export const getHealthcareProviderById = async (
     })) as IHealthcareProvider | null;
 
     if (!provider) {
-      return sendNotFound(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_NOT_FOUND
-      );
+      return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
     }
 
     // Estructurar la respuesta
