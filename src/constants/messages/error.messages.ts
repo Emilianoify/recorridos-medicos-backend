@@ -137,6 +137,8 @@ export const ERROR_MESSAGES = {
     COORDINATES_EMPTY: 'Las coordenadas no pueden estar vacías',
     COORDINATES_NOT_CLOSED:
       'El polígono debe estar cerrado (primero y último punto iguales)',
+    COORDINATES_OUT_OF_ARGENTINA:
+      'Algunas coordenadas están fuera de los límites de Argentina',
     CREATE_FAILED: 'Error al crear la zona',
     UPDATE_FAILED: 'Error al actualizar la zona',
     DELETE_FAILED: 'Error al eliminar la zona',

@@ -94,8 +94,8 @@ export const zoneNameSchema = z.object({
 export const coordinatesSchema = z.object({
   coordinates: z
     .array(polygonCoordinateSchema)
-    .min(3, 'Un polígono debe tener al menos 3 coordenadas')
-    .max(100, 'Un polígono no puede tener más de 100 coordenadas'),
+    .min(3, ERROR_MESSAGES.ZONE.POLYGON_MIN_POINTS)
+    .max(100, ERROR_MESSAGES.ZONE.POLYGON_MAX_POINTS),
 });
 
 export const zoneResponseSchema = zoneBaseSchema.extend({
