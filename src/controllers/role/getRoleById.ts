@@ -33,13 +33,15 @@ export const getRoleById = async (
     }
 
     const response = {
-      id: role.id,
-      name: role.name,
-      description: role.description,
-      permissions: role.permissions,
-      isActive: role.isActive,
-      createdAt: role.createdAt,
-      updatedAt: role.updatedAt,
+      role: {
+        id: role.id,
+        name: role.name,
+        description: role.description,
+        permissions: role.permissions,
+        isActive: role.isActive,
+        createdAt: role.createdAt,
+        updatedAt: role.updatedAt,
+      },
     };
 
     sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLE_FOUND, response);

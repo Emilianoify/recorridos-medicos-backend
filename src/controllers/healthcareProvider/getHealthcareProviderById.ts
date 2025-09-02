@@ -38,7 +38,6 @@ export const getHealthcareProviderById = async (
       return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
     }
 
-    // Estructurar la respuesta
     const response = {
       healthcareProvider: {
         id: provider.id,

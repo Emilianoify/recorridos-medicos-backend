@@ -35,12 +35,14 @@ export const getSpecialtyById = async (
     }
 
     const response = {
-      id: specialty.id,
-      name: specialty.name,
-      description: specialty.description,
-      isActive: specialty.isActive,
-      createdAt: specialty.createdAt,
-      updatedAt: specialty.updatedAt,
+      specialty: {
+        id: specialty.id,
+        name: specialty.name,
+        description: specialty.description,
+        isActive: specialty.isActive,
+        createdAt: specialty.createdAt,
+        updatedAt: specialty.updatedAt,
+      },
     };
 
     return sendSuccessResponse(

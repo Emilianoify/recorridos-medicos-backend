@@ -2,7 +2,7 @@ export interface IZone {
   id: string;
   name: string;
   description?: string | null;
-  polygonCoordinates?: IPolygonCoordinate | null;
+  polygonCoordinates?: IZonePolygon | null;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;

@@ -112,6 +112,7 @@ export const ERROR_MESSAGES = {
       'El código solo puede contener letras, números, guiones y guiones bajos.',
   },
   ZONE: {
+    ID_REQUIRED: 'ID requerido para esta acción',
     INVALID_ID: 'ID de zona no válido',
     INVALID_NAME:
       'Nombre de zona no válido, debe tener entre 2 y 100 caracteres',
@@ -139,6 +140,7 @@ export const ERROR_MESSAGES = {
       'El polígono debe estar cerrado (primero y último punto iguales)',
     COORDINATES_OUT_OF_ARGENTINA:
       'Algunas coordenadas están fuera de los límites de Argentina',
+    COORDINATES_NOT_FOUND: 'La zona no tiene coordenadas definidas',
     CREATE_FAILED: 'Error al crear la zona',
     UPDATE_FAILED: 'Error al actualizar la zona',
     DELETE_FAILED: 'Error al eliminar la zona',

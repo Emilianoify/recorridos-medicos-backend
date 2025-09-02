@@ -21,6 +21,7 @@ export const getZones = async (
       limit: limitQuery = '10',
       isActive: isActiveQuery,
       search,
+      hasCoordinates,
     } = req.query;
 
     const page = Math.max(1, parseInt(pageQuery as string, 10) || 1);
@@ -51,6 +52,16 @@ export const getZones = async (
       whereClause.name = {
         [Op.iLike]: `%${search.trim()}%`,
       };
+    }
+
+    if (hasCoordinates !== undefined) {
+      if (hasCoordinates === 'true') {
+        whereClause.polygonCoordinates = {
+          [Op.ne]: null,
+        };
+      } else if (hasCoordinates === 'false') {
+        whereClause.polygonCoordinates = null;
+      }
     }
 
     const zonesData = await ZoneModel.findAndCountAll({
