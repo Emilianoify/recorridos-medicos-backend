@@ -50,7 +50,7 @@ export const restoreZone = async (
     }
 
     const response = {
-      role: {
+      zone: {
         id: restoredZone!.id,
         name: restoredZone!.name,
         description: restoredZone!.description,

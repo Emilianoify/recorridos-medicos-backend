@@ -1,5 +1,12 @@
 export const ERROR_MESSAGES = {
   AUTH: {
+    INVALID_USER_STATE: 'Estado de usuario inválido',
+    INVALID_USERNAME_FORMAT:
+      'El nombre de usuario solo puede contener letras, números y guiones bajos',
+    INVALID_FIRSTNAME_FORMAT: 'El nombre solo puede contener letras y espacios',
+    INVALID_LASTNAME_FORMAT:
+      'El apellido solo puede contener letras y espacios',
+    INVALID_ROLE_ID: 'ID de rol inválido',
     IDENTIFIER_REQUIRED: 'Nombre de usuario o email requeridos.',
     INVALID_CREDENTIALS: 'Usuario y/o contraseña invalidos.',
     INVALID_USERNAME: 'Username debe tener 3-50 caracteres alfanuméricos.',
@@ -70,6 +77,7 @@ export const ERROR_MESSAGES = {
     ALREADY_ACTIVE: 'El rol ya se encuentra activado',
   },
   USER: {
+    INVALID_ID: 'ID debe serun UUID válido.',
     CREATION: 'Error al crear el usuario.',
     NOT_FOUND: 'Usuario no encontrado',
     NO_FIELDS_TO_UPDATE: 'Debe proporcionar al menos un campo para actualizar.',
