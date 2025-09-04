@@ -80,26 +80,28 @@ export const createUser = async (
         },
       ],
       attributes: { exclude: ['password'] },
-    })) as Partial<IUser>;
+    })) as IUser | null;
 
     if (!userWithRole) {
       return sendUnauthorized(res, ERROR_MESSAGES.AUTH.USER_NO_ROLE);
     }
 
-    const responseData = {
-      id: userWithRole.id,
-      username: userWithRole.username,
-      firstname: userWithRole.firstname,
-      lastname: userWithRole.lastname,
-      corporative_email: userWithRole.corporative_email,
-      role: userWithRole.role,
-      createdAt: userWithRole.createdAt,
+    const response = {
+      user: {
+        id: userWithRole.id,
+        username: userWithRole.username,
+        firstname: userWithRole.firstname,
+        lastname: userWithRole.lastname,
+        corporative_email: userWithRole.corporative_email,
+        role: userWithRole.role,
+        createdAt: userWithRole.createdAt,
+      },
     };
 
     return sendSuccessResponse(
       res,
       SUCCESS_MESSAGES.USER.USER_CREATED,
-      responseData
+      response
     );
   } catch (error) {
     if (error instanceof ZodError) {

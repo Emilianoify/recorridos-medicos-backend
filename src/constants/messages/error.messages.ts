@@ -77,6 +77,8 @@ export const ERROR_MESSAGES = {
     ALREADY_ACTIVE: 'El rol ya se encuentra activado',
   },
   USER: {
+    INVALID_STATE: 'Estado de usuario inválido',
+    ID_REQUIRED: 'El ID es requerido para esta acción.',
     INVALID_ID: 'ID debe serun UUID válido.',
     CREATION: 'Error al crear el usuario.',
     NOT_FOUND: 'Usuario no encontrado',

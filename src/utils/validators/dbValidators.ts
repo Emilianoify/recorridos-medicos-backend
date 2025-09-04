@@ -7,6 +7,19 @@ import {
   HealthcareProviderModel,
 } from '../../models';
 
+export const existingUser = async (userId: string): Promise<boolean> => {
+  try {
+    const found = await UserModel.findOne({
+      where: { id: userId },
+      attributes: ['id'],
+    });
+    return !!found;
+  } catch (error: any) {
+    console.error('Error validating user:', error);
+    return false;
+  }
+};
+
 export const existingUsername = async (username: string): Promise<boolean> => {
   try {
     const found = await UserModel.findOne({

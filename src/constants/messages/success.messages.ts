@@ -32,9 +32,11 @@ export const SUCCESS_MESSAGES = {
     SPECIALTY_RESTORED: 'Especialidad recuperado exitosamente.',
   },
   USER: {
+    USER_UPDATED: 'Informacion del usuario actualizada.',
     USER_CREATED: 'Usuario creado correctamente.',
     PROFILE_RETRIEVED: 'Perfil obtenido exitosamente.',
     PROFILE_UPDATED: 'Perfil actualizado exitosamente.',
+    USERS_FETCHED: 'Usuarios encontrados',
   },
   HEALTHCARE_PROVIDER: {
     HEALTHCARE_CREATED: 'Obra social/prepaga creada correctamente.',
