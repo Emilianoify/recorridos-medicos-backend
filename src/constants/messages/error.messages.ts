@@ -86,6 +86,11 @@ export const ERROR_MESSAGES = {
     UPDATE_FAILED: 'Error al actualizar el perfil.',
     INSUFFICIENT_PERMISSIONS:
       'No tienes los permsisos para acceder a este contenido.',
+    CANNOT_DELETE_SELF: 'No puedes eliminar tu propio usuario.',
+    CANNOT_DELETE_LAST_ADMIN:
+      'No se puede eliminar el único administrador activo.',
+    ALREADY_DELETED: 'El usuario ya está eliminado.',
+    ALREADY_ACTIVE: 'El usuario ya se encuentra activado',
   },
   PATIENT: {
     EMPTY_PHONE: 'Se debe proporcionar al menos un número de teléfono',

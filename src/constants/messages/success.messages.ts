@@ -32,6 +32,8 @@ export const SUCCESS_MESSAGES = {
     SPECIALTY_RESTORED: 'Especialidad recuperado exitosamente.',
   },
   USER: {
+    USER_RESTORED: 'Usuario recuperado exitosamente',
+    USER_DELETED: 'Usuario eliminado exitosamente.',
     USER_UPDATED: 'Informacion del usuario actualizada.',
     USER_CREATED: 'Usuario creado correctamente.',
     PROFILE_RETRIEVED: 'Perfil obtenido exitosamente.',

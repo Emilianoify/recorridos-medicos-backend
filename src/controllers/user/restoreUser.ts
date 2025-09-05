@@ -1,6 +1,6 @@
-import { Response } from 'express';
-import { AuthRequest } from '../../interfaces/auth.interface';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
+import { AuthRequest } from '../../interfaces/auth.interface';
+import { Response } from 'express';
 import {
   sendBadRequest,
   sendInternalErrorResponse,
@@ -8,11 +8,11 @@ import {
   sendSuccessResponse,
 } from '../../utils/commons/responseFunctions';
 import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
-import { RoleModel, UserModel } from '../../models';
 import { IUser } from '../../interfaces/user.interface';
+import { UserModel, RoleModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 
-export const getUserById = async (
+export const restoreUser = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
@@ -27,7 +27,7 @@ export const getUserById = async (
       return sendBadRequest(res, ERROR_MESSAGES.USER.INVALID_ID);
     }
 
-    const user = (await UserModel.findByPk(id, {
+    const deletedUser = (await UserModel.findByPk(id, {
       include: [
         {
           model: RoleModel,
@@ -35,34 +35,43 @@ export const getUserById = async (
           attributes: ['id', 'name', 'permissions', 'isActive'],
         },
       ],
+      paranoid: false,
       attributes: { exclude: ['password'] },
     })) as IUser | null;
 
-    if (!user) {
+    if (!deletedUser) {
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
 
+    if (deletedUser.deletedAt === null) {
+      return sendBadRequest(res, ERROR_MESSAGES.USER.ALREADY_ACTIVE);
+    }
+
+    if (!deletedUser.role?.isActive) {
+      return sendBadRequest(res, ERROR_MESSAGES.AUTH.ROLE_INACTIVE);
+    }
+    await UserModel.restore({
+      where: { id },
+    });
+
     const response = {
       user: {
-        id: user.id,
-        username: user.username,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        corporative_email: user.corporative_email,
-        state: user.state,
-        role: user.role,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
+        id: deletedUser.id,
+        username: deletedUser.username,
+        firstname: deletedUser.firstname,
+        lastname: deletedUser.lastname,
+        corporative_email: deletedUser.corporative_email,
+        role: deletedUser.role,
+        state: deletedUser.state,
+        restoredAt: new Date(),
       },
     };
-
     return sendSuccessResponse(
       res,
-      SUCCESS_MESSAGES.USER.PROFILE_RETRIEVED,
+      SUCCESS_MESSAGES.USER.USER_RESTORED,
       response
     );
   } catch (error) {
-    console.error('Error fetching user by ID:', error);
     return sendInternalErrorResponse(res);
   }
 };
