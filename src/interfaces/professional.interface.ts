@@ -7,6 +7,7 @@ export interface IProfessional {
   firstname: string;
   lastname: string;
   email: string;
+  phone: string;
   specialtyId: string;
   start_at?: number | null;
   finish_at?: number | null;

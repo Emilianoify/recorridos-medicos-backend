@@ -37,6 +37,13 @@ const ProfessionalModel = sequelize.define(
         notEmpty: true,
       },
     },
+    phone: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      validate: {
+        len: [8, 20],
+      },
+    },
     email: {
       type: DataTypes.STRING(255),
       allowNull: false,

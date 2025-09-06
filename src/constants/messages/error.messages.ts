@@ -127,6 +127,36 @@ export const ERROR_MESSAGES = {
     INVALID_CODE_FORMAT:
       'El código solo puede contener letras, números, guiones y guiones bajos.',
   },
+  PROFESSIONAL: {
+    ID_REQUIRED: 'El ID es requerido para esta acción.',
+    INVALID_ID: 'ID debe ser un UUID válido.',
+    NOT_FOUND: 'Profesional no encontrado.',
+    ALREADY_ACTIVE: 'El profesional ya está activo.',
+    CREATION: 'Error al crear el profesional.',
+    EMAIL_IN_USE: 'El email ya está en uso.',
+    USERNAME_IN_USE: 'El username ya está en uso.',
+    INVALID_FIRSTNAME: 'El nombre debe tener entre 2 y 100 caracteres.',
+    INVALID_LASTNAME: 'El apellido debe tener entre 2 y 100 caracteres.',
+    INVALID_FIRSTNAME_FORMAT:
+      'El nombre solo puede contener letras y espacios.',
+    INVALID_LASTNAME_FORMAT:
+      'El apellido solo puede contener letras y espacios.',
+    INVALID_USERNAME_FORMAT:
+      'El username solo puede contener letras, números y guiones bajos.',
+    INVALID_USERNAME: 'El username debe tener entre 3 y 50 caracteres.',
+    INVALID_PHONE: 'El teléfono debe tener entre 8 y 20 caracteres.',
+    INVALID_PHONE_FORMAT: 'Formato de teléfono inválido.',
+    INVALID_EMAIL: 'Formato de email inválido.',
+    INVALID_SPECIALTY_ID: 'ID de especialidad inválido.',
+    SPECIALTY_NOT_FOUND: 'La especialidad no existe.',
+    SPECIALTY_INACTIVE: 'La especialidad está inactiva.',
+    INVALID_SCHEDULE_FORMAT:
+      'El horario debe ser en formato HHMM (ej: 0830, 1730).',
+    INVALID_SCHEDULE_RANGE: 'El horario debe estar entre 0000 y 2359.',
+    SCHEDULE_END_BEFORE_START:
+      'La hora de fin debe ser posterior a la hora de inicio.',
+    INVALID_STATE: 'Estado de profesional inválido.',
+  },
   ZONE: {
     ID_REQUIRED: 'ID requerido para esta acción.',
     INVALID_ID: 'ID debe ser un UUID válido.',

@@ -55,7 +55,7 @@ export const createUser = async (
 
     const validRole = await validateRole(roleId);
     if (!validRole) {
-      return sendBadRequest(res, ERROR_MESSAGES.AUTH.INVALID_ROLE_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.AUTH.ROLE_INACTIVE);
     }
 
     const saltRounds = parseInt(process.env.SALT_ROUNDS!!);
