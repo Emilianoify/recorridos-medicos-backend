@@ -68,12 +68,14 @@ export const updateSpecialty = async (
     const updatedSpecialty = updatedSpecialties[0] as unknown as ISpecialty;
 
     const response = {
-      id: updatedSpecialty.id,
-      name: updatedSpecialty.name,
-      description: updatedSpecialty.description,
-      isActive: updatedSpecialty.isActive,
-      createdAt: updatedSpecialty.createdAt,
-      updatedAt: updatedSpecialty.updatedAt,
+      specialty: {
+        id: updatedSpecialty.id,
+        name: updatedSpecialty.name,
+        description: updatedSpecialty.description,
+        isActive: updatedSpecialty.isActive,
+        createdAt: updatedSpecialty.createdAt,
+        updatedAt: updatedSpecialty.updatedAt,
+      },
     };
 
     return sendSuccessResponse(

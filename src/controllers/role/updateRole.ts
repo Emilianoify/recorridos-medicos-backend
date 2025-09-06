@@ -65,13 +65,15 @@ export const updateRole = async (
     const updatedRole = updatedRoles[0] as unknown as IRole;
 
     const response = {
-      id: updatedRole.id,
-      name: updatedRole.name,
-      description: updatedRole.description,
-      permissions: updatedRole.permissions,
-      isActive: updatedRole.isActive,
-      createdAt: updatedRole.createdAt,
-      updatedAt: updatedRole.updatedAt,
+      role: {
+        id: updatedRole.id,
+        name: updatedRole.name,
+        description: updatedRole.description,
+        permissions: updatedRole.permissions,
+        isActive: updatedRole.isActive,
+        createdAt: updatedRole.createdAt,
+        updatedAt: updatedRole.updatedAt,
+      },
     };
 
     sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLE_UPDATED, response);

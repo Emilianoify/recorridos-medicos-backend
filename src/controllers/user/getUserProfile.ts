@@ -32,7 +32,7 @@ export const getUserProfile = async (
     }
 
     const response = {
-      profile: {
+      user: {
         id: user.id,
         username: user.username,
         firstname: user.firstname,
