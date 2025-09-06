@@ -10,6 +10,7 @@ import { Country, HolidaySource, HolidayType } from '../../enums/Holiday';
 import { JourneyStatus } from '../../enums/JourneyStatus';
 import { PatientState } from '../../enums/PatientState';
 import { UserState } from '../../enums/UserState';
+import { ConfirmationMethod, VisitStatus } from '../../enums/Visits';
 
 export const USER_STATE_VALUES = Object.values(UserState);
 export const NEXT_CALCULATION_VALUES = Object.values(NextDateCalculationRule);
@@ -25,3 +26,5 @@ export const HOLIDAY_TYPE_VALUES = Object.values(HolidayType);
 export const AUDIT_ENTITY_VALUES = Object.values(AuditEntity);
 export const CHANGE_REASON_VALUES = Object.values(ChangeReason);
 export const AUDIT_ACTION_VALUES = Object.values(AuditAction);
+export const VISIT_STATUS_VALUES = Object.values(VisitStatus);
+export const CONFIRMATION_METHOD_VALUES = Object.values(ConfirmationMethod);

@@ -14,7 +14,7 @@ import {
 } from '../../utils/validators/dbValidators';
 import { HealthcareProviderModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
-import { createHealthcareProviderSchema } from '../../utils/validators/schemas/healthCareSchemas';
+import { createHealthcareProviderSchema } from '../../utils/validators/schemas/healthcareSchemas';
 import { IHealthcareProvider } from '../../interfaces/healthcareProvider.interface';
 
 export const createHealthcareProvider = async (

@@ -15,10 +15,11 @@ import {
   existingHealthcareProviderName,
   existingHealthcareProviderCode,
 } from '../../utils/validators/dbValidators';
-import { updateHealthcareProviderSchema } from '../../utils/validators/schemas/healthCareSchemas';
+
 import { Response } from 'express';
 import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 import { IHealthcareProvider } from '../../interfaces/healthcareProvider.interface';
+import { updateHealthcareProviderSchema } from '../../utils/validators/schemas/healthcareSchemas';
 
 export const updateHealthcareProvider = async (
   req: AuthRequest,

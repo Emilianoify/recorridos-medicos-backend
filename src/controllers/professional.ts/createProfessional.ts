@@ -10,15 +10,12 @@ import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ZodError } from 'zod';
 import { createProfessionalSchema } from '../../utils/validators/schemas/professionalSchemas';
-import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
-
 import {
   existingEmail,
-  existingSpecialty,
   existingUsername,
   isSpecialtyActiveAndExists,
 } from '../../utils/validators/dbValidators';
-import { ProfessionalModel } from '../../models';
+import { ProfessionalModel, SpecialtyModel } from '../../models';
 import { UserState } from '../../enums/UserState';
 import { IProfessional } from '../../interfaces/professional.interface';
 
@@ -36,21 +33,6 @@ export const createProfessional = async (
     const validData = createProfessionalSchema.parse(body);
     const { username, firstname, lastname, email, specialtyId, phone } =
       validData;
-
-    if (!isValidUUID(specialtyId)) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.PROFESSIONAL.INVALID_SPECIALTY_ID
-      );
-    }
-
-    const specialtyExists = await existingSpecialty(specialtyId);
-    if (!specialtyExists) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.PROFESSIONAL.SPECIALTY_NOT_FOUND
-      );
-    }
 
     const specialtyActive = await isSpecialtyActiveAndExists(specialtyId);
     if (!specialtyActive) {
@@ -82,16 +64,34 @@ export const createProfessional = async (
       state: UserState.ACTIVE,
     })) as Partial<IProfessional>;
 
+    const professionalWithSpecialty = (await ProfessionalModel.findByPk(
+      newProfessional.id,
+      {
+        include: [
+          {
+            model: SpecialtyModel,
+            as: 'specialty',
+            attributes: ['id', 'name', 'description', 'isActive'],
+          },
+        ],
+        attributes: { exclude: ['deletedAt'] },
+      }
+    )) as unknown as IProfessional;
+
     const response = {
       professional: {
-        id: newProfessional.id,
-        username: newProfessional.username,
-        firstname: newProfessional.firstname,
-        lastname: newProfessional.lastname,
-        email: newProfessional.email,
-        specialtyId: newProfessional.specialtyId,
-        phone: newProfessional.phone,
-        state: newProfessional.state,
+        id: professionalWithSpecialty.id,
+        username: professionalWithSpecialty.username,
+        firstname: professionalWithSpecialty.firstname,
+        lastname: professionalWithSpecialty.lastname,
+        email: professionalWithSpecialty.email,
+        phone: professionalWithSpecialty.phone,
+        specialty: professionalWithSpecialty.specialty,
+        start_at: professionalWithSpecialty.start_at,
+        finish_at: professionalWithSpecialty.finish_at,
+        state: professionalWithSpecialty.state,
+        createdAt: professionalWithSpecialty.createdAt,
+        updatedAt: professionalWithSpecialty.updatedAt,
       },
     };
     return sendSuccessResponse(

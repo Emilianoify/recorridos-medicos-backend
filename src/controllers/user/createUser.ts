@@ -16,7 +16,6 @@ import {
   sendConflict,
   sendInternalErrorResponse,
   sendSuccessResponse,
-  sendUnauthorized,
 } from '../../utils/commons/responseFunctions';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
@@ -55,10 +54,10 @@ export const createUser = async (
 
     const validRole = await validateRole(roleId);
     if (!validRole) {
-      return sendBadRequest(res, ERROR_MESSAGES.AUTH.ROLE_INACTIVE);
+      return sendBadRequest(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
 
-    const saltRounds = parseInt(process.env.SALT_ROUNDS!!);
+    const saltRounds = parseInt(process.env.SALT_ROUNDS || '10');
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const newUser = (await UserModel.create({
@@ -83,7 +82,7 @@ export const createUser = async (
     })) as IUser | null;
 
     if (!userWithRole) {
-      return sendUnauthorized(res, ERROR_MESSAGES.AUTH.USER_NO_ROLE);
+      return sendInternalErrorResponse(res);
     }
 
     const response = {

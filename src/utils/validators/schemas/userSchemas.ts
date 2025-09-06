@@ -165,6 +165,21 @@ export const userResponseSchema = z.object({
   deletedAt: z.date().optional().nullable(),
 });
 
+export const userFilterSchema = z.object({
+  roleId: z.string().uuid().optional(),
+  state: z.enum(USER_STATE_VALUES as [string, ...string[]]).optional(),
+  search: z.string().min(1).max(100).optional(),
+  isActive: z.boolean().optional(),
+  createdFrom: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  createdTo: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+});
+
 // Type inferidos
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;

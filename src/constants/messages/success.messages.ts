@@ -40,14 +40,17 @@ export const SUCCESS_MESSAGES = {
     PROFILE_UPDATED: 'Perfil actualizado exitosamente.',
     USERS_FETCHED: 'Usuarios obtenidos exitosamente.',
   },
+
   PROFESSIONAL: {
     PROFESSIONAL_RESTORED: 'Profesional restaurado exitosamente.',
     PROFESSIONAL_DELETED: 'Profesional eliminado exitosamente.',
     PROFESSIONAL_UPDATED: 'Profesional actualizado exitosamente.',
     PROFESSIONAL_CREATED: 'Profesional creado correctamente.',
-    PROFILE_RETRIEVED: 'Perfil obtenido exitosamente.',
-    PROFILE_UPDATED: 'Perfil actualizado exitosamente.',
+    PROFESSIONAL_FOUND: 'Profesional encontrado exitosamente.',
     PROFESSIONAL_FETCHED: 'Profesionales obtenidos exitosamente.',
+    SCHEDULE_FETCHED: 'Horario del profesional obtenido exitosamente.',
+    PROFESSIONALS_BY_ZONE_FETCHED:
+      'Profesionales de la zona obtenidos exitosamente.',
   },
   HEALTHCARE_PROVIDER: {
     HEALTHCARE_CREATED: 'Obra social/prepaga creada correctamente.',

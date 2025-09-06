@@ -1,22 +1,40 @@
 import { z } from 'zod';
 import { ERROR_MESSAGES } from '../../../constants/messages/error.messages';
 
-const polygonCoordinateSchema = z.object({
+export const polygonCoordinateSchema = z.object({
   lat: z
     .number()
     .min(-90, ERROR_MESSAGES.ZONE.LAT_RANGE)
-    .max(90, ERROR_MESSAGES.ZONE.LAT_RANGE),
+    .max(90, ERROR_MESSAGES.ZONE.LAT_RANGE)
+    .refine(val => !isNaN(val) && isFinite(val), {
+      message: ERROR_MESSAGES.ZONE.INVALID_COORDINATE,
+    }),
   lng: z
     .number()
     .min(-180, ERROR_MESSAGES.ZONE.LONG_RANGE)
-    .max(180, ERROR_MESSAGES.ZONE.LONG_RANGE),
+    .max(180, ERROR_MESSAGES.ZONE.LONG_RANGE)
+    .refine(val => !isNaN(val) && isFinite(val), {
+      message: ERROR_MESSAGES.ZONE.INVALID_COORDINATE,
+    }),
 });
 
-const zonePolygonSchema = z.object({
+export const zonePolygonSchema = z.object({
   coordinates: z
     .array(polygonCoordinateSchema)
     .min(3, ERROR_MESSAGES.ZONE.POLYGON_MIN_POINTS)
-    .max(100, ERROR_MESSAGES.ZONE.POLYGON_MAX_POINTS),
+    .max(100, ERROR_MESSAGES.ZONE.POLYGON_MAX_POINTS)
+    .refine(
+      coords => {
+        // Validar que el polígono esté cerrado (primer punto = último punto)
+        if (coords.length >= 3) {
+          const first = coords[0];
+          const last = coords[coords.length - 1];
+          return first.lat === last.lat && first.lng === last.lng;
+        }
+        return true;
+      },
+      { message: ERROR_MESSAGES.ZONE.POLYGON_NOT_CLOSED }
+    ),
   center: polygonCoordinateSchema.optional(),
 });
 

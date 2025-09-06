@@ -16,7 +16,6 @@ import {
   existingZone,
   existingZoneName,
 } from '../../utils/validators/dbValidators';
-import { validateZoneCoordinates } from '../../utils/validators/zoneValidators';
 import { ZoneModel } from '../../models';
 import { IZone } from '../../interfaces/zone.interface';
 
@@ -56,13 +55,6 @@ export const updateZone = async (
         if (nameExists) {
           return sendConflict(res, ERROR_MESSAGES.ZONE.NAME_ALREADY_IN_USE);
         }
-      }
-    }
-
-    if (polygonCoordinates !== undefined) {
-      const coordinatesValidation = validateZoneCoordinates(polygonCoordinates);
-      if (!coordinatesValidation.isValid) {
-        return sendBadRequest(res, coordinatesValidation.errorMessage!);
       }
     }
 

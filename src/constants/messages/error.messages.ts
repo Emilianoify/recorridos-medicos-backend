@@ -93,13 +93,146 @@ export const ERROR_MESSAGES = {
     ALREADY_DELETED: 'El usuario ya está eliminado.',
     ALREADY_ACTIVE: 'El usuario ya está activo.',
   },
-  PATIENT: {
-    EMPTY_PHONE: 'Se debe proporcionar al menos un número de teléfono.',
-    MISSING_AUTHORIZATION:
-      'Pacientes activos deben tener fecha de autorización.',
-    EXCEDEED_VISIT_LIMIT:
-      'Las visitas realizadas no pueden superar las autorizadas.',
+  FREQUENCY: {
+    INVALID_NAME:
+      'El nombre de la frecuencia debe tener entre 2 y 50 caracteres.',
+    INVALID_NAME_FORMAT:
+      'El nombre de la frecuencia contiene caracteres no válidos.',
+    INVALID_DESCRIPTION: 'La descripción no puede exceder 500 caracteres.',
+    INVALID_TYPE: 'Tipo de frecuencia no válido.',
+    INVALID_CALCULATION_RULE: 'Regla de cálculo de fecha no válida.',
+    INVALID_INTERVAL_UNIT: 'Unidad de intervalo no válida.',
+    INVALID_DAYS_BETWEEN: 'Los días entre visitas deben estar entre 1 y 365.',
+    INVALID_VISITS_PER_MONTH: 'Las visitas por mes deben estar entre 1 y 31.',
+    INVALID_INTERVAL_VALUE: 'El valor del intervalo debe ser mayor a 0.',
+    INVALID_VISITS_PER_DAY: 'Las visitas por día deben estar entre 1 y 24.',
   },
+
+  PATIENT: {
+    INVALID_FULLNAME: 'El nombre completo debe tener entre 2 y 200 caracteres.',
+    INVALID_FULLNAME_FORMAT: 'El nombre contiene caracteres no válidos.',
+    INVALID_HEALTHCARE_ID:
+      'El ID de obra social debe tener entre 2 y 50 caracteres.',
+    INVALID_HEALTHCARE_ID_FORMAT:
+      'El ID de obra social contiene caracteres no válidos.',
+    INVALID_HEALTHCARE_PROVIDER_ID: 'ID de obra social/prepaga no válido.',
+    INVALID_ADDRESS: 'La dirección debe tener entre 5 y 200 caracteres.',
+    INVALID_LOCALITY: 'La localidad debe tener entre 2 y 100 caracteres.',
+    INVALID_LOCALITY_FORMAT: 'La localidad contiene caracteres no válidos.',
+    INVALID_ZONE_ID: 'ID de zona no válido.',
+    INVALID_PHONE: 'El teléfono debe tener entre 8 y 20 caracteres.',
+    INVALID_PHONE_FORMAT: 'Formato de teléfono no válido.',
+    INVALID_EMERGENCY_PHONE:
+      'El teléfono de emergencia debe tener entre 8 y 20 caracteres.',
+    INVALID_EMERGENCY_PHONE_FORMAT:
+      'Formato de teléfono de emergencia no válido.',
+    INVALID_STATE: 'Estado del paciente no válido.',
+    INVALID_DATE_FORMAT: 'Formato de fecha no válido (YYYY-MM-DD).',
+    INVALID_AUTHORIZED_VISITS:
+      'Las visitas autorizadas deben estar entre 0 y 31.',
+    INVALID_FREQUENCY_ID: 'ID de frecuencia no válido.',
+    INVALID_PROFESSIONAL_ID: 'ID de profesional no válido.',
+    INVALID_DIAGNOSIS: 'El diagnóstico no puede exceder 1000 caracteres.',
+    INVALID_MEDICAL_OBSERVATIONS:
+      'Las observaciones médicas no pueden exceder 2000 caracteres.',
+    INVALID_CONTACT_METHOD: 'Método de contacto no válido.',
+  },
+
+  JOURNEY: {
+    INVALID_PROFESSIONAL_ID: 'ID de profesional no válido.',
+    INVALID_DATE_FORMAT: 'Formato de fecha no válido (YYYY-MM-DD).',
+    INVALID_ZONE_ID: 'ID de zona no válido.',
+    INVALID_STATUS: 'Estado del recorrido no válido.',
+    INVALID_TIME_FORMAT: 'Formato de hora no válido (HH:MM).',
+    INVALID_ESTIMATED_VISITS: 'Las visitas estimadas deben estar entre 0 y 50.',
+    INVALID_TRAVEL_DISTANCE:
+      'La distancia de viaje debe ser un número positivo.',
+    INVALID_OBSERVATIONS:
+      'Las observaciones no pueden exceder 1000 caracteres.',
+    END_TIME_BEFORE_START:
+      'La hora de fin planificada debe ser posterior a la de inicio.',
+    ACTUAL_END_TIME_BEFORE_START:
+      'La hora de fin real debe ser posterior a la de inicio real.',
+  },
+
+  VISIT: {
+    INVALID_PATIENT_ID: 'ID de paciente no válido.',
+    INVALID_JOURNEY_ID: 'ID de recorrido no válido.',
+    INVALID_STATUS: 'Estado de la visita no válido.',
+    INVALID_DATETIME: 'Formato de fecha y hora no válido.',
+    INVALID_ORDER: 'El orden en el recorrido debe estar entre 1 y 100.',
+    INVALID_CONFIRMATION_STATUS_ID: 'ID de estado de confirmación no válido.',
+    INVALID_CONFIRMATION_METHOD: 'Método de confirmación no válido.',
+    INVALID_USER_ID: 'ID de usuario no válido.',
+    INVALID_DURATION: 'La duración debe estar entre 1 y 480 minutos.',
+    INVALID_REJECTION_REASON_ID: 'ID de motivo de rechazo no válido.',
+    INVALID_NOT_COMPLETED_REASON_ID: 'ID de motivo de no completada no válido.',
+    INVALID_VISIT_ID: 'ID de visita no válido.',
+    INVALID_LATITUDE: 'La latitud debe estar entre -90 y 90.',
+    INVALID_LONGITUDE: 'La longitud debe estar entre -180 y 180.',
+    INVALID_PROFESSIONAL_NOTES:
+      'Las notas del profesional no pueden exceder 2000 caracteres.',
+    INVALID_COORDINATOR_NOTES:
+      'Las notas del coordinador no pueden exceder 1000 caracteres.',
+  },
+
+  HOLIDAY: {
+    INVALID_NAME: 'El nombre del feriado debe tener entre 2 y 100 caracteres.',
+    INVALID_NAME_FORMAT:
+      'El nombre del feriado contiene caracteres no válidos.',
+    INVALID_DATE_FORMAT: 'Formato de fecha no válido (YYYY-MM-DD).',
+    INVALID_DESCRIPTION: 'La descripción no puede exceder 500 caracteres.',
+  },
+
+  CONFIRMATION_STATUS: {
+    INVALID_NAME: 'El nombre debe tener entre 2 y 50 caracteres.',
+    INVALID_NAME_FORMAT: 'El nombre contiene caracteres no válidos.',
+    INVALID_DESCRIPTION: 'La descripción no puede exceder 200 caracteres.',
+  },
+
+  REJECTION_REASON: {
+    INVALID_NAME: 'El nombre debe tener entre 2 y 100 caracteres.',
+    INVALID_NAME_FORMAT: 'El nombre contiene caracteres no válidos.',
+    INVALID_DESCRIPTION: 'La descripción no puede exceder 300 caracteres.',
+    INVALID_CATEGORY: 'La categoría debe tener entre 2 y 50 caracteres.',
+  },
+
+  NOT_COMPLETED_REASON: {
+    INVALID_NAME: 'El nombre debe tener entre 2 y 100 caracteres.',
+    INVALID_NAME_FORMAT: 'El nombre contiene caracteres no válidos.',
+    INVALID_DESCRIPTION: 'La descripción no puede exceder 300 caracteres.',
+    INVALID_CATEGORY: 'La categoría debe tener entre 2 y 50 caracteres.',
+    INVALID_SUGGESTED_ACTION:
+      'La acción sugerida no puede exceder 100 caracteres.',
+  },
+
+  AUDIT: {
+    INVALID_ENTITY: 'Tipo de entidad no válido.',
+    INVALID_ENTITY_ID: 'ID de entidad no válido.',
+    INVALID_ACTION: 'Acción de auditoría no válida.',
+    INVALID_FIELD_NAME: 'Nombre del campo no válido.',
+    INVALID_OLD_VALUE: 'El valor anterior no puede exceder 1000 caracteres.',
+    INVALID_NEW_VALUE: 'El valor nuevo no puede exceder 1000 caracteres.',
+    INVALID_CHANGE_REASON: 'Motivo del cambio no válido.',
+    INVALID_CHANGE_DESCRIPTION:
+      'La descripción del cambio no puede exceder 1000 caracteres.',
+    INVALID_USER_ID: 'ID de usuario no válido.',
+    INVALID_USER_AGENT: 'El user agent no puede exceder 500 caracteres.',
+    INVALID_IP_ADDRESS: 'Dirección IP no válida.',
+    INVALID_IP_FORMAT: 'Formato de dirección IP no válido.',
+    INVALID_RELATED_ENTITY_ID: 'ID de entidad relacionada no válido.',
+    INVALID_DATETIME: 'Formato de fecha y hora no válido.',
+  },
+
+  PAGINATION: {
+    INVALID_PAGE: 'El número de página debe ser un entero positivo.',
+    PAGE_TOO_SMALL: 'El número de página debe ser mayor o igual a 1.',
+    INVALID_LIMIT: 'El límite debe ser un entero positivo.',
+    LIMIT_OUT_OF_RANGE: 'El límite debe estar entre 1 y 100.',
+    INVALID_SORT_BY: 'El campo de ordenamiento no es válido.',
+    INVALID_SORT_ORDER: 'El orden debe ser "asc" o "desc".',
+  },
+
   SPECIALTY: {
     NAME_IN_USE: 'El nombre ya está en uso.',
     INVALID_ID: 'ID debe ser un UUID válido.',
@@ -158,6 +291,9 @@ export const ERROR_MESSAGES = {
     INVALID_STATE: 'Estado de profesional inválido.',
   },
   ZONE: {
+    INVALID_COORDINATE: 'Coordenada no válida.',
+    POLYGON_NOT_CLOSED:
+      'El polígono debe estar cerrado (primer punto = último punto).',
     ID_REQUIRED: 'ID requerido para esta acción.',
     INVALID_ID: 'ID debe ser un UUID válido.',
     INVALID_NAME:

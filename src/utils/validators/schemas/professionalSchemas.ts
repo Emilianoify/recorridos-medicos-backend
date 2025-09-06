@@ -234,3 +234,11 @@ export const professionalResponseSchema = professionalBaseSchema.extend({
   updatedAt: z.date().optional(),
   deletedAt: z.date().optional().nullable(),
 });
+
+export const professionalFilterSchema = z.object({
+  specialtyId: z.string().uuid().optional(),
+  state: z.enum(USER_STATE_VALUES as [string, ...string[]]).optional(),
+  search: z.string().min(1).max(100).optional(),
+  hasSchedule: z.boolean().optional(),
+  isActive: z.boolean().optional(),
+});

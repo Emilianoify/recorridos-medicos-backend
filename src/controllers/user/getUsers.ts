@@ -30,7 +30,7 @@ export const getUsers = async (
     const page = Math.max(1, parseInt(pageQuery as string, 10) || 1);
 
     const limit = Math.min(
-      100,
+      50,
       Math.max(1, parseInt(limitQuery as string, 10) || 10)
     );
 
