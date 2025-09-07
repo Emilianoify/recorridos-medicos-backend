@@ -1,8 +1,8 @@
 import { DataTypes, Op } from 'sequelize';
 import sequelize from '../config/db';
 import { ERROR_MESSAGES } from '../constants/messages/error.messages';
-import { UserState } from '../enums/UserState';
-import { USER_STATE_VALUES } from '../utils/validators/enumValidators';
+import { ProfessionalState } from '../enums/ProfessionalState';
+import { PROFESSIONAL_STATE_VALUES } from '../utils/validators/enumValidators';
 
 const ProfessionalModel = sequelize.define(
   'Professional',
@@ -80,11 +80,11 @@ const ProfessionalModel = sequelize.define(
       },
     },
     state: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(30),
       allowNull: false,
-      defaultValue: UserState.ACTIVE,
+      defaultValue: ProfessionalState.ACTIVE,
       validate: {
-        isIn: [USER_STATE_VALUES],
+        isIn: [PROFESSIONAL_STATE_VALUES],
       },
     },
   },
@@ -122,6 +122,10 @@ const ProfessionalModel = sequelize.define(
       {
         fields: ['start_at', 'finish_at'],
         name: 'idx_professional_schedule',
+      },
+      {
+        fields: ['firstname', 'lastname', 'state'],
+        name: 'idx_role_name_active',
       },
     ],
   }

@@ -27,7 +27,7 @@ export const getProfessionalById = async (
       return sendBadRequest(res, ERROR_MESSAGES.PROFESSIONAL.INVALID_ID);
     }
 
-    const professional = (await ProfessionalModel.findByPk(id, {
+    const professionalInstance = await ProfessionalModel.findByPk(id, {
       include: [
         {
           model: SpecialtyModel,
@@ -36,11 +36,13 @@ export const getProfessionalById = async (
         },
       ],
       attributes: { exclude: ['deletedAt'] },
-    })) as unknown as IProfessional;
+    });
 
-    if (!professional) {
+    if (!professionalInstance) {
       return sendNotFound(res, ERROR_MESSAGES.PROFESSIONAL.NOT_FOUND);
     }
+
+    const professional: IProfessional = professionalInstance.toJSON() as IProfessional;
 
     const response = {
       professional: {

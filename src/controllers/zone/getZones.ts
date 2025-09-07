@@ -1,74 +1,70 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../interfaces/auth.interface';
+import { ZodError } from 'zod';
 import {
   sendBadRequest,
   sendInternalErrorResponse,
   sendSuccessResponse,
 } from '../../utils/commons/responseFunctions';
 import { Op } from 'sequelize';
-import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { ZoneModel } from '../../models';
 import { IZone } from '../../interfaces/zone.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
+import { zoneQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const getZones = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
+    // Validar query parameters con schema Zod
+    const validatedQuery = zoneQuerySchema.parse(req.query);
+
     const {
-      page: pageQuery = '1',
-      limit: limitQuery = '10',
-      isActive: isActiveQuery,
+      page,
+      limit,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      isActive,
       search,
       hasCoordinates,
-    } = req.query;
+    } = validatedQuery;
 
-    const page = Math.max(1, parseInt(pageQuery as string, 10) || 1);
-
-    const limit = Math.min(
-      50,
-      Math.max(1, parseInt(limitQuery as string, 10) || 10)
-    );
-
-    let isActive: boolean | undefined;
-    if (isActiveQuery !== undefined) {
-      if (isActiveQuery === 'true') {
-        isActive = true;
-      } else if (isActiveQuery === 'false') {
-        isActive = false;
-      } else {
-        return sendBadRequest(res, ERROR_MESSAGES.ZONE.FETCH_FAILED);
-      }
-    }
-
+    // Construir whereClause
     const whereClause: any = {};
 
+    // Filtro por estado activo
     if (isActive !== undefined) {
-      whereClause.isActive = isActive;
+      whereClause.isActive = isActive === 'true';
     }
 
-    if (search && typeof search === 'string' && search.trim().length > 0) {
+    // Filtro por búsqueda
+    if (search) {
       whereClause.name = {
         [Op.iLike]: `%${search.trim()}%`,
       };
     }
 
+    // Filtro por coordenadas
     if (hasCoordinates !== undefined) {
       if (hasCoordinates === 'true') {
         whereClause.polygonCoordinates = {
           [Op.ne]: null,
         };
-      } else if (hasCoordinates === 'false') {
+      } else {
         whereClause.polygonCoordinates = null;
       }
     }
+
+    // Construir orden dinámico
+    const orderDirection = sortOrder.toUpperCase() as 'ASC' | 'DESC';
+    const orderBy: [string, 'ASC' | 'DESC'][] = [[sortBy, orderDirection]];
 
     const zonesData = await ZoneModel.findAndCountAll({
       where: whereClause,
       limit: limit,
       offset: (page - 1) * limit,
-      order: [['createdAt', 'DESC']],
+      order: orderBy,
       attributes: { exclude: ['deletedAt'] },
     });
 
@@ -93,12 +89,19 @@ export const getZones = async (
         hasPreviousPage: page > 1,
       },
       filters: {
-        isActive: isActive,
+        isActive: isActive || null,
         search: search || null,
+        hasCoordinates: hasCoordinates || null,
       },
     };
+
     return sendSuccessResponse(res, SUCCESS_MESSAGES.ZONE.FETCHED, response);
   } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.errors[0].message;
+      return sendBadRequest(res, firstError);
+    }
+    console.error('Error fetching zones:', error);
     return sendInternalErrorResponse(res);
   }
 };

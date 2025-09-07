@@ -9,6 +9,7 @@ export interface IUser {
   corporative_email: string;
   password: string;
   roleId: string;
+  userPermissions?: string[];
   lastLogin?: Date | null;
   passwordResetToken?: string | null;
   passwordResetExpires?: Date | null;

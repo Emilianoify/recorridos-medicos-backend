@@ -27,7 +27,7 @@ export const getUserById = async (
       return sendBadRequest(res, ERROR_MESSAGES.USER.INVALID_ID);
     }
 
-    const user = (await UserModel.findByPk(id, {
+    const userExists = await UserModel.findByPk(id, {
       include: [
         {
           model: RoleModel,
@@ -36,12 +36,12 @@ export const getUserById = async (
         },
       ],
       attributes: { exclude: ['password'] },
-    })) as IUser | null;
+    });
 
-    if (!user) {
+    if (!userExists) {
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
-
+    const user: IUser = userExists.toJSON() as IUser;
     const response = {
       user: {
         id: user.id,

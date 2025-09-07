@@ -16,7 +16,7 @@ export const getUserProfile = async (
 ): Promise<void> => {
   try {
     const userId = req.user!.id;
-    const user = (await UserModel.findByPk(userId, {
+    const userExists = await UserModel.findByPk(userId, {
       include: [
         {
           model: RoleModel,
@@ -25,11 +25,13 @@ export const getUserProfile = async (
         },
       ],
       attributes: { exclude: ['password'] },
-    })) as IUser | null;
+    });
 
-    if (!user) {
+    if (!userExists) {
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
+
+    const user: IUser = userExists.toJSON() as IUser;
 
     const response = {
       user: {

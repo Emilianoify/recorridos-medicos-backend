@@ -10,6 +10,8 @@ export enum NextDateCalculationRule {
 }
 
 export enum FrequencyType {
+  WEEKLY = 'WEEKLY', // Semanal
+  MONTHLY = 'MONTHLY', // Mensual
   SIMPLE = 'SIMPLE', // Frecuencias simples (semanal, mensual)
   HOURLY = 'HOURLY', // Por horas (cada 8h, cada 12h)
   DAILY_MULTIPLE = 'DAILY_MULTIPLE', // Múltiples por día (2x/día, 3x/día)

@@ -46,11 +46,14 @@ export const createHealthcareProvider = async (
       }
     }
 
-    const createdProvider = (await HealthcareProviderModel.create({
+    const newHealthcareProvider = await HealthcareProviderModel.create({
       name,
       code: code || null,
       isActive: isActive !== undefined ? isActive : true,
-    })) as unknown as IHealthcareProvider;
+    });
+
+    const createdProvider: IHealthcareProvider =
+      newHealthcareProvider.toJSON() as IHealthcareProvider;
 
     const response = {
       healthcareProvider: {

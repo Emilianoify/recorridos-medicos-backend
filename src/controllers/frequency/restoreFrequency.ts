@@ -11,50 +11,42 @@ import {
 import { FrequencyModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { updateFrequencySchema } from '../../utils/validators/schemas/frequencySchemas';
 import { z } from 'zod';
-import { Op } from 'sequelize';
 import { IFrequency } from '../../interfaces/frequency.interface';
 
-const updateFrequencyParamsSchema = z.object({
+const restoreFrequencyParamsSchema = z.object({
   id: z.string().uuid(ERROR_MESSAGES.FREQUENCY.INVALID_ID),
 });
 
-export const updateFrequency = async (
+export const restoreFrequency = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = updateFrequencyParamsSchema.parse(req.params);
-    const body = req.body;
+    const { id } = restoreFrequencyParamsSchema.parse(req.params);
 
-    if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
-      return sendBadRequest(res, ERROR_MESSAGES.SERVER.EMPTY_BODY);
-    }
+    const frequency = (await FrequencyModel.findByPk(id, {
+      paranoid: false,
+    })) as IFrequency | null;
 
-    const validatedData = updateFrequencySchema.parse(body);
-
-    const frequency = (await FrequencyModel.findByPk(id)) as IFrequency | null;
     if (!frequency) {
       return sendNotFound(res, ERROR_MESSAGES.FREQUENCY.NOT_FOUND);
     }
 
-    // Check if name is being updated and if it already exists
-    if (validatedData.name && validatedData.name !== frequency.name) {
-      const existingFrequency = await FrequencyModel.findOne({
-        where: {
-          name: validatedData.name,
-          id: { [Op.ne]: id },
-        },
-        paranoid: false,
-      });
-
-      if (existingFrequency) {
-        return sendConflict(res, ERROR_MESSAGES.FREQUENCY.NAME_IN_USE);
-      }
+    if (!frequency.deletedAt) {
+      return sendConflict(res, ERROR_MESSAGES.FREQUENCY.ALREADY_ACTIVE);
     }
 
-    await FrequencyModel.update(validatedData, {
+    // Check if name is already in use by another active frequency
+    const existingFrequency = await FrequencyModel.findOne({
+      where: { name: frequency.name },
+    });
+
+    if (existingFrequency) {
+      return sendConflict(res, ERROR_MESSAGES.FREQUENCY.NAME_IN_USE);
+    }
+
+    await FrequencyModel.restore({
       where: { id },
     });
 
@@ -76,13 +68,14 @@ export const updateFrequency = async (
         allowWeekends: frequency.allowWeekends,
         allowHolidays: frequency.allowHolidays,
         isActive: frequency.isActive,
+        createdAt: frequency.createdAt,
         updatedAt: frequency.updatedAt,
       },
     };
 
     return sendSuccessResponse(
       res,
-      SUCCESS_MESSAGES.FREQUENCY.FREQUENCY_UPDATED,
+      SUCCESS_MESSAGES.FREQUENCY.FREQUENCY_RESTORED,
       response
     );
   } catch (error) {
@@ -91,7 +84,7 @@ export const updateFrequency = async (
       return sendBadRequest(res, firstError);
     }
 
-    console.error('Error updating frequency:', error);
+    console.error('Error restoring frequency:', error);
     return sendInternalErrorResponse(res);
   }
 };

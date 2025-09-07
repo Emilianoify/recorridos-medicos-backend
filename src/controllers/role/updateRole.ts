@@ -46,18 +46,24 @@ export const updateRole = async (
 
     const validData = updateRoleSchema.parse(body);
     const { name, description, permissions, isActive } = validData;
+
     if (name) {
-      const currentRole = (await RoleModel.findByPk(id, {
+      const currentRoleModel = await RoleModel.findByPk(id, {
         attributes: ['name'],
-      })) as Partial<IRole>;
-      if (currentRole && currentRole.name !== name) {
-        const nameExists = await existingRoleName(name);
-        if (nameExists) {
-          return sendConflict(res, ERROR_MESSAGES.ROLE.NAME_IN_USE);
+      });
+
+      if (currentRoleModel) {
+        const currentRole = currentRoleModel.toJSON() as IRole;
+        if (currentRole.name !== name) {
+          const nameExists = await existingRoleName(name);
+          if (nameExists) {
+            return sendConflict(res, ERROR_MESSAGES.ROLE.NAME_IN_USE);
+          }
         }
       }
     }
-    const updateData: Partial<IRole> = {};
+
+    const updateData: any = {};
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (permissions !== undefined) updateData.permissions = permissions;
@@ -72,7 +78,9 @@ export const updateRole = async (
       return sendNotFound(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
 
-    const updatedRole = updatedRoles[0] as unknown as IRole;
+    const updatedRoleModel = updatedRoles[0];
+
+    const updatedRole = updatedRoleModel.toJSON() as IRole;
 
     const response = {
       role: {

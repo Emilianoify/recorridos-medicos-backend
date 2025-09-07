@@ -221,12 +221,16 @@ export class HolidayService {
    * Genera feriados recurrentes para un año
    */
   async generateRecurringHolidays(year: number): Promise<number> {
-    const recurringHolidays = (await HolidayModel.findAll({
+    const recurringHolidaysInstances = await HolidayModel.findAll({
       where: {
         isRecurring: true,
         isActive: true,
       },
-    })) as unknown as IHoliday[];
+    });
+    
+    const recurringHolidays: IHoliday[] = recurringHolidaysInstances.map(instance => 
+      instance.toJSON() as IHoliday
+    );
 
     let created = 0;
 

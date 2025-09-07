@@ -44,13 +44,13 @@ export const updateProfessional = async (
     const validData = updateProfessionalSchema.parse(body);
     const { specialtyId, username, email } = validData;
 
-    const currentProfessional = (await ProfessionalModel.findByPk(
-      id
-    )) as unknown as IProfessional;
+    const currentProfessionalInstance = await ProfessionalModel.findByPk(id);
 
-    if (!currentProfessional) {
+    if (!currentProfessionalInstance) {
       return sendNotFound(res, ERROR_MESSAGES.PROFESSIONAL.NOT_FOUND);
     }
+
+    const currentProfessional: IProfessional = currentProfessionalInstance.toJSON() as IProfessional;
 
     if (specialtyId) {
       const specialtyActive = await isSpecialtyActiveAndExists(specialtyId);
@@ -84,7 +84,7 @@ export const updateProfessional = async (
       return sendNotFound(res, ERROR_MESSAGES.PROFESSIONAL.NOT_FOUND);
     }
 
-    const updatedProfessional = (await ProfessionalModel.findByPk(id, {
+    const updatedProfessional = await ProfessionalModel.findByPk(id, {
       include: [
         {
           model: SpecialtyModel,
@@ -93,22 +93,29 @@ export const updateProfessional = async (
         },
       ],
       attributes: { exclude: ['deletedAt'] },
-    })) as Partial<IProfessional>;
+    });
+
+    if (!updatedProfessional) {
+      return sendBadRequest(res, ERROR_MESSAGES.PROFESSIONAL.NOT_FOUND);
+    }
+
+    const professionalUpdated: IProfessional =
+      updatedProfessional.toJSON() as IProfessional;
 
     const response = {
       professional: {
-        id: updatedProfessional.id,
-        username: updatedProfessional.username,
-        firstname: updatedProfessional.firstname,
-        lastname: updatedProfessional.lastname,
-        email: updatedProfessional.email,
-        phone: updatedProfessional.phone,
-        specialty: updatedProfessional.specialty,
-        start_at: updatedProfessional.start_at,
-        finish_at: updatedProfessional.finish_at,
-        state: updatedProfessional.state,
-        createdAt: updatedProfessional.createdAt,
-        updatedAt: updatedProfessional.updatedAt,
+        id: professionalUpdated.id,
+        username: professionalUpdated.username,
+        firstname: professionalUpdated.firstname,
+        lastname: professionalUpdated.lastname,
+        email: professionalUpdated.email,
+        phone: professionalUpdated.phone,
+        specialty: professionalUpdated.specialty,
+        start_at: professionalUpdated.start_at,
+        finish_at: professionalUpdated.finish_at,
+        state: professionalUpdated.state,
+        createdAt: professionalUpdated.createdAt,
+        updatedAt: professionalUpdated.updatedAt,
       },
     };
 

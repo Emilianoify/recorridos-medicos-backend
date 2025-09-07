@@ -27,7 +27,8 @@ export const updateUserProfile = async (
 
     const validData = updateUserSchema.parse(body);
     const { firstname, lastname } = validData;
-    const currentUser = (await UserModel.findByPk(userId, {
+
+    const currentUser = await UserModel.findByPk(userId, {
       include: [
         {
           model: RoleModel,
@@ -36,7 +37,7 @@ export const updateUserProfile = async (
         },
       ],
       attributes: { exclude: ['password'] },
-    })) as IUser | null;
+    });
 
     if (!currentUser) {
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
@@ -55,7 +56,7 @@ export const updateUserProfile = async (
       return sendBadRequest(res, ERROR_MESSAGES.USER.UPDATE_FAILED);
     }
 
-    const updatedUser = (await UserModel.findByPk(userId, {
+    const userToUpdate = await UserModel.findByPk(userId, {
       include: [
         {
           model: RoleModel,
@@ -64,11 +65,13 @@ export const updateUserProfile = async (
         },
       ],
       attributes: { exclude: ['password'] },
-    })) as IUser | null;
+    });
 
-    if (!updatedUser) {
+    if (!userToUpdate) {
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
+
+    const updatedUser: IUser = userToUpdate.toJSON() as IUser;
 
     const response = {
       user: {

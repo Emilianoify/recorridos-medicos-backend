@@ -31,7 +31,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const validLoginFields: LoginRequest = LoginSchema.parse(body);
     const { username, password } = validLoginFields;
 
-    const user = (await UserModel.findOne({
+    const userExists = await UserModel.findOne({
       where: { username },
       include: [
         {
@@ -41,12 +41,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
           where: { isActive: true },
         },
       ],
-    })) as IUser | null;
+    });
 
-    if (!user) {
+    if (!userExists) {
       return sendUnauthorized(res, ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS);
     }
-
+    const user: IUser = userExists.toJSON() as IUser;
     if (user.state !== UserState.ACTIVE) {
       return sendUnauthorized(res, ERROR_MESSAGES.AUTH.USER_INACTIVE);
     }

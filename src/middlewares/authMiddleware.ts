@@ -20,7 +20,7 @@ export const authMiddleware = async (
       return sendBadRequest(res, ERROR_MESSAGES.AUTH.TOKEN_REQUIRED);
     }
 
-    const user = (await UserModel.findByPk(req.tokenPayload.id, {
+    const userExists = await UserModel.findByPk(req.tokenPayload.id, {
       include: [
         {
           model: RoleModel,
@@ -29,11 +29,13 @@ export const authMiddleware = async (
         },
       ],
       attributes: { exclude: ['password'] },
-    })) as IUser | null;
+    });
 
-    if (!user) {
+    if (!userExists) {
       return sendBadRequest(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
+
+    const user: IUser = userExists.toJSON() as IUser;
 
     if (user.state !== UserState.ACTIVE) {
       return sendBadRequest(res, ERROR_MESSAGES.AUTH.USER_INACTIVE);
@@ -53,6 +55,7 @@ export const authMiddleware = async (
       state: user.state,
       roleId: user.roleId,
       lastLogin: user.lastLogin,
+      userPermissions: user.role.permissions || [],
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

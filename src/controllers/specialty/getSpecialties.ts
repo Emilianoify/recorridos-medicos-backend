@@ -1,64 +1,58 @@
-import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
-import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
+import { Response } from 'express';
 import { AuthRequest } from '../../interfaces/auth.interface';
+import { ZodError } from 'zod';
+import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import {
   sendSuccessResponse,
   sendInternalErrorResponse,
   sendBadRequest,
 } from '../../utils/commons/responseFunctions';
-import { Response } from 'express';
 import { Op } from 'sequelize';
 import { ISpecialty } from '../../interfaces/specialty.interface';
 import { SpecialtyModel } from '../../models';
+import { specialtyQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const getSpecialties = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
+    // Validar query parameters con schema Zod
+    const validatedQuery = specialtyQuerySchema.parse(req.query);
+
     const {
-      page: pageQuery = '1',
-      limit: limitQuery = '10',
-      isActive: isActiveQuery,
+      page,
+      limit,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      isActive,
       search,
-    } = req.query;
+    } = validatedQuery;
 
-    const page = Math.max(1, parseInt(pageQuery as string, 10) || 1);
-
-    const limit = Math.min(
-      50,
-      Math.max(1, parseInt(limitQuery as string, 10) || 10)
-    );
-
-    let isActive: boolean | undefined;
-
-    if (isActiveQuery !== undefined) {
-      if (isActiveQuery === 'true') {
-        isActive = true;
-      } else if (isActiveQuery === 'false') {
-        isActive = false;
-      } else {
-        return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
-      }
-    }
-
+    // Construir whereClause
     const whereClause: any = {};
 
+    // Filtro por estado activo
     if (isActive !== undefined) {
-      whereClause.isActive = isActive;
+      whereClause.isActive = isActive === 'true';
     }
 
-    if (search && typeof search === 'string' && search.trim().length > 0) {
+    // Filtro por búsqueda
+    if (search) {
       whereClause.name = {
         [Op.iLike]: `%${search.trim()}%`,
       };
     }
 
+    // Construir orden dinámico
+    const orderDirection = sortOrder.toUpperCase() as 'ASC' | 'DESC';
+    const orderBy: [string, 'ASC' | 'DESC'][] = [[sortBy, orderDirection]];
+
     const specialtiesData = await SpecialtyModel.findAndCountAll({
       where: whereClause,
       limit: limit,
       offset: (page - 1) * limit,
-      order: [['createdAt', 'DESC']],
+      order: orderBy,
       attributes: { exclude: ['deletedAt'] },
     });
 
@@ -69,7 +63,6 @@ export const getSpecialties = async (
         id: specialty.id,
         name: specialty.name,
         description: specialty.description,
-        permissions: specialty.permissions,
         isActive: specialty.isActive,
         createdAt: specialty.createdAt,
         updatedAt: specialty.updatedAt,
@@ -83,7 +76,7 @@ export const getSpecialties = async (
         hasPreviousPage: page > 1,
       },
       filters: {
-        isActive: isActive,
+        isActive: isActive || null,
         search: search || null,
       },
     };
@@ -94,7 +87,11 @@ export const getSpecialties = async (
       response
     );
   } catch (error) {
-    console.error('Error fetching roles:', error);
+    if (error instanceof ZodError) {
+      const firstError = error.errors[0].message;
+      return sendBadRequest(res, firstError);
+    }
+    console.error('Error fetching specialties:', error);
     return sendInternalErrorResponse(res);
   }
 };

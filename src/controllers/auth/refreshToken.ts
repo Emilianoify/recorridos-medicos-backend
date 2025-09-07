@@ -56,7 +56,7 @@ export const refreshToken = async (
       return;
     }
 
-    const user = (await UserModel.findOne({
+    const userExists = await UserModel.findOne({
       where: {
         id: decoded.id,
         username: decoded.username,
@@ -68,12 +68,14 @@ export const refreshToken = async (
           attributes: ['id', 'name', 'permissions', 'isActive'],
         },
       ],
-    })) as IUser | null;
+    });
 
-    if (!user) {
+    if (!userExists) {
       sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
       return;
     }
+
+    const user: IUser = userExists.toJSON() as IUser;
 
     // Verificar que el usuario esté activo
     if (user.state === UserState.INACTIVE) {

@@ -30,29 +30,22 @@ export const restoreHealthcareProvider = async (
       return sendBadRequest(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.INVALID_ID);
     }
 
-    const deletedProvider = (await HealthcareProviderModel.findOne({
+    const deletedProvider = await HealthcareProviderModel.findOne({
       where: { id },
       paranoid: false,
-    })) as IHealthcareProvider | null;
+    });
 
     if (!deletedProvider) {
       return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
-    }
-
-    if (deletedProvider.deletedAt === null) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.HEALTHCARE_PROVIDER.ALREADY_ACTIVE
-      );
     }
 
     await HealthcareProviderModel.restore({
       where: { id },
     });
 
-    const restoredProvider = (await HealthcareProviderModel.findByPk(
-      id
-    )) as unknown as IHealthcareProvider;
+    await deletedProvider.reload();
+    const restoredProvider: IHealthcareProvider =
+      deletedProvider.toJSON() as IHealthcareProvider;
 
     const response = {
       healthcareProvider: {
@@ -65,7 +58,7 @@ export const restoreHealthcareProvider = async (
       },
     };
 
-    sendSuccessResponse(
+    return sendSuccessResponse(
       res,
       SUCCESS_MESSAGES.HEALTHCARE_PROVIDER.HEALTHCARE_RESTORES,
       response

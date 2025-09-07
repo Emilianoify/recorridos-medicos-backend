@@ -9,6 +9,7 @@ import roleRoutes from './routes/role.routes';
 import specialtyRoutes from './routes/specialty.routes';
 import healthcareProviderRoutes from './routes/healthcare.routes';
 import userRoutes from './routes/user.routes';
+import patientRoutes from './routes/patient.routes';
 import {
   handleJsonError,
   handle404,
@@ -38,6 +39,7 @@ app.use('/role', roleRoutes);
 app.use('/specialty', specialtyRoutes);
 app.use('/healthcare-provider', healthcareProviderRoutes);
 app.use('/user', userRoutes);
+app.use('/patient', patientRoutes);
 
 app.use(handleJsonError);
 app.use(handle404);

@@ -48,7 +48,8 @@ export const updateZone = async (
     const { name, description, polygonCoordinates, isActive } = validData;
 
     if (name) {
-      const currentZone = (await ZoneModel.findByPk(id)) as unknown as IZone;
+      const currentZoneInstance = await ZoneModel.findByPk(id);
+      const currentZone: IZone = currentZoneInstance?.toJSON() as IZone;
 
       if (currentZone && currentZone.name !== name) {
         const nameExists = await existingZoneName(name);
@@ -75,7 +76,7 @@ export const updateZone = async (
       return sendNotFound(res, ERROR_MESSAGES.ZONE.NOT_FOUND);
     }
 
-    const updatedZone = updatedZones[0] as unknown as IZone;
+    const updatedZone: IZone = updatedZones[0].toJSON() as IZone;
 
     const response = {
       zone: {

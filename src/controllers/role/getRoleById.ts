@@ -26,11 +26,13 @@ export const getRoleById = async (
     if (!isValidUUID(id)) {
       return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ID);
     }
-    const role = (await RoleModel.findByPk(id)) as unknown as IRole;
+    const roleExists = await RoleModel.findByPk(id);
 
-    if (!role) {
+    if (!roleExists) {
       return sendNotFound(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
+
+    const role: IRole = roleExists.toJSON() as IRole;
 
     const response = {
       role: {

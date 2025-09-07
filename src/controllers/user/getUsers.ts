@@ -1,57 +1,52 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../interfaces/auth.interface';
+import { ZodError } from 'zod';
 import {
   sendBadRequest,
   sendInternalErrorResponse,
   sendSuccessResponse,
 } from '../../utils/commons/responseFunctions';
-import { UserState } from '../../enums/UserState';
 import { Op } from 'sequelize';
 import { RoleModel, UserModel } from '../../models';
 import { IUser } from '../../interfaces/user.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
-import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
-import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { USER_STATE_VALUES } from '../../utils/validators/enumValidators';
+import { userQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const getUsers = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
+    // Validar query parameters con schema Zod
+    const validatedQuery = userQuerySchema.parse(req.query);
+
     const {
-      page: pageQuery = '1',
-      limit: limitQuery = '10',
-      state: stateQuery,
-      search,
+      page,
+      limit,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
       roleId,
-    } = req.query;
+      state,
+      search,
+      createdFrom,
+      createdTo,
+    } = validatedQuery;
 
-    const page = Math.max(1, parseInt(pageQuery as string, 10) || 1);
-
-    const limit = Math.min(
-      50,
-      Math.max(1, parseInt(limitQuery as string, 10) || 10)
-    );
-
+    // Construir whereClause
     const whereClause: any = {};
 
-    if (stateQuery !== undefined) {
-      if (USER_STATE_VALUES.includes(stateQuery as UserState)) {
-        whereClause.state = stateQuery;
-      } else {
-        return sendBadRequest(res, ERROR_MESSAGES.USER.INVALID_STATE);
-      }
+    // Filtro por estado
+    if (state) {
+      whereClause.state = state;
     }
 
+    // Filtro por rol
     if (roleId) {
-      if (!isValidUUID(roleId as string)) {
-        return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ID);
-      }
       whereClause.roleId = roleId;
     }
 
-    if (search && typeof search === 'string' && search.trim().length > 0) {
+    // Filtro por búsqueda
+    if (search) {
       whereClause[Op.or] = [
         { firstname: { [Op.iLike]: `%${search.trim()}%` } },
         { lastname: { [Op.iLike]: `%${search.trim()}%` } },
@@ -60,11 +55,27 @@ export const getUsers = async (
       ];
     }
 
+    // Filtros por fecha de creación
+    if (createdFrom || createdTo) {
+      whereClause.createdAt = {};
+      if (createdFrom) {
+        whereClause.createdAt[Op.gte] = new Date(createdFrom);
+      }
+      if (createdTo) {
+        whereClause.createdAt[Op.lte] = new Date(`${createdTo}T23:59:59.999Z`);
+      }
+    }
+
+    // Construir orden dinámico
+    const orderDirection = sortOrder.toUpperCase() as 'ASC' | 'DESC';
+    const orderBy: [string, 'ASC' | 'DESC'][] = [[sortBy, orderDirection]];
+
+    // Consulta a la base de datos
     const usersData = await UserModel.findAndCountAll({
       where: whereClause,
       limit: limit,
       offset: (page - 1) * limit,
-      order: [['createdAt', 'DESC']],
+      order: orderBy,
       attributes: { exclude: ['deletedAt', 'password'] },
       include: [
         {
@@ -97,9 +108,11 @@ export const getUsers = async (
         hasPreviousPage: page > 1,
       },
       filters: {
-        state: stateQuery || null,
+        state: state || null,
         roleId: roleId || null,
         search: search || null,
+        createdFrom: createdFrom || null,
+        createdTo: createdTo || null,
       },
     };
 
@@ -109,6 +122,11 @@ export const getUsers = async (
       response
     );
   } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.errors[0].message;
+      return sendBadRequest(res, firstError);
+    }
+    console.error('Error fetching users:', error);
     return sendInternalErrorResponse(res);
   }
 };

@@ -44,7 +44,7 @@ export const restoreProfessional = async (
       where: { id },
     });
 
-    const restoredProfessional = (await ProfessionalModel.findByPk(id, {
+    const restoredProfessionalInstance = await ProfessionalModel.findByPk(id, {
       include: [
         {
           model: SpecialtyModel,
@@ -53,11 +53,13 @@ export const restoreProfessional = async (
         },
       ],
       attributes: { exclude: ['deletedAt'] },
-    })) as unknown as IProfessional;
+    });
 
-    if (!restoredProfessional) {
+    if (!restoredProfessionalInstance) {
       return sendNotFound(res, ERROR_MESSAGES.PROFESSIONAL.NOT_FOUND);
     }
+
+    const restoredProfessional: IProfessional = restoredProfessionalInstance.toJSON() as IProfessional;
 
     const response = {
       professional: {

@@ -1,0 +1,1 @@
+export { getAuditTrail } from './getAuditTrail';

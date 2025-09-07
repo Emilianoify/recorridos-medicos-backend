@@ -89,8 +89,7 @@ export const updateHealthcareProvider = async (
       return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
     }
 
-    const updatedProvider =
-      updatedProviders[0] as unknown as IHealthcareProvider;
+    const updatedProvider = updatedProviders[0].toJSON() as IHealthcareProvider;
 
     const response = {
       healthcareProvider: {

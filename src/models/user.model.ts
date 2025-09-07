@@ -104,6 +104,22 @@ const UserModel = sequelize.define(
       {
         fields: ['state'],
       },
+      {
+        fields: ['roleId', 'state'],
+        name: 'idx_user_role_state',
+      },
+      {
+        fields: ['firstname', 'lastname'],
+        name: 'idx_user_fullname',
+      },
+      {
+        fields: ['createdAt'],
+        name: 'idx_user_created',
+      },
+      {
+        fields: ['lastLogin'],
+        name: 'idx_user_last_login',
+      },
     ],
   }
 );

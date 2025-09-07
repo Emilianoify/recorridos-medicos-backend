@@ -27,7 +27,7 @@ export const restoreUser = async (
       return sendBadRequest(res, ERROR_MESSAGES.USER.INVALID_ID);
     }
 
-    const deletedUser = (await UserModel.findByPk(id, {
+    const deletedUser = await UserModel.findByPk(id, {
       include: [
         {
           model: RoleModel,
@@ -37,17 +37,19 @@ export const restoreUser = async (
       ],
       paranoid: false,
       attributes: { exclude: ['password'] },
-    })) as IUser | null;
+    });
 
     if (!deletedUser) {
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
 
-    if (deletedUser.deletedAt === null) {
+    const user: IUser = deletedUser.toJSON() as IUser;
+
+    if (user.deletedAt === null) {
       return sendBadRequest(res, ERROR_MESSAGES.USER.ALREADY_ACTIVE);
     }
 
-    if (!deletedUser.role?.isActive) {
+    if (!user.role?.isActive) {
       return sendBadRequest(res, ERROR_MESSAGES.AUTH.ROLE_INACTIVE);
     }
     await UserModel.restore({
@@ -56,13 +58,13 @@ export const restoreUser = async (
 
     const response = {
       user: {
-        id: deletedUser.id,
-        username: deletedUser.username,
-        firstname: deletedUser.firstname,
-        lastname: deletedUser.lastname,
-        corporative_email: deletedUser.corporative_email,
-        role: deletedUser.role,
-        state: deletedUser.state,
+        id: user.id,
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        corporative_email: user.corporative_email,
+        role: user.role,
+        state: user.state,
         restoredAt: new Date(),
       },
     };

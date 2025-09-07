@@ -11,7 +11,6 @@ import {
   restoreUser,
   getUserProfile,
   updateUserProfile,
-  getUsersByRole,
 } from '../controllers/user';
 
 const router = Router();
@@ -25,8 +24,6 @@ router.patch('/profile', updateUserProfile);
 router.get('/search', requireAdminRoles, getUsers);
 
 router.get('/search/:id', requireAdminRoles, getUserById);
-
-router.get('/role/:roleId', requireAdminRoles, getUsersByRole);
 
 router.use(requireAdmin);
 

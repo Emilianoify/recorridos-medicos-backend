@@ -16,6 +16,7 @@ import {
   sendConflict,
   sendInternalErrorResponse,
   sendSuccessResponse,
+  sendUnauthorized,
 } from '../../utils/commons/responseFunctions';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
@@ -60,7 +61,7 @@ export const createUser = async (
     const saltRounds = parseInt(process.env.SALT_ROUNDS || '10');
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const newUser = (await UserModel.create({
+    const newUser = await UserModel.create({
       username,
       firstname,
       lastname,
@@ -68,9 +69,11 @@ export const createUser = async (
       password: hashedPassword,
       roleId,
       state: UserState.ACTIVE,
-    })) as Partial<IUser>;
+    });
 
-    const userWithRole = (await UserModel.findByPk(newUser.id, {
+    const createdUser: IUser = newUser.toJSON() as IUser;
+
+    const userWithRole = await UserModel.findByPk(createdUser.id, {
       include: [
         {
           model: RoleModel,
@@ -79,21 +82,23 @@ export const createUser = async (
         },
       ],
       attributes: { exclude: ['password'] },
-    })) as IUser | null;
+    });
 
     if (!userWithRole) {
-      return sendInternalErrorResponse(res);
+      return sendUnauthorized(res, ERROR_MESSAGES.AUTH.USER_NO_ROLE);
     }
+
+    const createdUserWithRole: IUser = userWithRole.toJSON() as IUser;
 
     const response = {
       user: {
-        id: userWithRole.id,
-        username: userWithRole.username,
-        firstname: userWithRole.firstname,
-        lastname: userWithRole.lastname,
-        corporative_email: userWithRole.corporative_email,
-        role: userWithRole.role,
-        createdAt: userWithRole.createdAt,
+        id: createdUserWithRole.id,
+        username: createdUserWithRole.username,
+        firstname: createdUserWithRole.firstname,
+        lastname: createdUserWithRole.lastname,
+        corporative_email: createdUserWithRole.corporative_email,
+        role: createdUserWithRole.role,
+        createdAt: createdUserWithRole.createdAt,
       },
     };
 

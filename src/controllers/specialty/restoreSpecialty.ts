@@ -42,13 +42,13 @@ export const restoreSpecialty = async (
       where: { id },
     });
 
-    const restoredSpecialty = (await SpecialtyModel.findByPk(
-      id
-    )) as unknown as ISpecialty;
+    const restoredSpecialtyInstance = await SpecialtyModel.findByPk(id);
 
-    if (!restoredSpecialty) {
+    if (!restoredSpecialtyInstance) {
       return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
     }
+
+    const restoredSpecialty: ISpecialty = restoredSpecialtyInstance.toJSON() as ISpecialty;
 
     const response = {
       specialty: {

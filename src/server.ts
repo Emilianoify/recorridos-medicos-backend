@@ -10,6 +10,10 @@ import createDefaultHealthcareProviders from './utils/seeders/createHealthcarePr
 import createDefaultFrequencies from './utils/seeders/createFrequency';
 import createAllAuxiliaryTables from './utils/seeders/createAuxiliaryTables';
 import createDefaultHolidays from './utils/seeders/createDefaultHolidays';
+import createDefaultUsers from './utils/seeders/createUsers';
+import createDefaultZones from './utils/seeders/createZones';
+import createDefaultProfessionals from './utils/seeders/createProfessionals';
+import createDefaultPatients from './utils/seeders/createPatients';
 
 const PORT = process.env.PORT || 3000;
 
@@ -24,6 +28,10 @@ const initializeDatabase = async (): Promise<void> => {
     await createDefaultHealthcareProviders();
     await createAllAuxiliaryTables();
     await createDefaultHolidays();
+    await createDefaultUsers();
+    await createDefaultZones();
+    await createDefaultProfessionals();
+    await createDefaultPatients();
     console.log(SUCCESS_MESSAGES.DB.DB_UP);
   } catch (error) {
     console.error(ERROR_MESSAGES.DB.CONNECTION, error);

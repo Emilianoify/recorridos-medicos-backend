@@ -27,11 +27,13 @@ export const getZoneById = async (
       return sendBadRequest(res, ERROR_MESSAGES.ZONE.INVALID_ID);
     }
 
-    const zone = (await ZoneModel.findByPk(id)) as unknown as IZone;
+    const zoneInstance = await ZoneModel.findByPk(id);
 
-    if (!zone) {
+    if (!zoneInstance) {
       return sendNotFound(res, ERROR_MESSAGES.ZONE.NOT_FOUND);
     }
+
+    const zone: IZone = zoneInstance.toJSON() as IZone;
 
     const response = {
       zone: {

@@ -1,63 +1,51 @@
-import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
-import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
+import { Response } from 'express';
 import { AuthRequest } from '../../interfaces/auth.interface';
+import { ZodError } from 'zod';
+import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import {
   sendSuccessResponse,
   sendInternalErrorResponse,
   sendBadRequest,
 } from '../../utils/commons/responseFunctions';
-import { Response } from 'express';
 import { Op } from 'sequelize';
 import { HealthcareProviderModel } from '../../models';
 import { IHealthcareProvider } from '../../interfaces/healthcareProvider.interface';
+import { healthcareProviderQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const getHealthcareProviders = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
+    // Validar query parameters con schema Zod
+    const validatedQuery = healthcareProviderQuerySchema.parse(req.query);
+
     const {
-      page: pageQuery = '1',
-      limit: limitQuery = '10',
-      isActive: isActiveQuery,
+      page,
+      limit,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      isActive,
       search,
       hasCode,
-    } = req.query;
+    } = validatedQuery;
 
-    const page = Math.max(1, parseInt(pageQuery as string, 10) || 1);
-
-    const limit = Math.min(
-      50,
-      Math.max(1, parseInt(limitQuery as string, 10) || 10)
-    );
-
-    let isActive: boolean | undefined;
-
-    if (isActiveQuery !== undefined) {
-      if (isActiveQuery === 'true') {
-        isActive = true;
-      } else if (isActiveQuery === 'false') {
-        isActive = false;
-      } else {
-        return sendBadRequest(
-          res,
-          ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND
-        );
-      }
-    }
-
+    // Construir whereClause
     const whereClause: any = {};
 
+    // Filtro por estado activo
     if (isActive !== undefined) {
-      whereClause.isActive = isActive;
+      whereClause.isActive = isActive === 'true';
     }
 
-    if (search && typeof search === 'string' && search.trim().length > 0) {
+    // Filtro por búsqueda
+    if (search) {
       whereClause.name = {
         [Op.iLike]: `%${search.trim()}%`,
       };
     }
 
+    // Filtro por código
     if (hasCode !== undefined) {
       if (hasCode === 'true') {
         whereClause.code = {
@@ -68,12 +56,16 @@ export const getHealthcareProviders = async (
       }
     }
 
+    // Construir orden dinámico
+    const orderDirection = sortOrder.toUpperCase() as 'ASC' | 'DESC';
+    const orderBy: [string, 'ASC' | 'DESC'][] = [[sortBy, orderDirection]];
+
     const healthcareProvidersData =
       await HealthcareProviderModel.findAndCountAll({
         where: whereClause,
         limit: limit,
         offset: (page - 1) * limit,
-        order: [['createdAt', 'DESC']],
+        order: orderBy,
         attributes: { exclude: ['deletedAt'] },
       });
 
@@ -81,20 +73,27 @@ export const getHealthcareProviders = async (
 
     const response = {
       healthcareProviders: healthcareProvidersData.rows.map(
-        (healthcareProviders: IHealthcareProvider | any) => ({
-          id: healthcareProviders.id,
-          name: healthcareProviders.name,
-          code: healthcareProviders.code,
-          isActive: healthcareProviders.isActive,
-          createdAt: healthcareProviders.createdAt,
-          updatedAt: healthcareProviders.updatedAt,
+        (provider: IHealthcareProvider | any) => ({
+          id: provider.id,
+          name: provider.name,
+          code: provider.code,
+          isActive: provider.isActive,
+          createdAt: provider.createdAt,
+          updatedAt: provider.updatedAt,
         })
       ),
       pagination: {
         total: healthcareProvidersData.count,
-        page: Number(page),
-        limit: Number(limit),
+        page: page,
+        limit: limit,
         totalPages: totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+      filters: {
+        isActive: isActive || null,
+        search: search || null,
+        hasCode: hasCode || null,
       },
     };
 
@@ -104,7 +103,11 @@ export const getHealthcareProviders = async (
       response
     );
   } catch (error) {
-    console.error('Error fetching roles:', error);
+    if (error instanceof ZodError) {
+      const firstError = error.errors[0].message;
+      return sendBadRequest(res, firstError);
+    }
+    console.error('Error fetching healthcare providers:', error);
     return sendInternalErrorResponse(res);
   }
 };

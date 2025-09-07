@@ -65,7 +65,7 @@ export const updateSpecialty = async (
       return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
     }
 
-    const updatedSpecialty = updatedSpecialties[0] as unknown as ISpecialty;
+    const updatedSpecialty: ISpecialty = updatedSpecialties[0].toJSON() as ISpecialty;
 
     const response = {
       specialty: {

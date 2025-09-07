@@ -26,10 +26,12 @@ export const restoreZone = async (
     if (!isValidUUID(id)) {
       return sendBadRequest(res, ERROR_MESSAGES.ZONE.INVALID_ID);
     }
-    const deletedZone = (await ZoneModel.findOne({
+    const deletedZoneInstance = await ZoneModel.findOne({
       where: { id },
       paranoid: false,
-    })) as IZone | null;
+    });
+    
+    const deletedZone: IZone | null = deletedZoneInstance ? (deletedZoneInstance.toJSON() as IZone) : null;
 
     if (!deletedZone) {
       return sendNotFound(res, ERROR_MESSAGES.ZONE.NOT_FOUND);
@@ -43,7 +45,8 @@ export const restoreZone = async (
       where: { id },
     });
 
-    const restoredZone = (await ZoneModel.findByPk(id)) as unknown as IZone;
+    const restoredZoneInstance = await ZoneModel.findByPk(id);
+    const restoredZone: IZone = restoredZoneInstance?.toJSON() as IZone;
 
     if (!restoredZone) {
       return sendNotFound(res, ERROR_MESSAGES.ZONE.NOT_FOUND);

@@ -39,7 +39,7 @@ export const deleteUser = async (
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
 
-    const userToDelete = (await UserModel.findByPk(id, {
+    const userToDelete = await UserModel.findByPk(id, {
       include: [
         {
           model: RoleModel,
@@ -48,18 +48,20 @@ export const deleteUser = async (
         },
       ],
       paranoid: false,
-    })) as IUser | null;
+    });
 
     if (!userToDelete) {
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
 
-    if (userToDelete.deletedAt !== null) {
+    const user: IUser = userToDelete.toJSON() as IUser;
+
+    if (user.deletedAt !== null) {
       return sendBadRequest(res, ERROR_MESSAGES.USER.ALREADY_DELETED);
     }
 
     // 🆕 Validar que no sea el último administrador activo
-    if (userToDelete.role?.name === 'Administrador') {
+    if (user.role?.name === 'Administrador') {
       const activeAdminsCount = await UserModel.count({
         include: [
           {

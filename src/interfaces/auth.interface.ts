@@ -13,4 +13,5 @@ export interface AuthRequest extends Request {
   user?: IUserSafe;
   tokenPayload?: JwtPayload;
   rawToken?: string;
+  userPermissions?: string[];
 }

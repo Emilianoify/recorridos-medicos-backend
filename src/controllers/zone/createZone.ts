@@ -11,7 +11,6 @@ import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { createZoneSchema } from '../../utils/validators/schemas/zoneSchemas';
 import { existingZoneName } from '../../utils/validators/dbValidators';
-import { validateZoneCoordinates } from '../../utils/validators/zoneValidators'; // 🆕 Import del util
 import { ZoneModel } from '../../models';
 import { IZone } from '../../interfaces/zone.interface';
 
@@ -34,17 +33,14 @@ export const createZone = async (
       return sendConflict(res, ERROR_MESSAGES.ZONE.NAME_ALREADY_IN_USE);
     }
 
-    const coordinatesValidation = validateZoneCoordinates(polygonCoordinates);
-    if (!coordinatesValidation.isValid) {
-      return sendBadRequest(res, coordinatesValidation.errorMessage!);
-    }
-
-    const createdZone = (await ZoneModel.create({
+    const createdZoneInstance = await ZoneModel.create({
       name,
       description: description,
       polygonCoordinates: polygonCoordinates,
       isActive: isActive !== undefined ? isActive : true,
-    })) as unknown as IZone;
+    });
+    
+    const createdZone: IZone = createdZoneInstance.toJSON() as IZone;
 
     const response = {
       zone: {

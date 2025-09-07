@@ -24,7 +24,7 @@ export interface IHoliday {
   // Información adicional
   externalId?: string | null;
   lastSyncDate?: Date | null;
-
+  isNational?: boolean | null;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;

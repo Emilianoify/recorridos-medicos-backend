@@ -54,7 +54,7 @@ export const createProfessional = async (
       }
     }
 
-    const newProfessional = (await ProfessionalModel.create({
+    const newProfessional = await ProfessionalModel.create({
       username,
       firstname,
       lastname,
@@ -62,10 +62,13 @@ export const createProfessional = async (
       specialtyId,
       phone,
       state: UserState.ACTIVE,
-    })) as Partial<IProfessional>;
+    });
 
-    const professionalWithSpecialty = (await ProfessionalModel.findByPk(
-      newProfessional.id,
+    const createdProfessional: IProfessional =
+      newProfessional.toJSON() as IProfessional;
+
+    const professionalWithSpecialty = await ProfessionalModel.findByPk(
+      createdProfessional.id,
       {
         include: [
           {
@@ -76,22 +79,25 @@ export const createProfessional = async (
         ],
         attributes: { exclude: ['deletedAt'] },
       }
-    )) as unknown as IProfessional;
+    );
+
+    const professionalWithSpecialtyJSON: IProfessional =
+      professionalWithSpecialty?.toJSON() as IProfessional;
 
     const response = {
       professional: {
-        id: professionalWithSpecialty.id,
-        username: professionalWithSpecialty.username,
-        firstname: professionalWithSpecialty.firstname,
-        lastname: professionalWithSpecialty.lastname,
-        email: professionalWithSpecialty.email,
-        phone: professionalWithSpecialty.phone,
-        specialty: professionalWithSpecialty.specialty,
-        start_at: professionalWithSpecialty.start_at,
-        finish_at: professionalWithSpecialty.finish_at,
-        state: professionalWithSpecialty.state,
-        createdAt: professionalWithSpecialty.createdAt,
-        updatedAt: professionalWithSpecialty.updatedAt,
+        id: professionalWithSpecialtyJSON.id,
+        username: professionalWithSpecialtyJSON.username,
+        firstname: professionalWithSpecialtyJSON.firstname,
+        lastname: professionalWithSpecialtyJSON.lastname,
+        email: professionalWithSpecialtyJSON.email,
+        phone: professionalWithSpecialtyJSON.phone,
+        specialty: professionalWithSpecialtyJSON.specialty,
+        start_at: professionalWithSpecialtyJSON.start_at,
+        finish_at: professionalWithSpecialtyJSON.finish_at,
+        state: professionalWithSpecialtyJSON.state,
+        createdAt: professionalWithSpecialtyJSON.createdAt,
+        updatedAt: professionalWithSpecialtyJSON.updatedAt,
       },
     };
     return sendSuccessResponse(

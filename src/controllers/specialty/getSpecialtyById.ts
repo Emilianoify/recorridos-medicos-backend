@@ -26,13 +26,13 @@ export const getSpecialtyById = async (
     if (!isValidUUID(id)) {
       return sendBadRequest(res, ERROR_MESSAGES.SPECIALTY.INVALID_ID);
     }
-    const specialty = (await SpecialtyModel.findByPk(
-      id
-    )) as unknown as ISpecialty;
+    const specialtyInstance = await SpecialtyModel.findByPk(id);
 
-    if (!specialty) {
+    if (!specialtyInstance) {
       return sendNotFound(res, ERROR_MESSAGES.SPECIALTY.NOT_FOUND);
     }
+
+    const specialty: ISpecialty = specialtyInstance.toJSON() as ISpecialty;
 
     const response = {
       specialty: {

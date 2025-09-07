@@ -10,9 +10,11 @@ import { Country, HolidaySource, HolidayType } from '../../enums/Holiday';
 import { JourneyStatus } from '../../enums/JourneyStatus';
 import { PatientState } from '../../enums/PatientState';
 import { UserState } from '../../enums/UserState';
+import { ProfessionalState } from '../../enums/ProfessionalState';
 import { ConfirmationMethod, VisitStatus } from '../../enums/Visits';
 
 export const USER_STATE_VALUES = Object.values(UserState);
+export const PROFESSIONAL_STATE_VALUES = Object.values(ProfessionalState);
 export const NEXT_CALCULATION_VALUES = Object.values(NextDateCalculationRule);
 export const WEEKDAY_VALUES = Object.values(WeekDay);
 export const FREQUENCY_TYPE_VALUES = Object.values(FrequencyType);

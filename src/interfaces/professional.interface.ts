@@ -1,4 +1,4 @@
-import { UserState } from '../enums/UserState';
+import { ProfessionalState } from '../enums/ProfessionalState';
 import { ISpecialty } from './specialty.interface';
 
 export interface IProfessional {
@@ -11,7 +11,7 @@ export interface IProfessional {
   specialtyId: string;
   start_at?: number | null;
   finish_at?: number | null;
-  state: UserState;
+  state: ProfessionalState;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date | null;

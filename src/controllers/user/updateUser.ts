@@ -61,22 +61,21 @@ export const updateUser = async (
       state,
     } = validUpdateData;
 
-    const currentUser = (await UserModel.findByPk(id)) as unknown as IUser;
+    const currentUser = await UserModel.findByPk(id);
     if (!currentUser) {
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
 
-    if (username && currentUser.username !== username) {
+    const user: IUser = currentUser.toJSON() as IUser;
+
+    if (username && user.username !== username) {
       const usernameExists = await existingUsername(username);
       if (usernameExists) {
         return sendConflict(res, ERROR_MESSAGES.AUTH.USERNAME_IN_USE);
       }
     }
 
-    if (
-      corporative_email &&
-      currentUser.corporative_email !== corporative_email
-    ) {
+    if (corporative_email && user.corporative_email !== corporative_email) {
       const emailExists = await existingEmail(corporative_email);
       if (emailExists) {
         return sendConflict(res, ERROR_MESSAGES.AUTH.EMAIL_IN_USE);
@@ -120,7 +119,7 @@ export const updateUser = async (
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
 
-    const updatedUserWithRole = (await UserModel.findByPk(id, {
+    const updatedUserWithRole = await UserModel.findByPk(id, {
       include: [
         {
           model: RoleModel,
@@ -129,21 +128,23 @@ export const updateUser = async (
         },
       ],
       attributes: { exclude: ['password'] },
-    })) as IUser | null;
+    });
     if (!updatedUserWithRole) {
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
 
+    const updatedUser: IUser = updatedUserWithRole.toJSON() as IUser;
+
     const response = {
       user: {
-        id: updatedUserWithRole.id,
-        username: updatedUserWithRole.username,
-        firstname: updatedUserWithRole.firstname,
-        lastname: updatedUserWithRole.lastname,
-        corporative_email: updatedUserWithRole.corporative_email,
-        role: updatedUserWithRole.role,
-        state: updatedUserWithRole.state,
-        updatedAt: updatedUserWithRole.updatedAt,
+        id: updatedUser.id,
+        username: updatedUser.username,
+        firstname: updatedUser.firstname,
+        lastname: updatedUser.lastname,
+        corporative_email: updatedUser.corporative_email,
+        role: updatedUser.role,
+        state: updatedUser.state,
+        updatedAt: updatedUser.updatedAt,
       },
     };
 

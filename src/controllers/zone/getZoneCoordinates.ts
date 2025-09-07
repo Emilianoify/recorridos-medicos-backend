@@ -28,13 +28,15 @@ export const getZoneCoordinates = async (
       return sendBadRequest(res, ERROR_MESSAGES.ZONE.INVALID_ID);
     }
 
-    const zone = (await ZoneModel.findByPk(id, {
+    const zoneInstance = await ZoneModel.findByPk(id, {
       attributes: ['id', 'name', 'polygonCoordinates', 'isActive'],
-    })) as unknown as IZone;
-
-    if (!zone) {
+    });
+    
+    if (!zoneInstance) {
       return sendNotFound(res, ERROR_MESSAGES.ZONE.NOT_FOUND);
     }
+
+    const zone: IZone = zoneInstance.toJSON() as IZone;
 
     if (!zone.polygonCoordinates || !zone.polygonCoordinates.coordinates) {
       return sendNotFound(res, ERROR_MESSAGES.ZONE.COORDINATES_NOT_FOUND);

@@ -35,7 +35,7 @@ export const resetPassword = async (
 
     const { token, newPassword }: ResetPasswordRequest = validResetPassword;
 
-    const user = (await UserModel.findOne({
+    const userExists = await UserModel.findOne({
       where: {
         passwordResetToken: token,
         passwordResetExpires: {
@@ -49,12 +49,13 @@ export const resetPassword = async (
           attributes: ['id', 'name', 'isActive'],
         },
       ],
-    })) as IUser | null;
+    });
 
-    if (!user) {
+    if (!userExists) {
       sendBadRequest(res, ERROR_MESSAGES.AUTH.INVALID_RESET_TOKEN);
       return;
     }
+    const user: IUser = userExists.toJSON() as IUser;
 
     if (user.state !== UserState.ACTIVE) {
       sendBadRequest(res, ERROR_MESSAGES.AUTH.USER_INACTIVE);
@@ -72,7 +73,7 @@ export const resetPassword = async (
       return;
     }
 
-    const saltRounds = parseInt(process.env.SALT_ROUNDS!!);
+    const saltRounds = parseInt(process.env.SALT_ROUNDS || '10');
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
 
     await UserModel.update(

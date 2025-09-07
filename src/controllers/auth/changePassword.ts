@@ -39,28 +39,28 @@ export const changePassword = async (
     const userId = req.user!.id;
 
     if (currentPassword === newPassword) {
-      sendBadRequest(res, ERROR_MESSAGES.AUTH.SAME_PASSWORD);
-      return;
+      return sendBadRequest(res, ERROR_MESSAGES.AUTH.SAME_PASSWORD);
     }
 
-    const user = (await UserModel.findByPk(userId, {
+    const userExists = await UserModel.findByPk(userId, {
       attributes: [
         'id',
         'username',
         'password',
         'corporative_email',
         'isActive',
+        'state',
       ],
-    })) as IUser | null;
+    });
 
-    if (!user) {
-      sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
-      return;
+    if (!userExists) {
+      return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
 
+    const user: IUser = userExists.toJSON() as IUser;
+
     if (user.state !== UserState.ACTIVE) {
-      sendBadRequest(res, ERROR_MESSAGES.AUTH.USER_INACTIVE);
-      return;
+      return sendBadRequest(res, ERROR_MESSAGES.AUTH.USER_INACTIVE);
     }
 
     const isCurrentPasswordValid = await bcrypt.compare(
@@ -68,8 +68,7 @@ export const changePassword = async (
       user.password
     );
     if (!isCurrentPasswordValid) {
-      sendBadRequest(res, ERROR_MESSAGES.AUTH.INVALID_CURRENT_PASSWORD);
-      return;
+      return sendBadRequest(res, ERROR_MESSAGES.AUTH.INVALID_CURRENT_PASSWORD);
     }
 
     const isSameAsCurrentPassword = await bcrypt.compare(
@@ -77,8 +76,7 @@ export const changePassword = async (
       user.password
     );
     if (isSameAsCurrentPassword) {
-      sendBadRequest(res, ERROR_MESSAGES.AUTH.SAME_PASSWORD);
-      return;
+      return sendBadRequest(res, ERROR_MESSAGES.AUTH.SAME_PASSWORD);
     }
 
     const saltRounds = parseInt(process.env.SALT_ROUNDS!!);
@@ -94,7 +92,10 @@ export const changePassword = async (
 
     revokeAllUserTokens(userId, TokenRevocationReason.PASSWORD_CHANGE);
 
-    sendSuccessResponse(res, SUCCESS_MESSAGES.AUTH.PASSWORD_CHANGED_SUCCESS);
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.AUTH.PASSWORD_CHANGED_SUCCESS
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       const firstError = error.errors[0];

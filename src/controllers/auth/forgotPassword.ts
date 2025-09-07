@@ -31,7 +31,7 @@ export const forgotPassword = async (
       return;
     }
 
-    const user = (await UserModel.findOne({
+    const userExists = await UserModel.findOne({
       where: {
         [Op.or]: [{ username: identifier }, { corporative_email: identifier }],
       },
@@ -42,12 +42,14 @@ export const forgotPassword = async (
           attributes: ['id', 'name', 'isActive'],
         },
       ],
-    })) as IUser | null;
+    });
 
-    if (!user) {
+    if (!userExists) {
       sendSuccessResponse(res, SUCCESS_MESSAGES.AUTH.RECOVERY_EMAIL_SENT);
       return;
     }
+
+    const user: IUser = userExists.toJSON() as IUser;
 
     if (user.state === UserState.ACTIVE) {
       sendSuccessResponse(res, SUCCESS_MESSAGES.AUTH.RECOVERY_EMAIL_SENT);

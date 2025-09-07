@@ -40,11 +40,13 @@ export const createSpecialty = async (
       return sendConflict(res, ERROR_MESSAGES.SPECIALTY.NAME_IN_USE);
     }
 
-    const createdSpecialty = (await SpecialtyModel.create({
+    const createdSpecialtyModel = await SpecialtyModel.create({
       name,
       description: description,
       isActive: isActive !== undefined ? isActive : true,
-    })) as Partial<ISpecialty>;
+    });
+
+    const createdSpecialty = createdSpecialtyModel.toJSON() as ISpecialty;
 
     const response = {
       specialty: {

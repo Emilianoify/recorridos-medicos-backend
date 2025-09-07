@@ -94,6 +94,7 @@ export const ERROR_MESSAGES = {
     ALREADY_ACTIVE: 'El usuario ya está activo.',
   },
   FREQUENCY: {
+    INVALID_ID: 'ID debe ser un UUID válido.',
     INVALID_NAME:
       'El nombre de la frecuencia debe tener entre 2 y 50 caracteres.',
     INVALID_NAME_FORMAT:
@@ -106,9 +107,14 @@ export const ERROR_MESSAGES = {
     INVALID_VISITS_PER_MONTH: 'Las visitas por mes deben estar entre 1 y 31.',
     INVALID_INTERVAL_VALUE: 'El valor del intervalo debe ser mayor a 0.',
     INVALID_VISITS_PER_DAY: 'Las visitas por día deben estar entre 1 y 24.',
+    NOT_FOUND: 'Frecuencia no encontrada.',
+    NAME_IN_USE: 'El nombre de la frecuencia ya está en uso.',
+    ALREADY_ACTIVE: 'La frecuencia ya está activa.',
+    HAS_ACTIVE_RELATIONS: 'No se puede eliminar la frecuencia porque está siendo utilizada por pacientes activos.',
   },
 
   PATIENT: {
+    INVALID_ID: 'ID debe ser un UUID válido.',
     INVALID_FULLNAME: 'El nombre completo debe tener entre 2 y 200 caracteres.',
     INVALID_FULLNAME_FORMAT: 'El nombre contiene caracteres no válidos.',
     INVALID_HEALTHCARE_ID:
@@ -136,9 +142,16 @@ export const ERROR_MESSAGES = {
     INVALID_MEDICAL_OBSERVATIONS:
       'Las observaciones médicas no pueden exceder 2000 caracteres.',
     INVALID_CONTACT_METHOD: 'Método de contacto no válido.',
+    NOT_FOUND: 'Paciente no encontrado.',
+    HEALTHCARE_ID_IN_USE: 'El ID de obra social ya está en uso para esta prepaga/obra social.',
+    ALREADY_ACTIVE: 'El paciente ya está activo.',
+    ALREADY_DELETED: 'El paciente ya está eliminado.',
+    HAS_ACTIVE_VISITS: 'No se puede eliminar el paciente porque tiene visitas activas.',
+    NO_FIELDS_TO_UPDATE: 'Debe proporcionar al menos un campo para actualizar.',
   },
 
   JOURNEY: {
+    INVALID_ID: 'ID debe ser un UUID válido.',
     INVALID_PROFESSIONAL_ID: 'ID de profesional no válido.',
     INVALID_DATE_FORMAT: 'Formato de fecha no válido (YYYY-MM-DD).',
     INVALID_ZONE_ID: 'ID de zona no válido.',
@@ -153,6 +166,12 @@ export const ERROR_MESSAGES = {
       'La hora de fin planificada debe ser posterior a la de inicio.',
     ACTUAL_END_TIME_BEFORE_START:
       'La hora de fin real debe ser posterior a la de inicio real.',
+    NOT_FOUND: 'Recorrido no encontrado.',
+    DUPLICATE_JOURNEY: 'Ya existe un recorrido para este profesional, fecha y zona.',
+    ALREADY_STARTED: 'El recorrido ya fue iniciado.',
+    ALREADY_ENDED: 'El recorrido ya fue finalizado.',
+    NOT_STARTED: 'El recorrido debe ser iniciado antes de poder finalizarlo.',
+    HAS_ACTIVE_VISITS: 'No se puede eliminar el recorrido porque tiene visitas activas.',
   },
 
   VISIT: {

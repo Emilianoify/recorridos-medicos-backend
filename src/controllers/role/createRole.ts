@@ -41,25 +41,27 @@ export const createRole = async (
       return sendConflict(res, ERROR_MESSAGES.ROLE.NAME_IN_USE);
     }
 
-    const createdRole = (await RoleModel.create({
+    const createdRole = await RoleModel.create({
       name,
       description: description,
       permissions: permissions,
       isActive: isActive !== undefined ? isActive : true,
-    })) as Partial<IRole>;
+    });
+
+    const newRole: IRole = createdRole.toJSON() as IRole;
 
     const response = {
       role: {
-        id: createdRole.id,
-        name: createdRole.name,
-        description: createdRole.description,
-        isActive: createdRole.isActive,
-        createdAt: createdRole.createdAt,
-        updatedAt: createdRole.updatedAt,
+        id: newRole.id,
+        name: newRole.name,
+        description: newRole.description,
+        isActive: newRole.isActive,
+        createdAt: newRole.createdAt,
+        updatedAt: newRole.updatedAt,
       },
     };
 
-    if (createdRole) {
+    if (newRole) {
       return sendSuccessResponse(
         res,
         SUCCESS_MESSAGES.ROLE.ROLE_CREATED,

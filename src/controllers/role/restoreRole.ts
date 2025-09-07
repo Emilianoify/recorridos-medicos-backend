@@ -1,6 +1,7 @@
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { AuthRequest } from '../../interfaces/auth.interface';
+import { IRole } from '../../interfaces/role.interface';
 import { RoleModel } from '../../models';
 import {
   sendBadRequest,
@@ -8,10 +9,8 @@ import {
   sendSuccessResponse,
   sendInternalErrorResponse,
 } from '../../utils/commons/responseFunctions';
-import { Response } from 'express';
 import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
-import { IRole } from '../../interfaces/role.interface';
-
+import { Response } from 'express';
 export const restoreRole = async (
   req: AuthRequest,
   res: Response
@@ -26,38 +25,30 @@ export const restoreRole = async (
     if (!isValidUUID(id)) {
       return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ID);
     }
-    const deletedRole = (await RoleModel.findOne({
+
+    const deletedRole = await RoleModel.findOne({
       where: { id },
       paranoid: false,
-    })) as IRole | null;
+    });
 
     if (!deletedRole) {
       return sendNotFound(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
     }
 
-    if (deletedRole.deletedAt === null) {
-      return sendBadRequest(res, ERROR_MESSAGES.ROLE.ALREADY_ACTIVE);
-    }
+    await RoleModel.restore({ where: { id } });
 
-    await RoleModel.restore({
-      where: { id },
-    });
-
-    const restoredRole = (await RoleModel.findByPk(id)) as unknown as IRole;
-
-    if (!restoredRole) {
-      return sendNotFound(res, ERROR_MESSAGES.ROLE.NOT_FOUND);
-    }
+    await deletedRole.reload();
+    const restoredRole = deletedRole.toJSON() as IRole;
 
     const response = {
       role: {
-        id: restoredRole!.id,
-        name: restoredRole!.name,
-        description: restoredRole!.description,
-        permissions: restoredRole!.permissions,
-        isActive: restoredRole!.isActive,
-        createdAt: restoredRole!.createdAt,
-        updatedAt: restoredRole!.updatedAt,
+        id: restoredRole.id,
+        name: restoredRole.name,
+        description: restoredRole.description,
+        permissions: restoredRole.permissions,
+        isActive: restoredRole.isActive,
+        createdAt: restoredRole.createdAt,
+        updatedAt: restoredRole.updatedAt,
       },
     };
 
@@ -67,6 +58,7 @@ export const restoreRole = async (
       response
     );
   } catch (error) {
+    console.error('Error restoring role:', error);
     return sendInternalErrorResponse(res);
   }
 };
