@@ -10,6 +10,14 @@ import specialtyRoutes from './routes/specialty.routes';
 import healthcareProviderRoutes from './routes/healthcare.routes';
 import userRoutes from './routes/user.routes';
 import patientRoutes from './routes/patient.routes';
+import professionalRoutes from './routes/professional.routes';
+import journeyRoutes from './routes/journey.routes';
+import visitRoutes from './routes/visit.routes';
+import frequencyRoutes from './routes/frequency.routes';
+import holidayRoutes from './routes/holiday.routes';
+import reportsRoutes from './routes/reports.routes';
+import auditRoutes from './routes/audit.routes';
+import zoneRoutes from './routes/zone.routes';
 import {
   handleJsonError,
   handle404,
@@ -40,6 +48,14 @@ app.use('/specialty', specialtyRoutes);
 app.use('/healthcare-provider', healthcareProviderRoutes);
 app.use('/user', userRoutes);
 app.use('/patient', patientRoutes);
+app.use('/professional', professionalRoutes);
+app.use('/journey', journeyRoutes);
+app.use('/visit', visitRoutes);
+app.use('/frequency', frequencyRoutes);
+app.use('/holiday', holidayRoutes);
+app.use('/reports', reportsRoutes);
+app.use('/audit', auditRoutes);
+app.use('/zone', zoneRoutes);
 
 app.use(handleJsonError);
 app.use(handle404);
