@@ -1,1 +1,10 @@
-// No controllers implemented yet
+export { cancelVisit } from './cancelVisit';
+export { completeVisit } from './completeVisit';
+export { confirmVisit } from './confirmVisit';
+export { getVisitsByStatus } from './getVisitsByStatus';
+export { getVisitById } from './getVisitById';
+export { createVisit } from './createVisit';
+export { updateVisit } from './updateVisit';
+export { getVisitsByJourney } from './getVisitsByJourney';
+export { getVisitsByPatient } from './getVisitsByPatient';
+export { getVisits } from './getVisits';

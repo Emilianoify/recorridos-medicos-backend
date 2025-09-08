@@ -193,6 +193,15 @@ export const ERROR_MESSAGES = {
       'Las notas del profesional no pueden exceder 2000 caracteres.',
     INVALID_COORDINATOR_NOTES:
       'Las notas del coordinador no pueden exceder 1000 caracteres.',
+    NOT_FOUND: 'Visita no encontrada.',
+    ALREADY_COMPLETED: 'La visita ya está completada.',
+    ALREADY_CANCELLED: 'La visita ya está cancelada.',
+    CANNOT_COMPLETE_CANCELLED: 'No se puede completar una visita cancelada.',
+    CANNOT_CANCEL_COMPLETED: 'No se puede cancelar una visita completada.',
+    CANNOT_CONFIRM_COMPLETED: 'No se puede confirmar una visita completada.',
+    CANNOT_CONFIRM_CANCELLED: 'No se puede confirmar una visita cancelada.',
+    NO_CHANGES_DETECTED: 'No se detectaron cambios para actualizar.',
+    VISIT_DUPLICATE: 'Ya existe una visita programada para este paciente en la fecha y hora especificada.',
   },
 
   HOLIDAY: {
