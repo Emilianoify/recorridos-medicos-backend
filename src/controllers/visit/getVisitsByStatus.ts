@@ -101,7 +101,13 @@ export const getVisitsByStatus = async (
     ];
 
     // Journey include with potential professional/zone filters
-    const journeyInclude: any = {
+    const journeyInclude: {
+      model: typeof JourneyModel;
+      as: string;
+      attributes: string[];
+      include: object[];
+      where?: object;
+    } = {
       model: JourneyModel,
       as: 'journey',
       attributes: ['id', 'date', 'status', 'startTime', 'endTime'],
@@ -127,7 +133,7 @@ export const getVisitsByStatus = async (
     // Apply zone filter if provided
     if (zoneId) {
       if (journeyInclude.where) {
-        journeyInclude.where.zoneId = zoneId;
+        Object.assign(journeyInclude.where, { zoneId });
       } else {
         journeyInclude.where = { zoneId };
       }
@@ -203,12 +209,12 @@ export const getVisitsByStatus = async (
         };
       }),
       pagination: {
-        currentPage: page,
-        totalPages,
-        totalVisits,
-        limit,
+        total: totalVisits,
+        page: page,
+        limit: limit,
+        totalPages: totalPages,
         hasNextPage: page < totalPages,
-        hasPrevPage: page > 1,
+        hasPreviousPage: page > 1,
       },
     };
 

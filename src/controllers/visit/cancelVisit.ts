@@ -37,7 +37,11 @@ export const cancelVisit = async (
     const { id } = req.params;
     const body = req.body;
 
-    if (!id || !isValidUUID(id)) {
+    if (!id) {
+      return sendBadRequest(res, ERROR_MESSAGES.VISIT.INVALID_VISIT_ID);
+    }
+
+    if (!isValidUUID(id)) {
       return sendBadRequest(res, ERROR_MESSAGES.VISIT.INVALID_VISIT_ID);
     }
 

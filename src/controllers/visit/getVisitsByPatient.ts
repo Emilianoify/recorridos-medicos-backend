@@ -28,7 +28,11 @@ export const getVisitsByPatient = async (
   try {
     const { patientId } = req.params;
 
-    if (!patientId || !isValidUUID(patientId)) {
+    if (!patientId) {
+      return sendBadRequest(res, ERROR_MESSAGES.VISIT.INVALID_PATIENT_ID);
+    }
+
+    if (!isValidUUID(patientId)) {
       return sendBadRequest(res, ERROR_MESSAGES.VISIT.INVALID_PATIENT_ID);
     }
 
@@ -186,12 +190,12 @@ export const getVisitsByPatient = async (
         };
       }),
       pagination: {
-        currentPage: page,
-        totalPages,
-        totalVisits,
-        limit,
+        total: totalVisits,
+        page: page,
+        limit: limit,
+        totalPages: totalPages,
         hasNextPage: page < totalPages,
-        hasPrevPage: page > 1,
+        hasPreviousPage: page > 1,
       },
     };
 

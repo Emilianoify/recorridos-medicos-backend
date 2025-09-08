@@ -34,7 +34,7 @@ export const getVisits = async (
     const sortBy = (query.sortBy as string) || 'scheduledDateTime';
     const sortOrder = (query.sortOrder as string)?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
 
-    // Validate filters
+    // Build filters
     const filters: WhereOptions = {};
     
     if (query.patientId && typeof query.patientId === 'string') {
@@ -77,7 +77,7 @@ export const getVisits = async (
     }
 
     // Additional filters for professional (via journey)
-    const includeFilters: any[] = [];
+    const includeFilters: object[] = [];
     
     if (query.professionalId && typeof query.professionalId === 'string') {
       includeFilters.push({
@@ -198,12 +198,12 @@ export const getVisits = async (
         };
       }),
       pagination: {
-        currentPage: page,
-        totalPages,
-        totalVisits,
-        limit,
+        total: totalVisits,
+        page: page,
+        limit: limit,
+        totalPages: totalPages,
         hasNextPage: page < totalPages,
-        hasPrevPage: page > 1,
+        hasPreviousPage: page > 1,
       },
     };
 

@@ -25,7 +25,11 @@ export const getVisitsByJourney = async (
   try {
     const { journeyId } = req.params;
 
-    if (!journeyId || !isValidUUID(journeyId)) {
+    if (!journeyId) {
+      return sendBadRequest(res, ERROR_MESSAGES.VISIT.INVALID_JOURNEY_ID);
+    }
+
+    if (!isValidUUID(journeyId)) {
       return sendBadRequest(res, ERROR_MESSAGES.VISIT.INVALID_JOURNEY_ID);
     }
 

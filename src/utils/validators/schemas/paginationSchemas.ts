@@ -189,6 +189,67 @@ export const getPatientsByZoneParamsSchema = z.object({
 
 export const getPatientsByZoneQuerySchema = patientsByZoneFilterSchema;
 
+// Visit filters and queries
+export const visitFilterSchema = z.object({
+  patientId: z.string().uuid().optional(),
+  journeyId: z.string().uuid().optional(),
+  professionalId: z.string().uuid().optional(),
+  zoneId: z.string().uuid().optional(),
+  status: z.enum(['scheduled', 'confirmed', 'completed', 'cancelled', 'not_present', 'rescheduled']).optional(),
+  confirmationStatusId: z.string().uuid().optional(),
+  scheduledFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  scheduledTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  completedFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  completedTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  isActive: z.enum(['true', 'false']).optional(),
+  includeInactive: z.enum(['true', 'false']).optional(),
+});
+
+export const visitsByPatientFilterSchema = z.object({
+  includeInactive: z.enum(['true', 'false']).optional(),
+  status: z.enum(['scheduled', 'confirmed', 'completed', 'cancelled', 'not_present', 'rescheduled']).optional(),
+  dateFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  dateTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+});
+
+export const visitsByJourneyFilterSchema = z.object({
+  includeInactive: z.enum(['true', 'false']).optional(),
+  status: z.enum(['scheduled', 'confirmed', 'completed', 'cancelled', 'not_present', 'rescheduled']).optional(),
+});
+
+export const visitsByStatusFilterSchema = z.object({
+  zoneId: z.string().uuid().optional(),
+  professionalId: z.string().uuid().optional(),
+  dateFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  dateTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  includeInactive: z.enum(['true', 'false']).optional(),
+});
+
+// Combined visit query schemas
+export const visitQuerySchema = paginationSchema.merge(visitFilterSchema);
+export const visitsByPatientQuerySchema = paginationSchema.merge(visitsByPatientFilterSchema);
+export const visitsByJourneyQuerySchema = visitsByJourneyFilterSchema;
+export const visitsByStatusQuerySchema = paginationSchema.merge(visitsByStatusFilterSchema);
+
+// Param schemas for visit endpoints
+export const getVisitByIdParamsSchema = z.object({
+  id: z.string().uuid(ERROR_MESSAGES.VISIT.INVALID_VISIT_ID),
+});
+
+export const getVisitsByPatientParamsSchema = z.object({
+  patientId: z.string().uuid(ERROR_MESSAGES.VISIT.INVALID_PATIENT_ID),
+});
+
+export const getVisitsByJourneyParamsSchema = z.object({
+  journeyId: z.string().uuid(ERROR_MESSAGES.VISIT.INVALID_JOURNEY_ID),
+});
+
+export const getVisitsByStatusParamsSchema = z.object({
+  status: z.enum(['scheduled', 'confirmed', 'completed', 'cancelled', 'not_present', 'rescheduled'], {
+    errorMap: () => ({ message: ERROR_MESSAGES.VISIT.INVALID_STATUS }),
+  }),
+});
+
 // Types
 export type PaginationInput = z.infer<typeof paginationSchema>;
 export type UserQueryInput = z.infer<typeof userQuerySchema>;
@@ -200,3 +261,7 @@ export type HealthcareProviderQueryInput = z.infer<
 export type ProfessionalQueryInput = z.infer<typeof professionalQuerySchema>;
 
 export type ZoneQueryInput = z.infer<typeof zoneQuerySchema>;
+export type VisitQueryInput = z.infer<typeof visitQuerySchema>;
+export type VisitsByPatientQueryInput = z.infer<typeof visitsByPatientQuerySchema>;
+export type VisitsByJourneyQueryInput = z.infer<typeof visitsByJourneyQuerySchema>;
+export type VisitsByStatusQueryInput = z.infer<typeof visitsByStatusQuerySchema>;

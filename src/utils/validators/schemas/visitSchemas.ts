@@ -199,6 +199,42 @@ export const completeVisitSchema = z.object({
   checkOutLocation: geoLocationSchema,
 });
 
+export const rescheduleVisitSchema = z.object({
+  newScheduledDateTime: z
+    .string()
+    .regex(
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
+      ERROR_MESSAGES.VISIT.INVALID_DATETIME
+    ),
+  newJourneyId: z
+    .string()
+    .uuid(ERROR_MESSAGES.VISIT.INVALID_JOURNEY_ID)
+    .optional(),
+  newOrderInJourney: z
+    .number()
+    .int()
+    .min(1, ERROR_MESSAGES.VISIT.INVALID_ORDER)
+    .max(100, ERROR_MESSAGES.VISIT.INVALID_ORDER)
+    .optional(),
+  reason: z
+    .string()
+    .max(500, 'El motivo de reprogramación no puede exceder 500 caracteres')
+    .optional(),
+});
+
+export const markNotPresentSchema = z.object({
+  notCompletedReasonId: z
+    .string()
+    .uuid(ERROR_MESSAGES.VISIT.INVALID_NOT_COMPLETED_REASON_ID)
+    .optional(),
+  professionalNotes: z
+    .string()
+    .max(2000, ERROR_MESSAGES.VISIT.INVALID_PROFESSIONAL_NOTES)
+    .optional(),
+  checkInLocation: geoLocationSchema,
+  checkOutLocation: geoLocationSchema,
+});
+
 export const visitResponseSchema = visitBaseSchema.extend({
   id: z.string().uuid(),
   rescheduledToVisitId: z.string().uuid().optional().nullable(),
@@ -228,4 +264,6 @@ export type CreateVisitInput = z.infer<typeof createVisitSchema>;
 export type UpdateVisitInput = z.infer<typeof updateVisitSchema>;
 export type ConfirmVisitInput = z.infer<typeof confirmVisitSchema>;
 export type CompleteVisitInput = z.infer<typeof completeVisitSchema>;
+export type RescheduleVisitInput = z.infer<typeof rescheduleVisitSchema>;
+export type MarkNotPresentInput = z.infer<typeof markNotPresentSchema>;
 export type VisitResponse = z.infer<typeof visitResponseSchema>;

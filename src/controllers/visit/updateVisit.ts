@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../interfaces/auth.interface';
-import { ZodError } from 'zod';
 import {
   sendBadRequest,
   sendInternalErrorResponse,
@@ -13,7 +12,6 @@ import {
 } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { updateVisitSchema } from '../../utils/validators/schemas/visitSchemas';
 import { IVisit } from '../../interfaces/visit.interface';
 import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
@@ -25,7 +23,11 @@ export const updateVisit = async (
     const { id } = req.params;
     const body = req.body;
 
-    if (!id || !isValidUUID(id)) {
+    if (!id) {
+      return sendBadRequest(res, ERROR_MESSAGES.VISIT.INVALID_VISIT_ID);
+    }
+
+    if (!isValidUUID(id)) {
       return sendBadRequest(res, ERROR_MESSAGES.VISIT.INVALID_VISIT_ID);
     }
 
@@ -33,7 +35,19 @@ export const updateVisit = async (
       return sendBadRequest(res, ERROR_MESSAGES.SERVER.EMPTY_BODY);
     }
 
-    const validatedData = updateVisitSchema.parse(body);
+    // Manual validation for update fields - following project pattern
+    const allowedFields = ['scheduledDateTime', 'orderInJourney', 'professionalNotes', 'coordinatorNotes'];
+    const updateData: Record<string, string | number> = {};
+    
+    for (const field of allowedFields) {
+      if (body[field] !== undefined) {
+        updateData[field] = body[field];
+      }
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return sendBadRequest(res, ERROR_MESSAGES.VISIT.NO_CHANGES_DETECTED);
+    }
 
     // Find the existing visit
     const existingVisit = await VisitModel.findOne({
@@ -59,8 +73,8 @@ export const updateVisit = async (
     }> = [];
 
     // Compare and track changes
-    Object.keys(validatedData).forEach(key => {
-      const newValue = (validatedData as Record<string, unknown>)[key];
+    Object.keys(updateData).forEach(key => {
+      const newValue = (updateData as Record<string, unknown>)[key];
       const oldValue = (existingVisitJson as unknown as Record<string, unknown>)[key];
       
       if (newValue !== undefined && newValue !== oldValue) {
@@ -84,7 +98,7 @@ export const updateVisit = async (
     }
 
     // Update the visit
-    await VisitModel.update(changes, {
+    await VisitModel.update(updateData, {
       where: { id },
     });
 
@@ -138,11 +152,6 @@ export const updateVisit = async (
       response
     );
   } catch (error) {
-    if (error instanceof ZodError) {
-      const firstError = error.errors[0].message;
-      return sendBadRequest(res, firstError);
-    }
-
     console.error('Error updating visit:', error);
     return sendInternalErrorResponse(res);
   }
