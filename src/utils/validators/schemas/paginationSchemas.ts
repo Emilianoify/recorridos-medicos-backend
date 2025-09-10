@@ -353,9 +353,15 @@ export const updatePatientAuthorizationParamsSchema = z.object({
 });
 
 export const updateAuthorizationSchema = z.object({
-  authorizationStartDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  authorizationEndDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  authorizedVisits: z.number().int().min(0).max(31),
+  lastAuthorizationDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, ERROR_MESSAGES.PATIENT.INVALID_DATE_FORMAT),
+  authorizedVisitsPerMonth: z
+    .number()
+    .int()
+    .min(0, ERROR_MESSAGES.PATIENT.INVALID_AUTHORIZED_VISITS)
+    .max(31, ERROR_MESSAGES.PATIENT.INVALID_AUTHORIZED_VISITS),
+  resetCompletedVisits: z.boolean().default(false),
 });
 
 export const getPatientsByFrequencyParamsSchema = z.object({
@@ -365,9 +371,10 @@ export const getPatientsByFrequencyParamsSchema = z.object({
 export const getPatientsByFrequencyQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),
-  search: z.string().min(1).max(100).optional(),
-  state: z.enum(['activo', 'inactivo', 'internado', 'sin_autorizacion', 'suspendido', 'alta']).optional(),
-  includeInactive: z.enum(['true', 'false']).default('false'),
+  zoneId: z.string().uuid().optional(),
+  state: z.string().optional(),
+  search: z.string().optional(),
+  includeInactive: z.coerce.boolean().default(false),
 });
 
 export const deletePatientParamsSchema = z.object({

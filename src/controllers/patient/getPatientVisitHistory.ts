@@ -21,14 +21,28 @@ import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { Op } from 'sequelize';
 import { IPatient } from '../../interfaces/patient.interface';
 import { IVisit } from '../../interfaces/visit.interface';
-import { getPatientVisitHistoryParamsSchema, getPatientVisitHistoryQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
+import { getPatientVisitHistoryQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
 export const getPatientVisitHistory = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = getPatientVisitHistoryParamsSchema.parse(req.params);
+    const { id } = req.params;
+
+    // 1. Manual ID validation (standard pattern)
+    if (!id) {
+      return sendBadRequest(
+        res,
+        ERROR_MESSAGES.PATIENT.ID_REQUIRED
+      );
+    }
+
+    if (!isValidUUID(id)) {
+      return sendBadRequest(res, ERROR_MESSAGES.PATIENT.INVALID_ID);
+    }
+
     const { page, limit, status, fromDate, toDate, sortOrder } =
       getPatientVisitHistoryQuerySchema.parse(req.query);
 

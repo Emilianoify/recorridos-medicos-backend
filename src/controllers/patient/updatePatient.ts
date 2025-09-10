@@ -20,14 +20,27 @@ import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { updatePatientSchema } from '../../utils/validators/schemas/patientSchemas';
 import { Op } from 'sequelize';
 import { IPatient } from '../../interfaces/patient.interface';
-import { updatePatientParamsSchema } from '../../utils/validators/schemas/paginationSchemas';
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
 export const updatePatient = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = updatePatientParamsSchema.parse(req.params);
+    const { id } = req.params;
+
+    // 1. Manual ID validation (standard pattern)
+    if (!id) {
+      return sendBadRequest(
+        res,
+        ERROR_MESSAGES.PATIENT.ID_REQUIRED
+      );
+    }
+
+    if (!isValidUUID(id)) {
+      return sendBadRequest(res, ERROR_MESSAGES.PATIENT.INVALID_ID);
+    }
+
     const body = req.body;
 
     if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {

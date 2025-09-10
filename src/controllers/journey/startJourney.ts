@@ -13,14 +13,28 @@ import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { JourneyStatus } from '../../enums/JourneyStatus';
 import { IJourney } from '../../interfaces/journey.interface';
-import { startJourneyParamsSchema, startJourneySchema } from '../../utils/validators/schemas/paginationSchemas';
+import { startJourneySchema } from '../../utils/validators/schemas/paginationSchemas';
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
 export const startJourney = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = startJourneyParamsSchema.parse(req.params);
+    const { id } = req.params;
+
+    // 1. Manual ID validation (standard pattern)
+    if (!id) {
+      return sendBadRequest(
+        res,
+        ERROR_MESSAGES.JOURNEY.ID_REQUIRED
+      );
+    }
+
+    if (!isValidUUID(id)) {
+      return sendBadRequest(res, ERROR_MESSAGES.JOURNEY.INVALID_ID);
+    }
+
     const validatedData = startJourneySchema.parse(req.body || {});
 
     const journeyInstance = await JourneyModel.findByPk(id);

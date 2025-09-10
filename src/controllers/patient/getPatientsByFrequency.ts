@@ -16,30 +16,31 @@ import {
 import { IPatient } from '../../interfaces/patient.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { z } from 'zod';
 import { Op } from 'sequelize';
-
-const getPatientsByFrequencySchema = z.object({
-  frequencyId: z.string().uuid(ERROR_MESSAGES.PATIENT.INVALID_FREQUENCY_ID),
-});
-
-const querySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(10),
-  zoneId: z.string().uuid().optional(),
-  state: z.string().optional(),
-  search: z.string().optional(),
-  includeInactive: z.coerce.boolean().default(false),
-});
+import { getPatientsByFrequencyQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
 export const getPatientsByFrequency = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { frequencyId } = getPatientsByFrequencySchema.parse(req.params);
+    const { frequencyId } = req.params;
+
+    // 1. Manual ID validation (standard pattern)
+    if (!frequencyId) {
+      return sendBadRequest(
+        res,
+        ERROR_MESSAGES.PATIENT.FREQUENCY_ID_REQUIRED
+      );
+    }
+
+    if (!isValidUUID(frequencyId)) {
+      return sendBadRequest(res, ERROR_MESSAGES.PATIENT.INVALID_FREQUENCY_ID);
+    }
+
     const { page, limit, zoneId, state, search, includeInactive } =
-      querySchema.parse(req.query);
+      getPatientsByFrequencyQuerySchema.parse(req.query);
 
     const whereClause: any = { frequencyId };
 

@@ -10,31 +10,29 @@ import {
 import { PatientModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { z } from 'zod';
 import { IPatient } from '../../interfaces/patient.interface';
-
-const updatePatientAuthorizationParamsSchema = z.object({
-  id: z.string().uuid(ERROR_MESSAGES.PATIENT.INVALID_ID),
-});
-
-const updateAuthorizationSchema = z.object({
-  lastAuthorizationDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, ERROR_MESSAGES.PATIENT.INVALID_DATE_FORMAT),
-  authorizedVisitsPerMonth: z
-    .number()
-    .int()
-    .min(0, ERROR_MESSAGES.PATIENT.INVALID_AUTHORIZED_VISITS)
-    .max(31, ERROR_MESSAGES.PATIENT.INVALID_AUTHORIZED_VISITS),
-  resetCompletedVisits: z.boolean().default(false),
-});
+import { updateAuthorizationSchema } from '../../utils/validators/schemas/paginationSchemas';
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
 export const updatePatientAuthorization = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = updatePatientAuthorizationParamsSchema.parse(req.params);
+    const { id } = req.params;
+
+    // 1. Manual ID validation (standard pattern)
+    if (!id) {
+      return sendBadRequest(
+        res,
+        ERROR_MESSAGES.PATIENT.ID_REQUIRED
+      );
+    }
+
+    if (!isValidUUID(id)) {
+      return sendBadRequest(res, ERROR_MESSAGES.PATIENT.INVALID_ID);
+    }
+
     const body = req.body;
 
     if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {

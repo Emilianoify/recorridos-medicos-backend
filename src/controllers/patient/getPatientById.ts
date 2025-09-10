@@ -16,19 +16,27 @@ import {
 } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { z } from 'zod';
 import { IPatient } from '../../interfaces/patient.interface';
-
-const getPatientByIdSchema = z.object({
-  id: z.string().uuid(ERROR_MESSAGES.PATIENT.INVALID_ID),
-});
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
 export const getPatientById = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = getPatientByIdSchema.parse(req.params);
+    const { id } = req.params;
+
+    // 1. Manual ID validation (standard pattern)
+    if (!id) {
+      return sendBadRequest(
+        res,
+        ERROR_MESSAGES.PATIENT.ID_REQUIRED
+      );
+    }
+
+    if (!isValidUUID(id)) {
+      return sendBadRequest(res, ERROR_MESSAGES.PATIENT.INVALID_ID);
+    }
 
     const patient = (await PatientModel.findByPk(id, {
       attributes: { exclude: ['deletedAt'] },
