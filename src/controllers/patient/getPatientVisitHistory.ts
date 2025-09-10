@@ -18,37 +18,19 @@ import {
 } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { z } from 'zod';
 import { Op } from 'sequelize';
 import { IPatient } from '../../interfaces/patient.interface';
-
-const getPatientVisitHistorySchema = z.object({
-  id: z.string().uuid(ERROR_MESSAGES.PATIENT.INVALID_ID),
-});
-
-const querySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
-  status: z.string().optional(),
-  fromDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional(),
-  toDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional(),
-  sortOrder: z.enum(['asc', 'desc']).default('desc'),
-});
+import { IVisit } from '../../interfaces/visit.interface';
+import { getPatientVisitHistoryParamsSchema, getPatientVisitHistoryQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const getPatientVisitHistory = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = getPatientVisitHistorySchema.parse(req.params);
+    const { id } = getPatientVisitHistoryParamsSchema.parse(req.params);
     const { page, limit, status, fromDate, toDate, sortOrder } =
-      querySchema.parse(req.query);
+      getPatientVisitHistoryQuerySchema.parse(req.query);
 
     // Verify patient exists
     const patient = (await PatientModel.findByPk(id, {
@@ -125,7 +107,9 @@ export const getPatientVisitHistory = async (
         fullName: patient.fullName,
         healthcareId: patient.healthcareId,
       },
-      visits: visitsData.rows.map((visit: any) => ({
+      visits: visitsData.rows.map((visitInstance) => {
+        const visit: IVisit = visitInstance.toJSON() as IVisit;
+        return {
         id: visit.id,
         status: visit.status,
         scheduledDateTime: visit.scheduledDateTime,

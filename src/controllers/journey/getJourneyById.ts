@@ -21,7 +21,7 @@ export const getJourneyById = async (
     const { id } = req.params;
 
     if (!id || !isValidUUID(id)) {
-      return sendBadRequest(res, ERROR_MESSAGES.COMMON.INVALID_UUID);
+      return sendBadRequest(res, ERROR_MESSAGES.JOURNEY.INVALID_ID);
     }
 
     const journeyInstance = await JourneyModel.findOne({

@@ -22,7 +22,7 @@ export const updateJourney = async (
     const { id } = req.params;
 
     if (!id || !isValidUUID(id)) {
-      return sendBadRequest(res, ERROR_MESSAGES.COMMON.INVALID_UUID);
+      return sendBadRequest(res, ERROR_MESSAGES.JOURNEY.INVALID_ID);
     }
 
     const body = req.body;
@@ -46,7 +46,12 @@ export const updateJourney = async (
     });
 
     const updatedJourneyInstance = await JourneyModel.findByPk(id);
-    const updatedJourney: IJourney = updatedJourneyInstance!.toJSON() as IJourney;
+    if (!updatedJourneyInstance) {
+      return sendInternalErrorResponse(res);
+    }
+
+    const updatedJourney: IJourney =
+      updatedJourneyInstance.toJSON() as IJourney;
 
     const response = {
       journey: {
@@ -69,7 +74,11 @@ export const updateJourney = async (
       },
     };
 
-    return sendSuccessResponse(res, SUCCESS_MESSAGES.JOURNEY.JOURNEY_UPDATED, response);
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.JOURNEY.JOURNEY_UPDATED,
+      response
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       const firstError = error.errors[0].message;

@@ -10,19 +10,24 @@ import {
 import { FrequencyModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { z } from 'zod';
-import { IFrequency } from '../../interfaces/frequency.interface';
 
-const getFrequencyByIdSchema = z.object({
-  id: z.string().uuid(ERROR_MESSAGES.FREQUENCY.INVALID_ID),
-});
+import { IFrequency } from '../../interfaces/frequency.interface';
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
 export const getFrequencyById = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = getFrequencyByIdSchema.parse(req.params);
+    const { id } = req.params;
+
+    if (!id) {
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.ID_REQUIRED);
+    }
+
+    if (!isValidUUID(id)) {
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.INVALID_ID);
+    }
 
     const frequency = (await FrequencyModel.findByPk(id, {
       attributes: { exclude: ['deletedAt'] },

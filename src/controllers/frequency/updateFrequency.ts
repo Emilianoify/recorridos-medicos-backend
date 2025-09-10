@@ -12,21 +12,25 @@ import { FrequencyModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { updateFrequencySchema } from '../../utils/validators/schemas/frequencySchemas';
-import { z } from 'zod';
 import { Op } from 'sequelize';
 import { IFrequency } from '../../interfaces/frequency.interface';
-
-const updateFrequencyParamsSchema = z.object({
-  id: z.string().uuid(ERROR_MESSAGES.FREQUENCY.INVALID_ID),
-});
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
 export const updateFrequency = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = updateFrequencyParamsSchema.parse(req.params);
+    const { id } = req.params;
     const body = req.body;
+
+    if (!id) {
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.ID_REQUIRED);
+    }
+
+    if (!isValidUUID(id)) {
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.INVALID_ID);
+    }
 
     if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {
       return sendBadRequest(res, ERROR_MESSAGES.SERVER.EMPTY_BODY);

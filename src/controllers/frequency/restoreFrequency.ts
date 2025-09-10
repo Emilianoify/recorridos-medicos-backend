@@ -11,19 +11,23 @@ import {
 import { FrequencyModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { z } from 'zod';
 import { IFrequency } from '../../interfaces/frequency.interface';
-
-const restoreFrequencyParamsSchema = z.object({
-  id: z.string().uuid(ERROR_MESSAGES.FREQUENCY.INVALID_ID),
-});
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
 export const restoreFrequency = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = restoreFrequencyParamsSchema.parse(req.params);
+    const { id } = req.params;
+
+    if (!id) {
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.ID_REQUIRED);
+    }
+
+    if (!isValidUUID(id)) {
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.INVALID_ID);
+    }
 
     const frequency = (await FrequencyModel.findByPk(id, {
       paranoid: false,

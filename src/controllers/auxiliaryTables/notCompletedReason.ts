@@ -6,6 +6,7 @@ import {
 } from '../../utils/commons/responseFunctions';
 import { NotCompletedReasonModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
+import { INotCompletedReason } from '../../interfaces/auxiliaryTables.interface';
 
 export const getNotCompletedReasons = async (
   _req: AuthRequest,
@@ -29,16 +30,22 @@ export const getNotCompletedReasons = async (
     });
 
     const response = {
-      notCompletedReasons: notCompletedReasons.map((reason: any) => ({
-        id: reason.id,
-        name: reason.name,
-        description: reason.description,
-        category: reason.category,
-        suggestedAction: reason.suggestedAction,
-        isActive: reason.isActive,
-      })),
+      notCompletedReasons: notCompletedReasons.map((reasonInstance) => {
+        const reason: INotCompletedReason = reasonInstance.toJSON() as INotCompletedReason;
+        return {
+          id: reason.id,
+          name: reason.name,
+          description: reason.description,
+          category: reason.category,
+          requiresReschedule: reason.requiresReschedule,
+          isActive: reason.isActive,
+        };
+      }),
       total: notCompletedReasons.length,
-      categories: [...new Set(notCompletedReasons.map((r: any) => r.category))],
+      categories: [...new Set(notCompletedReasons.map((reasonInstance) => {
+        const reason: INotCompletedReason = reasonInstance.toJSON() as INotCompletedReason;
+        return reason.category;
+      }))],
     };
 
     return sendSuccessResponse(

@@ -6,6 +6,7 @@ import {
 } from '../../utils/commons/responseFunctions';
 import { RejectionReasonModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
+import { IRejectionReason } from '../../interfaces/auxiliaryTables.interface';
 
 export const getRejectionReasons = async (
   _req: AuthRequest,
@@ -22,15 +23,21 @@ export const getRejectionReasons = async (
     });
 
     const response = {
-      rejectionReasons: rejectionReasons.map((reason: any) => ({
-        id: reason.id,
-        name: reason.name,
-        description: reason.description,
-        category: reason.category,
-        isActive: reason.isActive,
-      })),
+      rejectionReasons: rejectionReasons.map((reasonInstance) => {
+        const reason: IRejectionReason = reasonInstance.toJSON() as IRejectionReason;
+        return {
+          id: reason.id,
+          name: reason.name,
+          description: reason.description,
+          category: reason.category,
+          isActive: reason.isActive,
+        };
+      }),
       total: rejectionReasons.length,
-      categories: [...new Set(rejectionReasons.map((r: any) => r.category))],
+      categories: [...new Set(rejectionReasons.map((reasonInstance) => {
+        const reason: IRejectionReason = reasonInstance.toJSON() as IRejectionReason;
+        return reason.category;
+      }))],
     };
 
     return sendSuccessResponse(

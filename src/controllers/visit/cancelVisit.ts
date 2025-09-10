@@ -16,18 +16,7 @@ import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { IVisit } from '../../interfaces/visit.interface';
 import { VisitStatus } from '../../enums/Visits';
 import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
-import { z } from 'zod';
-
-const cancelVisitSchema = z.object({
-  rejectionReasonId: z
-    .string()
-    .uuid(ERROR_MESSAGES.VISIT.INVALID_REJECTION_REASON_ID)
-    .optional(),
-  coordinatorNotes: z
-    .string()
-    .max(1000, ERROR_MESSAGES.VISIT.INVALID_COORDINATOR_NOTES)
-    .optional(),
-});
+import { cancelVisitSchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const cancelVisit = async (
   req: AuthRequest,
@@ -96,7 +85,11 @@ export const cancelVisit = async (
       where: { id, isActive: true },
     });
 
-    const updatedVisitJson = updatedVisit!.toJSON() as IVisit;
+    if (!updatedVisit) {
+      return sendInternalErrorResponse(res);
+    }
+
+    const updatedVisitJson = updatedVisit.toJSON() as IVisit;
 
     const response = {
       visit: {

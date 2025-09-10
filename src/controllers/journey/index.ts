@@ -1,3 +1,10 @@
 export { createJourney } from './createJourney';
 export { getJourneys } from './getJourneys';
+export { getJourneyById } from './getJourneyById';
+export { updateJourney } from './updateJourney';
 export { startJourney } from './startJourney';
+export { endJourney } from './endJourney';
+export { deleteJourney } from './deleteJourney';
+export { generateOptimalRoute } from './generateOptimalRoute';
+export { getJourneysByDate } from './getJourneysByDate';
+export { getJourneysByProfessional } from './getJourneysByProfessional';

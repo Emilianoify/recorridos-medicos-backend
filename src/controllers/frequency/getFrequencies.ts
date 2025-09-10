@@ -5,6 +5,12 @@ import { frequencyQuerySchema } from '../../utils/validators/schemas/paginationS
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { Op } from 'sequelize';
+import {
+  sendSuccessResponse,
+  sendBadRequest,
+  sendInternalErrorResponse,
+} from '../../utils/commons/responseFunctions';
+import { ZodError } from 'zod';
 
 export const getFrequencies = async (
   req: AuthRequest,
@@ -16,8 +22,15 @@ export const getFrequencies = async (
 
     const offset = (page - 1) * limit;
 
-    // Construir condiciones de b�squeda
-    let whereConditions: any = {};
+    // Build where conditions
+    interface IFrequencyWhereClause {
+      [Op.or]?: Array<{
+        name?: { [Op.iLike]: string };
+        description?: { [Op.iLike]: string };
+      }>;
+    }
+
+    let whereConditions: IFrequencyWhereClause = {};
 
     if (search) {
       whereConditions = {
@@ -53,36 +66,26 @@ export const getFrequencies = async (
 
     const totalPages = Math.ceil(count / limit);
 
-    res.status(200).json({
-      success: true,
-      message: SUCCESS_MESSAGES.FREQUENCY.FREQUENCIES_FETCHED,
-      data: {
-        frequencies,
-        pagination: {
-          currentPage: page,
-          totalPages,
-          totalItems: count,
-          itemsPerPage: limit,
-          hasNextPage: page < totalPages,
-          hasPreviousPage: page > 1,
-        },
+    const response = {
+      frequencies,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: count,
+        itemsPerPage: limit,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
       },
-    });
-  } catch (error: any) {
-    if (error.name === 'ZodError') {
-      res.status(400).json({
-        success: false,
-        message: 'Par�metros de consulta inv�lidos',
-        error: error.errors,
-      });
-      return;
+    };
+
+    return sendSuccessResponse(res, SUCCESS_MESSAGES.FREQUENCY.FREQUENCIES_FETCHED, response);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.errors[0].message;
+      return sendBadRequest(res, firstError);
     }
 
-    console.error('Error al obtener frecuencias:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor',
-      error: ERROR_MESSAGES.SERVER.INTERNAL_ERROR,
-    });
+    console.error('Error fetching frequencies:', error);
+    return sendInternalErrorResponse(res);
   }
 };

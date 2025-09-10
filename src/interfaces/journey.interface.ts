@@ -93,5 +93,34 @@ export interface IJourneyProductivity {
   punctuality: number;
 }
 
+// Where clause interfaces for database queries
+export interface IJourneyWhereClause {
+  date: string;
+  professionalId?: string;
+  zoneId?: string;
+  status?: string;
+  isActive: boolean;
+}
+
+export interface IJourneyProfessionalWhereClause {
+  professionalId: string;
+  zoneId?: string;
+  status?: string;
+  isActive: boolean;
+  date?: {
+    [key: string]: string; // For Op.gte, Op.lte
+  };
+}
+
+export interface IJourneyGeneralWhereClause {
+  professionalId?: string;
+  zoneId?: string;
+  status?: string;
+  isActive?: boolean;
+  date?: {
+    [key: string]: string; // For Op.gte, Op.lte
+  };
+}
+
 // Tipos auxiliares
 export type JourneyTimeString = string; // 'HH:MM:SS' format

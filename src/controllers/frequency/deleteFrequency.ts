@@ -11,18 +11,22 @@ import {
 import { FrequencyModel, PatientModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { z } from 'zod';
-
-const deleteFrequencyParamsSchema = z.object({
-  id: z.string().uuid(ERROR_MESSAGES.FREQUENCY.INVALID_ID),
-});
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
 export const deleteFrequency = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = deleteFrequencyParamsSchema.parse(req.params);
+    const { id } = req.params;
+
+    if (!id) {
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.ID_REQUIRED);
+    }
+
+    if (!isValidUUID(id)) {
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.INVALID_ID);
+    }
 
     const frequency = await FrequencyModel.findByPk(id);
     if (!frequency) {
@@ -40,7 +44,10 @@ export const deleteFrequency = async (
 
     await frequency.destroy();
 
-    return sendSuccessResponse(res, SUCCESS_MESSAGES.FREQUENCY.FREQUENCY_DELETED);
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.FREQUENCY.FREQUENCY_DELETED
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       const firstError = error.errors[0].message;

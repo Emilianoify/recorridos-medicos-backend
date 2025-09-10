@@ -94,6 +94,7 @@ export const ERROR_MESSAGES = {
     ALREADY_ACTIVE: 'El usuario ya está activo.',
   },
   FREQUENCY: {
+    ID_REQUIRED: 'El ID es requerido para esta acción.',
     INVALID_ID: 'ID debe ser un UUID válido.',
     INVALID_NAME:
       'El nombre de la frecuencia debe tener entre 2 y 50 caracteres.',
@@ -110,7 +111,8 @@ export const ERROR_MESSAGES = {
     NOT_FOUND: 'Frecuencia no encontrada.',
     NAME_IN_USE: 'El nombre de la frecuencia ya está en uso.',
     ALREADY_ACTIVE: 'La frecuencia ya está activa.',
-    HAS_ACTIVE_RELATIONS: 'No se puede eliminar la frecuencia porque está siendo utilizada por pacientes activos.',
+    HAS_ACTIVE_RELATIONS:
+      'No se puede eliminar la frecuencia porque está siendo utilizada por pacientes activos.',
   },
 
   PATIENT: {
@@ -143,10 +145,12 @@ export const ERROR_MESSAGES = {
       'Las observaciones médicas no pueden exceder 2000 caracteres.',
     INVALID_CONTACT_METHOD: 'Método de contacto no válido.',
     NOT_FOUND: 'Paciente no encontrado.',
-    HEALTHCARE_ID_IN_USE: 'El ID de obra social ya está en uso para esta prepaga/obra social.',
+    HEALTHCARE_ID_IN_USE:
+      'El ID de obra social ya está en uso para esta prepaga/obra social.',
     ALREADY_ACTIVE: 'El paciente ya está activo.',
     ALREADY_DELETED: 'El paciente ya está eliminado.',
-    HAS_ACTIVE_VISITS: 'No se puede eliminar el paciente porque tiene visitas activas.',
+    HAS_ACTIVE_VISITS:
+      'No se puede eliminar el paciente porque tiene visitas activas.',
     NO_FIELDS_TO_UPDATE: 'Debe proporcionar al menos un campo para actualizar.',
   },
 
@@ -167,11 +171,13 @@ export const ERROR_MESSAGES = {
     ACTUAL_END_TIME_BEFORE_START:
       'La hora de fin real debe ser posterior a la de inicio real.',
     NOT_FOUND: 'Recorrido no encontrado.',
-    DUPLICATE_JOURNEY: 'Ya existe un recorrido para este profesional, fecha y zona.',
+    DUPLICATE_JOURNEY:
+      'Ya existe un recorrido para este profesional, fecha y zona.',
     ALREADY_STARTED: 'El recorrido ya fue iniciado.',
     ALREADY_ENDED: 'El recorrido ya fue finalizado.',
     NOT_STARTED: 'El recorrido debe ser iniciado antes de poder finalizarlo.',
-    HAS_ACTIVE_VISITS: 'No se puede eliminar el recorrido porque tiene visitas activas.',
+    HAS_ACTIVE_VISITS:
+      'No se puede eliminar el recorrido porque tiene visitas activas.',
   },
 
   VISIT: {
@@ -201,14 +207,21 @@ export const ERROR_MESSAGES = {
     CANNOT_CANCEL_COMPLETED: 'No se puede cancelar una visita completada.',
     CANNOT_CONFIRM_COMPLETED: 'No se puede confirmar una visita completada.',
     CANNOT_CONFIRM_CANCELLED: 'No se puede confirmar una visita cancelada.',
-    CANNOT_RESCHEDULE_COMPLETED: 'No se puede reprogramar una visita completada.',
-    CANNOT_RESCHEDULE_CANCELLED: 'No se puede reprogramar una visita cancelada.',
-    CANNOT_MARK_NOT_PRESENT_COMPLETED: 'No se puede marcar como no presente una visita completada.',
-    CANNOT_MARK_NOT_PRESENT_CANCELLED: 'No se puede marcar como no presente una visita cancelada.',
+    CANNOT_RESCHEDULE_COMPLETED:
+      'No se puede reprogramar una visita completada.',
+    CANNOT_RESCHEDULE_CANCELLED:
+      'No se puede reprogramar una visita cancelada.',
+    CANNOT_MARK_NOT_PRESENT_COMPLETED:
+      'No se puede marcar como no presente una visita completada.',
+    CANNOT_MARK_NOT_PRESENT_CANCELLED:
+      'No se puede marcar como no presente una visita cancelada.',
     NO_CHANGES_DETECTED: 'No se detectaron cambios para actualizar.',
-    VISIT_DUPLICATE: 'Ya existe una visita programada para este paciente en la fecha y hora especificada.',
-    RESCHEDULE_CONFLICT: 'Ya existe una visita programada para este paciente en la nueva fecha y hora.',
-    ORDER_CONFLICT: 'Ya existe una visita en esa posición en el recorrido especificado.',
+    VISIT_DUPLICATE:
+      'Ya existe una visita programada para este paciente en la fecha y hora especificada.',
+    RESCHEDULE_CONFLICT:
+      'Ya existe una visita programada para este paciente en la nueva fecha y hora.',
+    ORDER_CONFLICT:
+      'Ya existe una visita en esa posición en el recorrido especificado.',
   },
 
   HOLIDAY: {

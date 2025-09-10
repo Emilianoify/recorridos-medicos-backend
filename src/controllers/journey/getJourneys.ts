@@ -8,20 +8,10 @@ import {
 } from '../../utils/commons/responseFunctions';
 import { Op } from 'sequelize';
 import { JourneyModel, ProfessionalModel, ZoneModel } from '../../models';
-import { IJourney } from '../../interfaces/journey.interface';
+import { IJourney, IJourneyGeneralWhereClause } from '../../interfaces/journey.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { z } from 'zod';
-import { journeyFilterSchema } from '../../utils/validators/schemas/journeySchemas';
-
-const journeyQuerySchema = z.object({
-  page: z.coerce.number().int().min(1, ERROR_MESSAGES.PAGINATION.PAGE_TOO_SMALL).default(1),
-  limit: z.coerce.number().int().min(1).max(100, ERROR_MESSAGES.PAGINATION.LIMIT_OUT_OF_RANGE).default(10),
-  sortBy: z.string().default('date'),
-  sortOrder: z.enum(['asc', 'desc'], {
-    errorMap: () => ({ message: ERROR_MESSAGES.PAGINATION.INVALID_SORT_ORDER }),
-  }).default('desc'),
-}).merge(journeyFilterSchema);
+import { journeyQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const getJourneys = async (
   req: AuthRequest,
@@ -44,7 +34,7 @@ export const getJourneys = async (
     } = validatedQuery;
 
     // Build where clause
-    const whereClause: any = {};
+    const whereClause: IJourneyGeneralWhereClause = {};
 
     if (professionalId) {
       whereClause.professionalId = professionalId;
@@ -101,24 +91,27 @@ export const getJourneys = async (
     const totalPages = Math.ceil(journeysData.count / limit);
 
     const response = {
-      journeys: journeysData.rows.map((journey: IJourney | any) => ({
-        id: journey.id,
-        professional: journey.professional,
-        date: journey.date,
-        zone: journey.zone,
-        status: journey.status,
-        plannedStartTime: journey.plannedStartTime,
-        plannedEndTime: journey.plannedEndTime,
-        actualStartTime: journey.actualStartTime,
-        actualEndTime: journey.actualEndTime,
-        estimatedVisits: journey.estimatedVisits,
-        completedVisits: journey.completedVisits,
-        totalTravelDistance: journey.totalTravelDistance,
-        observations: journey.observations,
-        isActive: journey.isActive,
-        createdAt: journey.createdAt,
-        updatedAt: journey.updatedAt,
-      })),
+      journeys: journeysData.rows.map((journeyInstance) => {
+        const journey: IJourney = journeyInstance.toJSON() as IJourney;
+        return {
+          id: journey.id,
+          professional: journey.professional,
+          date: journey.date,
+          zone: journey.zone,
+          status: journey.status,
+          plannedStartTime: journey.plannedStartTime,
+          plannedEndTime: journey.plannedEndTime,
+          actualStartTime: journey.actualStartTime,
+          actualEndTime: journey.actualEndTime,
+          estimatedVisits: journey.estimatedVisits,
+          completedVisits: journey.completedVisits,
+          totalTravelDistance: journey.totalTravelDistance,
+          observations: journey.observations,
+          isActive: journey.isActive,
+          createdAt: journey.createdAt,
+          updatedAt: journey.updatedAt,
+        };
+      }),
       pagination: {
         total: journeysData.count,
         page: page,

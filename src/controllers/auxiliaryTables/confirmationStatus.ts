@@ -6,6 +6,7 @@ import {
 } from '../../utils/commons/responseFunctions';
 import { ConfirmationStatusModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
+import { IConfirmationStatus } from '../../interfaces/auxiliaryTables.interface';
 
 export const getConfirmationStatuses = async (
   _req: AuthRequest,
@@ -19,12 +20,15 @@ export const getConfirmationStatuses = async (
     });
 
     const response = {
-      confirmationStatuses: confirmationStatuses.map((status: any) => ({
-        id: status.id,
-        name: status.name,
-        description: status.description,
-        isActive: status.isActive,
-      })),
+      confirmationStatuses: confirmationStatuses.map((statusInstance) => {
+        const status: IConfirmationStatus = statusInstance.toJSON() as IConfirmationStatus;
+        return {
+          id: status.id,
+          name: status.name,
+          description: status.description,
+          isActive: status.isActive,
+        };
+      }),
       total: confirmationStatuses.length,
     };
 

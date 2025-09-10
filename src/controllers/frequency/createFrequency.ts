@@ -3,8 +3,17 @@ import { FrequencyModel } from '../../models';
 import { createFrequencySchema } from '../../utils/validators/schemas/frequencySchemas';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
+import {
+  sendBadRequest,
+  sendInternalErrorResponse,
+  sendSuccessResponse,
+} from '../../utils/commons/responseFunctions';
+import { ZodError } from 'zod';
 
-export const createFrequency = async (req: Request, res: Response): Promise<void> => {
+export const createFrequency = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const validatedData = createFrequencySchema.parse(req.body);
 
@@ -15,36 +24,23 @@ export const createFrequency = async (req: Request, res: Response): Promise<void
     });
 
     if (existingFrequency) {
-      res.status(400).json({
-        success: false,
-        message: 'El nombre de la frecuencia ya está en uso',
-        error: ERROR_MESSAGES.FREQUENCY.INVALID_NAME,
-      });
-      return;
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.INVALID_NAME);
     }
 
     const newFrequency = await FrequencyModel.create(validatedData);
 
-    res.status(201).json({
-      success: true,
-      message: SUCCESS_MESSAGES.FREQUENCY.FREQUENCY_CREATED,
-      data: newFrequency,
-    });
-  } catch (error: any) {
-    if (error.name === 'ZodError') {
-      res.status(400).json({
-        success: false,
-        message: 'Datos de entrada inválidos',
-        error: error.errors,
-      });
-      return;
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.FREQUENCY.FREQUENCY_CREATED,
+      newFrequency
+    );
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.errors[0].message;
+      return sendBadRequest(res, firstError);
     }
 
-    console.error('Error al crear frecuencia:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor',
-      error: ERROR_MESSAGES.SERVER.INTERNAL_ERROR,
-    });
+    console.error('Error deleting frequency:', error);
+    return sendInternalErrorResponse(res);
   }
 };

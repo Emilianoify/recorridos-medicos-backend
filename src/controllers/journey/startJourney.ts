@@ -11,21 +11,9 @@ import {
 import { JourneyModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { z } from 'zod';
 import { JourneyStatus } from '../../enums/JourneyStatus';
 import { IJourney } from '../../interfaces/journey.interface';
-
-const startJourneyParamsSchema = z.object({
-  id: z.string().uuid(ERROR_MESSAGES.JOURNEY.INVALID_ID),
-});
-
-const startJourneySchema = z.object({
-  actualStartTime: z
-    .string()
-    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/)
-    .optional(),
-  observations: z.string().max(1000).optional(),
-});
+import { startJourneyParamsSchema, startJourneySchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const startJourney = async (
   req: AuthRequest,

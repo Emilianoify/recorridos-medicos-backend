@@ -18,13 +18,9 @@ import {
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { updatePatientSchema } from '../../utils/validators/schemas/patientSchemas';
-import { z } from 'zod';
 import { Op } from 'sequelize';
 import { IPatient } from '../../interfaces/patient.interface';
-
-const updatePatientParamsSchema = z.object({
-  id: z.string().uuid(ERROR_MESSAGES.PATIENT.INVALID_ID),
-});
+import { updatePatientParamsSchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const updatePatient = async (
   req: AuthRequest,

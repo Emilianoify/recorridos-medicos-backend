@@ -8,7 +8,7 @@ import {
 } from '../../utils/commons/responseFunctions';
 import { HolidayModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
-
+import { IHoliday } from '../../interfaces/holiday.interface';
 import { Op } from 'sequelize';
 import { holidayQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 
@@ -75,18 +75,21 @@ export const getHolidays = async (
     const totalPages = Math.ceil(holidaysData.count / limit);
 
     const response = {
-      holidays: holidaysData.rows.map((holiday: any) => ({
-        id: holiday.id,
-        name: holiday.name,
-        date: holiday.date,
-        description: holiday.description,
-        isNational: holiday.isNational,
-        isActive: holiday.isActive,
-        dayOfWeek: new Date(holiday.date).toLocaleDateString('es-AR', {
-          weekday: 'long',
-        }),
-        createdAt: holiday.createdAt,
-      })),
+      holidays: holidaysData.rows.map((holidayInstance) => {
+        const holiday: IHoliday = holidayInstance.toJSON() as IHoliday;
+        return {
+          id: holiday.id,
+          name: holiday.name,
+          date: holiday.date,
+          description: holiday.description,
+          isNational: holiday.isNational,
+          isActive: holiday.isActive,
+          dayOfWeek: new Date(holiday.date).toLocaleDateString('es-AR', {
+            weekday: 'long',
+          }),
+          createdAt: holiday.createdAt,
+        };
+      }),
       pagination: {
         total: holidaysData.count,
         page: page,

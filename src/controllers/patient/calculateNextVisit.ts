@@ -10,21 +10,9 @@ import {
 import { PatientModel, FrequencyModel, HolidayModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { z } from 'zod';
 import { IPatient } from '../../interfaces/patient.interface';
 import { FrequencyType } from '../../enums/Frequency';
-
-const calculateNextVisitSchema = z.object({
-  id: z.string().uuid(ERROR_MESSAGES.PATIENT.INVALID_ID),
-});
-
-const querySchema = z.object({
-  fromDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional(),
-  updatePatient: z.coerce.boolean().default(false),
-});
+import { calculateNextVisitParamsSchema, calculateNextVisitQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 
 // Helper function to add business days
 const addBusinessDays = (
@@ -96,8 +84,8 @@ export const calculateNextVisit = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { id } = calculateNextVisitSchema.parse(req.params);
-    const { fromDate, updatePatient } = querySchema.parse(req.query);
+    const { id } = calculateNextVisitParamsSchema.parse(req.params);
+    const { fromDate, updatePatient } = calculateNextVisitQuerySchema.parse(req.query);
 
     const patient = (await PatientModel.findByPk(id, {
       include: [
@@ -126,7 +114,7 @@ export const calculateNextVisit = async (
 
     const frequency = patient.frequency;
     if (!frequency) {
-      return sendBadRequest(res, 'Paciente no tiene frecuencia asignada');
+      return sendBadRequest(res, ERROR_MESSAGES.PATIENT.INVALID_FREQUENCY_ID);
     }
 
     // Determine base date for calculation
