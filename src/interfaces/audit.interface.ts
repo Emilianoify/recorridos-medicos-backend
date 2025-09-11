@@ -1,4 +1,5 @@
 import { AuditAction, AuditEntity, ChangeReason } from '../enums/Audit';
+import { ComplianceLevel } from '../enums/ComplianceLevel';
 import { IUser } from './user.interface';
 
 export interface IVisitChangeAudit {
@@ -135,6 +136,12 @@ export interface IEntityAuditTrail {
     majorChanges: number; // Cambios importantes (status, cancelaciones, etc.)
     minorChanges: number; // Cambios menores (notas, horarios, etc.)
   };
+}
+
+export interface IComplianceSummary {
+  complianceScore: number;
+  riskLevel: ComplianceLevel;
+  recommendations: string[];
 }
 
 // Para compliance y reportes regulatorios

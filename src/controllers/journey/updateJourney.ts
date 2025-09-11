@@ -21,7 +21,11 @@ export const updateJourney = async (
   try {
     const { id } = req.params;
 
-    if (!id || !isValidUUID(id)) {
+    if (!id) {
+      return sendBadRequest(res, ERROR_MESSAGES.JOURNEY.ID_REQUIRED);
+    }
+
+    if (!isValidUUID(id)) {
       return sendBadRequest(res, ERROR_MESSAGES.JOURNEY.INVALID_ID);
     }
 

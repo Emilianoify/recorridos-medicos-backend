@@ -20,7 +20,11 @@ export const getJourneyById = async (
   try {
     const { id } = req.params;
 
-    if (!id || !isValidUUID(id)) {
+    if (!id) {
+      return sendBadRequest(res, ERROR_MESSAGES.JOURNEY.ID_REQUIRED);
+    }
+
+    if (!isValidUUID(id)) {
       return sendBadRequest(res, ERROR_MESSAGES.JOURNEY.INVALID_ID);
     }
 
@@ -73,7 +77,11 @@ export const getJourneyById = async (
       },
     };
 
-    return sendSuccessResponse(res, SUCCESS_MESSAGES.JOURNEY.JOURNEY_FOUND, response);
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.JOURNEY.JOURNEY_FOUND,
+      response
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       const firstError = error.errors[0].message;

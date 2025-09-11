@@ -12,7 +12,7 @@ import {
   updateProfessional,
   deleteProfessional,
   restoreProfessional,
-} from '../controllers/professional.ts';
+} from '../controllers/professional/index';
 
 const router = Router();
 

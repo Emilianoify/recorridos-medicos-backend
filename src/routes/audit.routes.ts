@@ -4,6 +4,9 @@ import { authMiddleware } from '../middlewares/authMiddleware';
 import { requireAdmin } from '../middlewares/checkRole';
 import {
   getAuditTrail,
+  getComplianceReport,
+  getEntityHistory,
+  getUserActivity,
 } from '../controllers/audit';
 
 const router = Router();
@@ -14,5 +17,8 @@ router.use(checkToken, authMiddleware);
 router.use(requireAdmin);
 
 router.get('/trail', getAuditTrail);
+router.get('/compliance-report', getComplianceReport);
+router.get('/entity/:entityType/:entityId/history', getEntityHistory);
+router.get('/user/:userId/activity', getUserActivity);
 
 export default router;

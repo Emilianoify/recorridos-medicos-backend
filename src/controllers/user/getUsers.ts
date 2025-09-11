@@ -6,7 +6,7 @@ import {
   sendInternalErrorResponse,
   sendSuccessResponse,
 } from '../../utils/commons/responseFunctions';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { RoleModel, UserModel } from '../../models';
 import { IUser } from '../../interfaces/user.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
@@ -23,8 +23,8 @@ export const getUsers = async (
     const {
       page,
       limit,
-      sortBy = 'createdAt',
-      sortOrder = 'desc',
+      sortBy,
+      sortOrder,
       roleId,
       state,
       search,
@@ -33,7 +33,7 @@ export const getUsers = async (
     } = validatedQuery;
 
     // Construir whereClause
-    const whereClause: any = {};
+    const whereClause: WhereOptions = {};
 
     // Filtro por estado
     if (state) {
@@ -47,7 +47,7 @@ export const getUsers = async (
 
     // Filtro por búsqueda
     if (search) {
-      whereClause[Op.or] = [
+      whereClause[Op.or.toString()] = [
         { firstname: { [Op.iLike]: `%${search.trim()}%` } },
         { lastname: { [Op.iLike]: `%${search.trim()}%` } },
         { username: { [Op.iLike]: `%${search.trim()}%` } },
@@ -89,16 +89,19 @@ export const getUsers = async (
     const totalPages = Math.ceil(usersData.count / limit);
 
     const response = {
-      users: usersData.rows.map((user: IUser | any) => ({
-        id: user.id,
-        username: user.username,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        corporative_email: user.corporative_email,
-        role: user.role,
-        state: user.state,
-        createdAt: user.createdAt,
-      })),
+      users: usersData.rows.map(user => {
+        const userJson: IUser = user.toJSON() as IUser;
+        return {
+          id: userJson.id,
+          username: userJson.username,
+          firstname: userJson.firstname,
+          lastname: userJson.lastname,
+          corporative_email: userJson.corporative_email,
+          role: userJson.role,
+          state: userJson.state,
+          createdAt: userJson.createdAt,
+        };
+      }),
       pagination: {
         total: usersData.count,
         page: page,

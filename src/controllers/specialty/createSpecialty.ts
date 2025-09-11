@@ -14,12 +14,6 @@ import { SpecialtyModel } from '../../models';
 import { ISpecialty } from '../../interfaces/specialty.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 
-interface CreateSpecialty {
-  name: string;
-  description?: string | null;
-  isActive: boolean;
-}
-
 export const createSpecialty = async (
   req: AuthRequest,
   res: Response
@@ -30,7 +24,7 @@ export const createSpecialty = async (
       return sendBadRequest(res, ERROR_MESSAGES.SERVER.EMPTY_BODY);
     }
 
-    const validSpecialty: CreateSpecialty = specialtyBaseSchema.parse(body);
+    const validSpecialty = specialtyBaseSchema.parse(body);
 
     const { name, description, isActive } = validSpecialty;
 
@@ -59,13 +53,11 @@ export const createSpecialty = async (
       },
     };
 
-    if (createdSpecialty) {
-      return sendSuccessResponse(
-        res,
-        SUCCESS_MESSAGES.SPECIALTY.SPECIALTY_CREATED,
-        response
-      );
-    }
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.SPECIALTY.SPECIALTY_CREATED,
+      response
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       const firstError = error.errors[0].message;

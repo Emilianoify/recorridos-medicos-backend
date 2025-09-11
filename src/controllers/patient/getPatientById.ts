@@ -38,7 +38,7 @@ export const getPatientById = async (
       return sendBadRequest(res, ERROR_MESSAGES.PATIENT.INVALID_ID);
     }
 
-    const patient = (await PatientModel.findByPk(id, {
+    const patientInstance = await PatientModel.findByPk(id, {
       attributes: { exclude: ['deletedAt'] },
       include: [
         {
@@ -79,11 +79,13 @@ export const getPatientById = async (
           required: false,
         },
       ],
-    })) as IPatient | null;
+    });
 
-    if (!patient) {
+    if (!patientInstance) {
       return sendNotFound(res, ERROR_MESSAGES.PATIENT.NOT_FOUND);
     }
+
+    const patient: IPatient = patientInstance.toJSON() as IPatient;
 
     const response = {
       patient: {

@@ -67,12 +67,14 @@ export const updateUser = async (
     }
 
     const user: IUser = currentUser.toJSON() as IUser;
-
+    const updateData: Partial<IUser> = {};
+    let hashedPassword: string;
     if (username && user.username !== username) {
       const usernameExists = await existingUsername(username);
       if (usernameExists) {
         return sendConflict(res, ERROR_MESSAGES.AUTH.USERNAME_IN_USE);
       }
+      updateData.username = username;
     }
 
     if (corporative_email && user.corporative_email !== corporative_email) {
@@ -80,6 +82,7 @@ export const updateUser = async (
       if (emailExists) {
         return sendConflict(res, ERROR_MESSAGES.AUTH.EMAIL_IN_USE);
       }
+      updateData.corporative_email = corporative_email;
     }
 
     if (roleId) {
@@ -87,12 +90,13 @@ export const updateUser = async (
       if (!validRole) {
         return sendBadRequest(res, ERROR_MESSAGES.ROLE.INVALID_ID);
       }
+      updateData.roleId = roleId;
     }
 
-    let hashedPassword;
     if (password) {
       const saltRounds = parseInt(process.env.SALT_ROUNDS!!);
       hashedPassword = await bcrypt.hash(password, saltRounds);
+      updateData.password = hashedPassword;
     }
 
     if (state) {
@@ -100,16 +104,12 @@ export const updateUser = async (
       if (!validState) {
         return sendBadRequest(res, ERROR_MESSAGES.USER.INVALID_STATE);
       }
+      updateData.state = state as UserState;
     }
 
-    const updateData: any = {};
-    if (username) updateData.username = username;
+    // Campos simples sin validaciones adicionales
     if (firstname) updateData.firstname = firstname;
     if (lastname) updateData.lastname = lastname;
-    if (corporative_email) updateData.corporative_email = corporative_email;
-    if (roleId) updateData.roleId = roleId;
-    if (hashedPassword) updateData.password = hashedPassword;
-    if (state) updateData.state = state;
 
     const [affectedCount] = await UserModel.update(updateData, {
       where: { id },

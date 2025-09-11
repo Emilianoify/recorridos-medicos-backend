@@ -29,13 +29,15 @@ export const getFrequencyById = async (
       return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.INVALID_ID);
     }
 
-    const frequency = (await FrequencyModel.findByPk(id, {
+    const frequencyInstance = await FrequencyModel.findByPk(id, {
       attributes: { exclude: ['deletedAt'] },
-    })) as IFrequency | null;
+    });
 
-    if (!frequency) {
+    if (!frequencyInstance) {
       return sendNotFound(res, ERROR_MESSAGES.FREQUENCY.NOT_FOUND);
     }
+
+    const frequency: IFrequency = frequencyInstance.toJSON() as IFrequency;
 
     const response = {
       frequency: {

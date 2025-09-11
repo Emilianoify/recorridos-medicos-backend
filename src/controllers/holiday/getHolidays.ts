@@ -9,7 +9,7 @@ import {
 import { HolidayModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { IHoliday } from '../../interfaces/holiday.interface';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { holidayQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const getHolidays = async (
@@ -21,7 +21,7 @@ export const getHolidays = async (
     const { page, limit, year, month, fromDate, toDate, isActive } =
       validatedQuery;
 
-    const whereClause: any = {};
+    const whereClause: WhereOptions = {};
 
     if (typeof isActive === 'boolean') {
       whereClause.isActive = isActive;
@@ -75,7 +75,7 @@ export const getHolidays = async (
     const totalPages = Math.ceil(holidaysData.count / limit);
 
     const response = {
-      holidays: holidaysData.rows.map((holidayInstance) => {
+      holidays: holidaysData.rows.map(holidayInstance => {
         const holiday: IHoliday = holidayInstance.toJSON() as IHoliday;
         return {
           id: holiday.id,
@@ -99,11 +99,11 @@ export const getHolidays = async (
         hasPreviousPage: page > 1,
       },
       filters: {
-        year: year || null,
-        month: month || null,
-        fromDate: fromDate || null,
-        toDate: toDate || null,
-        isActive: isActive ?? null,
+        year: year || 0,
+        month: month || 0,
+        fromDate: fromDate || '',
+        toDate: toDate || '',
+        isActive: isActive ?? false,
       },
     };
 

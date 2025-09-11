@@ -7,14 +7,15 @@ import {
   sendSuccessResponse,
   sendNotFound,
 } from '../../utils/commons/responseFunctions';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { JourneyModel, ProfessionalModel, ZoneModel } from '../../models';
-import { IJourney, IJourneyProfessionalWhereClause } from '../../interfaces/journey.interface';
+import { IJourney } from '../../interfaces/journey.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 import { journeysByProfessionalQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 import { JourneyStatus } from '../../enums/JourneyStatus';
+import { IProfessional } from '../../interfaces/professional.interface';
 
 export const getJourneysByProfessional = async (
   req: AuthRequest,
@@ -23,8 +24,12 @@ export const getJourneysByProfessional = async (
   try {
     const { professionalId } = req.params;
 
-    if (!professionalId || !isValidUUID(professionalId)) {
-      return sendBadRequest(res, ERROR_MESSAGES.JOURNEY.INVALID_PROFESSIONAL_ID);
+    if (!professionalId) {
+      return sendBadRequest(res, ERROR_MESSAGES.PROFESSIONAL.ID_REQUIRED);
+    }
+
+    if (!isValidUUID(professionalId)) {
+      return sendBadRequest(res, ERROR_MESSAGES.PROFESSIONAL.INVALID_ID);
     }
 
     const validatedQuery = journeysByProfessionalQuerySchema.parse(req.query);
@@ -42,16 +47,18 @@ export const getJourneysByProfessional = async (
     } = validatedQuery;
 
     // Validate that professional exists
-    const professional = await ProfessionalModel.findOne({
+    const professionalInstance = await ProfessionalModel.findOne({
       where: { id: professionalId, isActive: true },
       attributes: ['id', 'firstName', 'lastName', 'licenseNumber'],
     });
 
-    if (!professional) {
+    if (!professionalInstance) {
       return sendNotFound(res, ERROR_MESSAGES.PROFESSIONAL.NOT_FOUND);
     }
 
-    const whereClause: IJourneyProfessionalWhereClause = {
+    const professional: IProfessional =
+      professionalInstance.toJSON() as IProfessional;
+    const whereClause: WhereOptions = {
       professionalId: professionalId,
       isActive: typeof isActive === 'boolean' ? isActive : true,
     };
@@ -65,13 +72,10 @@ export const getJourneysByProfessional = async (
     }
 
     if (dateFrom || dateTo) {
-      whereClause.date = {};
-      if (dateFrom) {
-        whereClause.date[Op.gte] = dateFrom;
-      }
-      if (dateTo) {
-        whereClause.date[Op.lte] = dateTo;
-      }
+      whereClause.date = {
+        ...(dateFrom && { [Op.gte]: dateFrom }),
+        ...(dateTo && { [Op.lte]: dateTo }),
+      };
     }
 
     // Dynamic ordering
@@ -120,11 +124,11 @@ export const getJourneysByProfessional = async (
     const response = {
       professional: {
         id: professional.id,
-        firstName: professional.firstName,
-        lastName: professional.lastName,
-        licenseNumber: professional.licenseNumber,
+        firstName: professional.firstname,
+        lastName: professional.lastname,
+        specialtyId: professional.specialtyId,
       },
-      journeys: journeysData.rows.map((journeyInstance) => {
+      journeys: journeysData.rows.map(journeyInstance => {
         const journey: IJourney = journeyInstance.toJSON() as IJourney;
         return {
           id: journey.id,
@@ -167,7 +171,10 @@ export const getJourneysByProfessional = async (
         completedJourneys,
         inProgressJourneys,
         plannedJourneys,
-        completionRate: totalJourneys > 0 ? Math.round((completedJourneys / totalJourneys) * 100) : 0,
+        completionRate:
+          totalJourneys > 0
+            ? Math.round((completedJourneys / totalJourneys) * 100)
+            : 0,
       },
     };
 

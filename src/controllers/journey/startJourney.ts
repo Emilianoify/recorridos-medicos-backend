@@ -25,10 +25,7 @@ export const startJourney = async (
 
     // 1. Manual ID validation (standard pattern)
     if (!id) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.JOURNEY.ID_REQUIRED
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.JOURNEY.ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {

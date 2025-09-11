@@ -1,11 +1,7 @@
 import { Router } from 'express';
 import { checkToken } from '../middlewares/checkToken';
 import { authMiddleware } from '../middlewares/authMiddleware';
-import { 
-  requireAnyCoordinator, 
-  requireAdminRoles, 
-  requireProfessional 
-} from '../middlewares/checkRole';
+import { requireAnyCoordinator } from '../middlewares/checkRole';
 import {
   createJourney,
   getJourneys,
@@ -14,7 +10,7 @@ import {
   startJourney,
   endJourney,
   deleteJourney,
-  generateOptimalRoute,
+  //  generateOptimalRoute,
   getJourneysByDate,
   getJourneysByProfessional,
 } from '../controllers/journey';
@@ -26,7 +22,11 @@ router.use(checkToken, authMiddleware);
 // Journey queries (accessible to coordinators and professionals)
 router.get('/search', requireAnyCoordinator, getJourneys);
 router.get('/search/date', requireAnyCoordinator, getJourneysByDate);
-router.get('/search/professional/:professionalId', requireAnyCoordinator, getJourneysByProfessional);
+router.get(
+  '/search/professional/:professionalId',
+  requireAnyCoordinator,
+  getJourneysByProfessional
+);
 
 // Individual journey operations
 router.get('/:id', requireAnyCoordinator, getJourneyById);
@@ -37,7 +37,7 @@ router.post('/:id/start', requireAnyCoordinator, startJourney);
 router.post('/:id/end', requireAnyCoordinator, endJourney);
 
 // Route optimization (accessible to coordinators and professionals)
-router.get('/:id/optimize-route', requireAnyCoordinator, generateOptimalRoute);
+//router.get('/:id/optimize-route', requireAnyCoordinator, generateOptimalRoute);
 
 // Journey creation and deletion (coordinators only)
 router.post('/create', requireAnyCoordinator, createJourney);

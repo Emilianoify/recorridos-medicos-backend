@@ -63,7 +63,7 @@ export const updateRole = async (
       }
     }
 
-    const updateData: any = {};
+    const updateData: Partial<IRole> = {};
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (permissions !== undefined) updateData.permissions = permissions;
@@ -94,7 +94,7 @@ export const updateRole = async (
       },
     };
 
-    sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLE_UPDATED, response);
+    return sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLE_UPDATED, response);
   } catch (error) {
     if (error instanceof ZodError) {
       const firstError = error.errors[0].message;

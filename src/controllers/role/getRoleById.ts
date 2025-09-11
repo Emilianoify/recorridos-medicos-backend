@@ -46,7 +46,7 @@ export const getRoleById = async (
       },
     };
 
-    sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLE_FOUND, response);
+    return sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLE_FOUND, response);
   } catch (error) {
     return sendInternalErrorResponse(res);
   }

@@ -38,10 +38,12 @@ export const updateFrequency = async (
 
     const validatedData = updateFrequencySchema.parse(body);
 
-    const frequency = (await FrequencyModel.findByPk(id)) as IFrequency | null;
-    if (!frequency) {
+    const frequencyInstance = await FrequencyModel.findByPk(id);
+    if (!frequencyInstance) {
       return sendNotFound(res, ERROR_MESSAGES.FREQUENCY.NOT_FOUND);
     }
+
+    const frequency: IFrequency = frequencyInstance.toJSON() as IFrequency;
 
     // Check if name is being updated and if it already exists
     if (validatedData.name && validatedData.name !== frequency.name) {
@@ -62,25 +64,37 @@ export const updateFrequency = async (
       where: { id },
     });
 
+    // Fetch updated frequency data
+    const updatedFrequencyInstance = await FrequencyModel.findByPk(id, {
+      attributes: { exclude: ['deletedAt'] },
+    });
+
+    if (!updatedFrequencyInstance) {
+      return sendNotFound(res, ERROR_MESSAGES.FREQUENCY.NOT_FOUND);
+    }
+
+    const updatedFrequency: IFrequency = updatedFrequencyInstance.toJSON() as IFrequency;
+
     const response = {
       frequency: {
-        id: frequency.id,
-        name: frequency.name,
-        description: frequency.description,
-        frequencyType: frequency.frequencyType,
-        nextDateCalculationRule: frequency.nextDateCalculationRule,
-        daysBetweenVisits: frequency.daysBetweenVisits,
-        visitsPerMonth: frequency.visitsPerMonth,
-        intervalValue: frequency.intervalValue,
-        intervalUnit: frequency.intervalUnit,
-        visitsPerDay: frequency.visitsPerDay,
-        weeklyPattern: frequency.weeklyPattern,
-        customSchedule: frequency.customSchedule,
-        respectBusinessHours: frequency.respectBusinessHours,
-        allowWeekends: frequency.allowWeekends,
-        allowHolidays: frequency.allowHolidays,
-        isActive: frequency.isActive,
-        updatedAt: frequency.updatedAt,
+        id: updatedFrequency.id,
+        name: updatedFrequency.name,
+        description: updatedFrequency.description,
+        frequencyType: updatedFrequency.frequencyType,
+        nextDateCalculationRule: updatedFrequency.nextDateCalculationRule,
+        daysBetweenVisits: updatedFrequency.daysBetweenVisits,
+        visitsPerMonth: updatedFrequency.visitsPerMonth,
+        intervalValue: updatedFrequency.intervalValue,
+        intervalUnit: updatedFrequency.intervalUnit,
+        visitsPerDay: updatedFrequency.visitsPerDay,
+        weeklyPattern: updatedFrequency.weeklyPattern,
+        customSchedule: updatedFrequency.customSchedule,
+        respectBusinessHours: updatedFrequency.respectBusinessHours,
+        allowWeekends: updatedFrequency.allowWeekends,
+        allowHolidays: updatedFrequency.allowHolidays,
+        isActive: updatedFrequency.isActive,
+        createdAt: updatedFrequency.createdAt,
+        updatedAt: updatedFrequency.updatedAt,
       },
     };
 

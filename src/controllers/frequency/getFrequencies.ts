@@ -2,9 +2,9 @@ import { Response } from 'express';
 import { AuthRequest } from '../../interfaces/auth.interface';
 import { FrequencyModel } from '../../models';
 import { frequencyQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
-import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
+import { IFrequency } from '../../interfaces/frequency.interface';
 import {
   sendSuccessResponse,
   sendBadRequest,
@@ -22,15 +22,7 @@ export const getFrequencies = async (
 
     const offset = (page - 1) * limit;
 
-    // Build where conditions
-    interface IFrequencyWhereClause {
-      [Op.or]?: Array<{
-        name?: { [Op.iLike]: string };
-        description?: { [Op.iLike]: string };
-      }>;
-    }
-
-    let whereConditions: IFrequencyWhereClause = {};
+    let whereConditions: WhereOptions = {};
 
     if (search) {
       whereConditions = {
@@ -46,7 +38,7 @@ export const getFrequencies = async (
       where: whereConditions,
       limit,
       offset,
-      order: [[sortBy || 'createdAt', sortOrder.toUpperCase()]],
+      order: [[sortBy, sortOrder.toUpperCase()]],
       attributes: [
         'id',
         'name',
@@ -67,7 +59,29 @@ export const getFrequencies = async (
     const totalPages = Math.ceil(count / limit);
 
     const response = {
-      frequencies,
+      frequencies: frequencies.map(frequency => {
+        const frequencyJson: IFrequency = frequency.toJSON() as IFrequency;
+        return {
+          id: frequencyJson.id,
+          name: frequencyJson.name,
+          description: frequencyJson.description,
+          frequencyType: frequencyJson.frequencyType,
+          nextDateCalculationRule: frequencyJson.nextDateCalculationRule,
+          daysBetweenVisits: frequencyJson.daysBetweenVisits,
+          visitsPerMonth: frequencyJson.visitsPerMonth,
+          intervalValue: frequencyJson.intervalValue,
+          intervalUnit: frequencyJson.intervalUnit,
+          visitsPerDay: frequencyJson.visitsPerDay,
+          weeklyPattern: frequencyJson.weeklyPattern,
+          customSchedule: frequencyJson.customSchedule,
+          respectBusinessHours: frequencyJson.respectBusinessHours,
+          allowWeekends: frequencyJson.allowWeekends,
+          allowHolidays: frequencyJson.allowHolidays,
+          isActive: frequencyJson.isActive,
+          createdAt: frequencyJson.createdAt,
+          updatedAt: frequencyJson.updatedAt,
+        };
+      }),
       pagination: {
         currentPage: page,
         totalPages,
@@ -78,7 +92,11 @@ export const getFrequencies = async (
       },
     };
 
-    return sendSuccessResponse(res, SUCCESS_MESSAGES.FREQUENCY.FREQUENCIES_FETCHED, response);
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.FREQUENCY.FREQUENCIES_FETCHED,
+      response
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       const firstError = error.errors[0].message;

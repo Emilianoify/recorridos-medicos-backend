@@ -4,6 +4,7 @@ import {
   sendBadRequest,
   sendConflict,
   sendInternalErrorResponse,
+  sendNotFound,
   sendSuccessResponse,
 } from '../../utils/commons/responseFunctions';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
@@ -81,8 +82,12 @@ export const createProfessional = async (
       }
     );
 
+    if (!professionalWithSpecialty) {
+      return sendNotFound(res, ERROR_MESSAGES.PROFESSIONAL.NOT_FOUND);
+    }
+
     const professionalWithSpecialtyJSON: IProfessional =
-      professionalWithSpecialty?.toJSON() as IProfessional;
+      professionalWithSpecialty.toJSON() as IProfessional;
 
     const response = {
       professional: {

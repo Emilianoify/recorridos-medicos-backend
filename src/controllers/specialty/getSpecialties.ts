@@ -7,7 +7,7 @@ import {
   sendInternalErrorResponse,
   sendBadRequest,
 } from '../../utils/commons/responseFunctions';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { ISpecialty } from '../../interfaces/specialty.interface';
 import { SpecialtyModel } from '../../models';
 import { specialtyQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
@@ -20,17 +20,10 @@ export const getSpecialties = async (
     // Validar query parameters con schema Zod
     const validatedQuery = specialtyQuerySchema.parse(req.query);
 
-    const {
-      page,
-      limit,
-      sortBy = 'createdAt',
-      sortOrder = 'desc',
-      isActive,
-      search,
-    } = validatedQuery;
+    const { page, limit, sortBy, sortOrder, isActive, search } = validatedQuery;
 
     // Construir whereClause
-    const whereClause: any = {};
+    const whereClause: WhereOptions = {};
 
     // Filtro por estado activo
     if (isActive !== undefined) {
@@ -59,14 +52,17 @@ export const getSpecialties = async (
     const totalPages = Math.ceil(specialtiesData.count / limit);
 
     const response = {
-      specialties: specialtiesData.rows.map((specialty: ISpecialty | any) => ({
-        id: specialty.id,
-        name: specialty.name,
-        description: specialty.description,
-        isActive: specialty.isActive,
-        createdAt: specialty.createdAt,
-        updatedAt: specialty.updatedAt,
-      })),
+      specialties: specialtiesData.rows.map(specialty => {
+        const specialtyJson: ISpecialty = specialty.toJSON() as ISpecialty;
+        return {
+          id: specialtyJson.id,
+          name: specialtyJson.name,
+          description: specialtyJson.description,
+          isActive: specialtyJson.isActive,
+          createdAt: specialtyJson.createdAt,
+          updatedAt: specialtyJson.updatedAt,
+        };
+      }),
       pagination: {
         total: specialtiesData.count,
         page: page,

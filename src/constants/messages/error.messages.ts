@@ -116,6 +116,7 @@ export const ERROR_MESSAGES = {
   },
 
   PATIENT: {
+    ID_REQUIRED: 'El ID es requerido para esta acción.',
     INVALID_ID: 'ID debe ser un UUID válido.',
     INVALID_FULLNAME: 'El nombre completo debe tener entre 2 y 200 caracteres.',
     INVALID_FULLNAME_FORMAT: 'El nombre contiene caracteres no válidos.',
@@ -155,6 +156,7 @@ export const ERROR_MESSAGES = {
   },
 
   JOURNEY: {
+    ID_REQUIRED: 'El ID es requerido para esta acción.',
     INVALID_ID: 'ID debe ser un UUID válido.',
     INVALID_PROFESSIONAL_ID: 'ID de profesional no válido.',
     INVALID_DATE_FORMAT: 'Formato de fecha no válido (YYYY-MM-DD).',
@@ -270,6 +272,17 @@ export const ERROR_MESSAGES = {
     INVALID_IP_FORMAT: 'Formato de dirección IP no válido.',
     INVALID_RELATED_ENTITY_ID: 'ID de entidad relacionada no válido.',
     INVALID_DATETIME: 'Formato de fecha y hora no válido.',
+    NO_HISTORY_FOUND: 'No se encontró historial para la entidad especificada.',
+    NO_ACTIVITY_FOUND: 'No se encontró actividad para el usuario especificado.',
+  },
+
+  GENERAL: {
+    INVALID_DATE_RANGE:
+      'La fecha de inicio debe ser anterior a la fecha de fin.',
+    INVALID_DATE_FORMAT: 'Formato de fecha no válido (YYYY-MM-DD).',
+    INVALID_UUID: 'Formato de UUID no válido.',
+    MISSING_REQUIRED_FIELD: 'Campo requerido faltante.',
+    INVALID_INPUT: 'Entrada no válida.',
   },
 
   PAGINATION: {

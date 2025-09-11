@@ -18,7 +18,7 @@ import {
 } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { IPatient } from '../../interfaces/patient.interface';
 import { IVisit } from '../../interfaces/visit.interface';
 import { getPatientVisitHistoryQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
@@ -33,10 +33,7 @@ export const getPatientVisitHistory = async (
 
     // 1. Manual ID validation (standard pattern)
     if (!id) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.PATIENT.ID_REQUIRED
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.PATIENT.ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {
@@ -47,15 +44,17 @@ export const getPatientVisitHistory = async (
       getPatientVisitHistoryQuerySchema.parse(req.query);
 
     // Verify patient exists
-    const patient = (await PatientModel.findByPk(id, {
+    const patientInstance = await PatientModel.findByPk(id, {
       attributes: ['id', 'fullName', 'healthcareId'],
-    })) as IPatient | null;
+    });
 
-    if (!patient) {
+    if (!patientInstance) {
       return sendNotFound(res, ERROR_MESSAGES.PATIENT.NOT_FOUND);
     }
 
-    const whereClause: any = { patientId: id };
+    const patient: IPatient = patientInstance.toJSON() as IPatient;
+
+    const whereClause: WhereOptions = { patientId: id };
 
     if (status) {
       whereClause.status = status;
@@ -121,25 +120,27 @@ export const getPatientVisitHistory = async (
         fullName: patient.fullName,
         healthcareId: patient.healthcareId,
       },
-      visits: visitsData.rows.map((visitInstance) => {
+      visits: visitsData.rows.map(visitInstance => {
         const visit: IVisit = visitInstance.toJSON() as IVisit;
         return {
-        id: visit.id,
-        status: visit.status,
-        scheduledDateTime: visit.scheduledDateTime,
-        completedDateTime: visit.completedDateTime,
-        durationMinutes: visit.durationMinutes,
-        orderInJourney: visit.orderInJourney,
-        journey: visit.journey,
-        confirmationStatus: visit.confirmationStatus,
-        confirmationDateTime: visit.confirmationDateTime,
-        confirmationMethod: visit.confirmationMethod,
-        rejectionReason: visit.rejectionReason,
-        notCompletedReason: visit.notCompletedReason,
-        professionalNotes: visit.professionalNotes,
-        coordinatorNotes: visit.coordinatorNotes,
-        createdAt: visit.createdAt,
-      })),
+          id: visit.id,
+          status: visit.status,
+          scheduledDateTime: visit.scheduledDateTime,
+          completedDateTime: visit.completedDateTime,
+          durationMinutes: visit.durationMinutes,
+          orderInJourney: visit.orderInJourney,
+          journey: visit.journey,
+          confirmationStatus: visit.confirmationStatus,
+          confirmationDateTime: visit.confirmationDateTime,
+          confirmationMethod: visit.confirmationMethod,
+          rejectionReason: visit.rejectionReason,
+          notCompletedReason: visit.notCompletedReason,
+          professionalNotes: visit.professionalNotes,
+          coordinatorNotes: visit.coordinatorNotes,
+          createdAt: visit.createdAt,
+        };
+      }),
+
       pagination: {
         total: visitsData.count,
         page: page,

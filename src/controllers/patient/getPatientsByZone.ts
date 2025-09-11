@@ -16,7 +16,7 @@ import {
 import { IPatient } from '../../interfaces/patient.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { getPatientsByZoneQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
@@ -29,20 +29,17 @@ export const getPatientsByZone = async (
 
     // 1. Manual ID validation (standard pattern)
     if (!zoneId) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.PATIENT.ZONE_ID_REQUIRED
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.ZONE.ID_REQUIRED);
     }
 
     if (!isValidUUID(zoneId)) {
-      return sendBadRequest(res, ERROR_MESSAGES.PATIENT.INVALID_ZONE_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.ZONE.INVALID_ID);
     }
 
     const { page, limit, state, search, includeInactive } =
       getPatientsByZoneQuerySchema.parse(req.query);
 
-    const whereClause: any = { zoneId };
+    const whereClause: WhereOptions = { zoneId };
 
     if (state) {
       whereClause.state = state;
@@ -53,7 +50,7 @@ export const getPatientsByZone = async (
     }
 
     if (search) {
-      whereClause[Op.or] = [
+      whereClause[Op.or.toString()] = [
         { fullName: { [Op.iLike]: `%${search.trim()}%` } },
         { healthcareId: { [Op.iLike]: `%${search.trim()}%` } },
         { locality: { [Op.iLike]: `%${search.trim()}%` } },

@@ -6,7 +6,7 @@ import {
   sendInternalErrorResponse,
   sendSuccessResponse,
 } from '../../utils/commons/responseFunctions';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { ZoneModel } from '../../models';
 import { IZone } from '../../interfaces/zone.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
@@ -20,18 +20,11 @@ export const getZones = async (
     // Validar query parameters con schema Zod
     const validatedQuery = zoneQuerySchema.parse(req.query);
 
-    const {
-      page,
-      limit,
-      sortBy = 'createdAt',
-      sortOrder = 'desc',
-      isActive,
-      search,
-      hasCoordinates,
-    } = validatedQuery;
+    const { page, limit, sortBy, sortOrder, isActive, search, hasCoordinates } =
+      validatedQuery;
 
     // Construir whereClause
-    const whereClause: any = {};
+    const whereClause: WhereOptions = {};
 
     // Filtro por estado activo
     if (isActive !== undefined) {

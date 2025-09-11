@@ -22,7 +22,11 @@ export const endJourney = async (
   try {
     const { id } = req.params;
 
-    if (!id || !isValidUUID(id)) {
+    if (!id) {
+      return sendBadRequest(res, ERROR_MESSAGES.JOURNEY.ID_REQUIRED);
+    }
+
+    if (!isValidUUID(id)) {
       return sendBadRequest(res, ERROR_MESSAGES.JOURNEY.INVALID_ID);
     }
 
@@ -67,7 +71,7 @@ export const endJourney = async (
 
     // End the journey
     const currentDateTime = new Date().toISOString();
-    
+
     await JourneyModel.update(
       {
         status: JourneyStatus.COMPLETED,
@@ -126,7 +130,11 @@ export const endJourney = async (
       },
     };
 
-    return sendSuccessResponse(res, SUCCESS_MESSAGES.JOURNEY.JOURNEY_ENDED, response);
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.JOURNEY.JOURNEY_ENDED,
+      response
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       const firstError = error.errors[0].message;

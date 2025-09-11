@@ -6,11 +6,10 @@ import {
   sendInternalErrorResponse,
   sendSuccessResponse,
 } from '../../utils/commons/responseFunctions';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { JourneyModel, ProfessionalModel, ZoneModel } from '../../models';
-import { IJourney, IJourneyGeneralWhereClause } from '../../interfaces/journey.interface';
+import { IJourney } from '../../interfaces/journey.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
-import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { journeyQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const getJourneys = async (
@@ -34,7 +33,7 @@ export const getJourneys = async (
     } = validatedQuery;
 
     // Build where clause
-    const whereClause: IJourneyGeneralWhereClause = {};
+    const whereClause: WhereOptions = {};
 
     if (professionalId) {
       whereClause.professionalId = professionalId;
@@ -54,13 +53,10 @@ export const getJourneys = async (
 
     // Date range filtering
     if (dateFrom || dateTo) {
-      whereClause.date = {};
-      if (dateFrom) {
-        whereClause.date[Op.gte] = dateFrom;
-      }
-      if (dateTo) {
-        whereClause.date[Op.lte] = dateTo;
-      }
+      whereClause.date = {
+        ...(dateFrom && { [Op.gte]: dateFrom }),
+        ...(dateTo && { [Op.lte]: dateTo }),
+      };
     }
 
     // Dynamic ordering
@@ -91,7 +87,7 @@ export const getJourneys = async (
     const totalPages = Math.ceil(journeysData.count / limit);
 
     const response = {
-      journeys: journeysData.rows.map((journeyInstance) => {
+      journeys: journeysData.rows.map(journeyInstance => {
         const journey: IJourney = journeyInstance.toJSON() as IJourney;
         return {
           id: journey.id,

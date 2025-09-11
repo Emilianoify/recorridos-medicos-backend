@@ -6,7 +6,7 @@ import {
   sendInternalErrorResponse,
   sendSuccessResponse,
 } from '../../utils/commons/responseFunctions';
-import { Model, Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import {
   PatientModel,
   HealthcareProviderModel,
@@ -28,8 +28,8 @@ export const getPatients = async (
     const {
       page,
       limit,
-      sortBy = 'createdAt',
-      sortOrder = 'desc',
+      sortBy,
+      sortOrder,
       zoneId,
       frequencyId,
       primaryProfessionalId,
@@ -43,7 +43,7 @@ export const getPatients = async (
     } = validatedQuery;
 
     // Build where clause
-    const whereClause: any = {};
+    const whereClause: WhereOptions = {};
 
     if (state) {
       whereClause.state = state;
@@ -75,11 +75,11 @@ export const getPatients = async (
 
     // Search functionality
     if (search) {
-      whereClause[Op.or] = [
-        { fullName: { [Op.iLike]: `%${search.trim()}%` } },
-        { healthcareId: { [Op.iLike]: `%${search.trim()}%` } },
-        { address: { [Op.iLike]: `%${search.trim()}%` } },
-        { locality: { [Op.iLike]: `%${search.trim()}%` } },
+      whereClause[Op.or.toString()] = [
+        { firstname: { [Op.iLike]: `%${search.trim()}%` } },
+        { lastname: { [Op.iLike]: `%${search.trim()}%` } },
+        { username: { [Op.iLike]: `%${search.trim()}%` } },
+        { corporative_email: { [Op.iLike]: `%${search.trim()}%` } },
       ];
     }
 
@@ -88,7 +88,7 @@ export const getPatients = async (
       if (hasUpcomingVisit) {
         whereClause.nextScheduledVisitDate = { [Op.gte]: new Date() };
       } else {
-        whereClause[Op.or] = [
+        whereClause[Op.or.toString()] = [
           { nextScheduledVisitDate: null },
           { nextScheduledVisitDate: { [Op.lt]: new Date() } },
         ];
@@ -153,7 +153,7 @@ export const getPatients = async (
     const totalPages = Math.ceil(patientsData.count / limit);
 
     const response = {
-      patients: patientsData.rows.map((patient: Model<any, any>) => {
+      patients: patientsData.rows.map(patient => {
         const patientJson = patient.toJSON() as IPatient;
         return {
           id: patientJson.id,

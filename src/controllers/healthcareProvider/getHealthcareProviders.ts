@@ -7,7 +7,7 @@ import {
   sendInternalErrorResponse,
   sendBadRequest,
 } from '../../utils/commons/responseFunctions';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { HealthcareProviderModel } from '../../models';
 import { IHealthcareProvider } from '../../interfaces/healthcareProvider.interface';
 import { healthcareProviderQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
@@ -20,18 +20,11 @@ export const getHealthcareProviders = async (
     // Validar query parameters con schema Zod
     const validatedQuery = healthcareProviderQuerySchema.parse(req.query);
 
-    const {
-      page,
-      limit,
-      sortBy = 'createdAt',
-      sortOrder = 'desc',
-      isActive,
-      search,
-      hasCode,
-    } = validatedQuery;
+    const { page, limit, sortBy, sortOrder, isActive, search, hasCode } =
+      validatedQuery;
 
     // Construir whereClause
-    const whereClause: any = {};
+    const whereClause: WhereOptions = {};
 
     // Filtro por estado activo
     if (isActive !== undefined) {
@@ -72,16 +65,17 @@ export const getHealthcareProviders = async (
     const totalPages = Math.ceil(healthcareProvidersData.count / limit);
 
     const response = {
-      healthcareProviders: healthcareProvidersData.rows.map(
-        (provider: IHealthcareProvider | any) => ({
-          id: provider.id,
-          name: provider.name,
-          code: provider.code,
-          isActive: provider.isActive,
-          createdAt: provider.createdAt,
-          updatedAt: provider.updatedAt,
-        })
-      ),
+      healthcareProviders: healthcareProvidersData.rows.map(provider => {
+        const providerJson: IHealthcareProvider = provider.toJSON() as IHealthcareProvider;
+        return {
+          id: providerJson.id,
+          name: providerJson.name,
+          code: providerJson.code,
+          isActive: providerJson.isActive,
+          createdAt: providerJson.createdAt,
+          updatedAt: providerJson.updatedAt,
+        };
+      }),
       pagination: {
         total: healthcareProvidersData.count,
         page: page,

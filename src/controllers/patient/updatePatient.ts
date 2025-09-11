@@ -117,31 +117,81 @@ export const updatePatient = async (
 
     await PatientModel.update(validatedData, { where: { id } });
 
+    // Fetch updated patient with all relations
+    const updatedPatientInstance = await PatientModel.findByPk(id, {
+      attributes: { exclude: ['deletedAt'] },
+      include: [
+        {
+          model: HealthcareProviderModel,
+          as: 'healthcareProvider',
+          attributes: ['id', 'name', 'code', 'isActive'],
+        },
+        {
+          model: ZoneModel,
+          as: 'zone',
+          attributes: ['id', 'name', 'description', 'isActive'],
+        },
+        {
+          model: FrequencyModel,
+          as: 'frequency',
+          attributes: [
+            'id',
+            'name',
+            'description',
+            'frequencyType',
+            'nextDateCalculationRule',
+            'daysBetweenVisits',
+            'visitsPerMonth',
+            'isActive',
+          ],
+        },
+        {
+          model: ProfessionalModel,
+          as: 'primaryProfessional',
+          attributes: [
+            'id',
+            'firstname',
+            'lastname',
+            'specialtyId',
+            'phone',
+            'isActive',
+          ],
+          required: false,
+        },
+      ],
+    });
+
+    if (!updatedPatientInstance) {
+      return sendNotFound(res, ERROR_MESSAGES.PATIENT.NOT_FOUND);
+    }
+
+    const updatedPatient: IPatient = updatedPatientInstance.toJSON() as IPatient;
+
     const response = {
       patient: {
-        id: patient.id,
-        fullName: patient.fullName,
-        healthcareId: patient.healthcareId,
-        healthcareProvider: patient.healthcareProvider,
-        address: patient.address,
-        locality: patient.locality,
-        zone: patient.zone,
-        phone: patient.phone,
-        emergencyPhone: patient.emergencyPhone,
-        state: patient.state,
-        lastAuthorizationDate: patient.lastAuthorizationDate,
-        authorizedVisitsPerMonth: patient.authorizedVisitsPerMonth,
-        completedVisitsThisMonth: patient.completedVisitsThisMonth,
-        frequency: patient.frequency,
-        primaryProfessional: patient.primaryProfessional,
-        lastVisitDate: patient.lastVisitDate,
-        nextScheduledVisitDate: patient.nextScheduledVisitDate,
-        diagnosis: patient.diagnosis,
-        medicalObservations: patient.medicalObservations,
-        requiresConfirmation: patient.requiresConfirmation,
-        preferredContactMethod: patient.preferredContactMethod,
-        isActive: patient.isActive,
-        updatedAt: patient.updatedAt,
+        id: updatedPatient.id,
+        fullName: updatedPatient.fullName,
+        healthcareId: updatedPatient.healthcareId,
+        healthcareProvider: updatedPatient.healthcareProvider,
+        address: updatedPatient.address,
+        locality: updatedPatient.locality,
+        zone: updatedPatient.zone,
+        phone: updatedPatient.phone,
+        emergencyPhone: updatedPatient.emergencyPhone,
+        state: updatedPatient.state,
+        lastAuthorizationDate: updatedPatient.lastAuthorizationDate,
+        authorizedVisitsPerMonth: updatedPatient.authorizedVisitsPerMonth,
+        completedVisitsThisMonth: updatedPatient.completedVisitsThisMonth,
+        frequency: updatedPatient.frequency,
+        primaryProfessional: updatedPatient.primaryProfessional,
+        lastVisitDate: updatedPatient.lastVisitDate,
+        nextScheduledVisitDate: updatedPatient.nextScheduledVisitDate,
+        diagnosis: updatedPatient.diagnosis,
+        medicalObservations: updatedPatient.medicalObservations,
+        requiresConfirmation: updatedPatient.requiresConfirmation,
+        preferredContactMethod: updatedPatient.preferredContactMethod,
+        isActive: updatedPatient.isActive,
+        updatedAt: updatedPatient.updatedAt,
       },
     };
 

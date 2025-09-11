@@ -1,8 +1,10 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthRequest } from '../../interfaces/auth.interface';
 import { FrequencyModel } from '../../models';
 import { createFrequencySchema } from '../../utils/validators/schemas/frequencySchemas';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
+import { IFrequency } from '../../interfaces/frequency.interface';
 import {
   sendBadRequest,
   sendInternalErrorResponse,
@@ -11,7 +13,7 @@ import {
 import { ZodError } from 'zod';
 
 export const createFrequency = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
@@ -27,12 +29,36 @@ export const createFrequency = async (
       return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.INVALID_NAME);
     }
 
-    const newFrequency = await FrequencyModel.create(validatedData);
+    const newFrequencyInstance = await FrequencyModel.create(validatedData);
+    const newFrequency: IFrequency = newFrequencyInstance.toJSON() as IFrequency;
+
+    const response = {
+      frequency: {
+        id: newFrequency.id,
+        name: newFrequency.name,
+        description: newFrequency.description,
+        frequencyType: newFrequency.frequencyType,
+        nextDateCalculationRule: newFrequency.nextDateCalculationRule,
+        daysBetweenVisits: newFrequency.daysBetweenVisits,
+        visitsPerMonth: newFrequency.visitsPerMonth,
+        intervalValue: newFrequency.intervalValue,
+        intervalUnit: newFrequency.intervalUnit,
+        visitsPerDay: newFrequency.visitsPerDay,
+        weeklyPattern: newFrequency.weeklyPattern,
+        customSchedule: newFrequency.customSchedule,
+        respectBusinessHours: newFrequency.respectBusinessHours,
+        allowWeekends: newFrequency.allowWeekends,
+        allowHolidays: newFrequency.allowHolidays,
+        isActive: newFrequency.isActive,
+        createdAt: newFrequency.createdAt,
+        updatedAt: newFrequency.updatedAt,
+      },
+    };
 
     return sendSuccessResponse(
       res,
       SUCCESS_MESSAGES.FREQUENCY.FREQUENCY_CREATED,
-      newFrequency
+      response
     );
   } catch (error) {
     if (error instanceof ZodError) {

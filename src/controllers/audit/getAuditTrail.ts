@@ -9,7 +9,7 @@ import {
 import { VisitChangeAuditModel, UserModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 
-import { Model, Op } from 'sequelize';
+import { Model, Op, WhereOptions } from 'sequelize';
 import { auditQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 import { IVisitChangeAudit } from '../../interfaces/audit.interface';
 
@@ -30,7 +30,7 @@ export const getAuditTrail = async (
       toDate,
     } = validatedQuery;
 
-    const whereClause: any = {};
+    const whereClause: WhereOptions = {};
 
     if (entityType) {
       whereClause.entityType = entityType;

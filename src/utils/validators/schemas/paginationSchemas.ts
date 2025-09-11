@@ -25,7 +25,8 @@ export const paginationSchema = z.object({
     .string()
     .min(1, ERROR_MESSAGES.PAGINATION.INVALID_SORT_BY)
     .max(50, ERROR_MESSAGES.PAGINATION.INVALID_SORT_BY)
-    .optional(),
+    .optional()
+    .default('createdAt'),
 
   sortOrder: z
     .enum(['asc', 'desc'], {
@@ -74,7 +75,13 @@ export const healthcareProviderFilterSchema = z.object({
 export const professionalFilterSchema = z.object({
   specialtyId: z.string().uuid().optional(),
   state: z
-    .enum(['profesional_activo', 'profesional_inactivo', 'profesional_suspendido', 'profesional_licencia', 'profesional_desvinculado'])
+    .enum([
+      'profesional_activo',
+      'profesional_inactivo',
+      'profesional_suspendido',
+      'profesional_licencia',
+      'profesional_desvinculado',
+    ])
     .optional(),
   search: z.string().min(1).max(100).optional(),
   hasSchedule: z.enum(['true', 'false']).optional(),
@@ -150,7 +157,9 @@ export const patientFilterSchema = z.object({
 // Frequency schemas
 export const frequencyFilterSchema = z.object({
   search: z.string().min(1).max(100).optional(),
-  type: z.enum(['SIMPLE', 'HOURLY', 'DAILY_MULTIPLE', 'WEEKLY_PATTERN', 'CUSTOM']).optional(),
+  type: z
+    .enum(['SIMPLE', 'HOURLY', 'DAILY_MULTIPLE', 'WEEKLY_PATTERN', 'CUSTOM'])
+    .optional(),
   isActive: z.enum(['true', 'false']).optional(),
 });
 
@@ -159,13 +168,24 @@ export const patientsByZoneFilterSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),
   search: z.string().min(1).max(100).optional(),
-  state: z.enum(['activo', 'inactivo', 'internado', 'sin_autorizacion', 'suspendido', 'alta']).optional(),
+  state: z
+    .enum([
+      'activo',
+      'inactivo',
+      'internado',
+      'sin_autorizacion',
+      'suspendido',
+      'alta',
+    ])
+    .optional(),
   includeInactive: z.enum(['true', 'false']).default('false'),
 });
 
 // Combinar paginación con filtros específicos
 export const patientQuerySchema = paginationSchema.merge(patientFilterSchema);
-export const frequencyQuerySchema = paginationSchema.merge(frequencyFilterSchema);
+export const frequencyQuerySchema = paginationSchema.merge(
+  frequencyFilterSchema
+);
 export const isWorkingDayQuerySchema = isWorkingDayFilterSchema;
 export const auditQuerySchema = auditFilterSchema;
 export const holidayQuerySchema = holidayFilterSchema;
@@ -195,41 +215,96 @@ export const visitFilterSchema = z.object({
   journeyId: z.string().uuid().optional(),
   professionalId: z.string().uuid().optional(),
   zoneId: z.string().uuid().optional(),
-  status: z.enum(['scheduled', 'confirmed', 'completed', 'cancelled', 'not_present', 'rescheduled']).optional(),
+  status: z
+    .enum([
+      'scheduled',
+      'confirmed',
+      'completed',
+      'cancelled',
+      'not_present',
+      'rescheduled',
+    ])
+    .optional(),
   confirmationStatusId: z.string().uuid().optional(),
-  scheduledFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  scheduledTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  completedFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  completedTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  scheduledFrom: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  scheduledTo: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  completedFrom: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  completedTo: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
   isActive: z.enum(['true', 'false']).optional(),
   includeInactive: z.enum(['true', 'false']).optional(),
 });
 
 export const visitsByPatientFilterSchema = z.object({
   includeInactive: z.enum(['true', 'false']).optional(),
-  status: z.enum(['scheduled', 'confirmed', 'completed', 'cancelled', 'not_present', 'rescheduled']).optional(),
-  dateFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  dateTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  status: z
+    .enum([
+      'scheduled',
+      'confirmed',
+      'completed',
+      'cancelled',
+      'not_present',
+      'rescheduled',
+    ])
+    .optional(),
+  dateFrom: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  dateTo: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
 });
 
 export const visitsByJourneyFilterSchema = z.object({
   includeInactive: z.enum(['true', 'false']).optional(),
-  status: z.enum(['scheduled', 'confirmed', 'completed', 'cancelled', 'not_present', 'rescheduled']).optional(),
+  status: z
+    .enum([
+      'scheduled',
+      'confirmed',
+      'completed',
+      'cancelled',
+      'not_present',
+      'rescheduled',
+    ])
+    .optional(),
 });
 
 export const visitsByStatusFilterSchema = z.object({
   zoneId: z.string().uuid().optional(),
   professionalId: z.string().uuid().optional(),
-  dateFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  dateTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  dateFrom: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  dateTo: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
   includeInactive: z.enum(['true', 'false']).optional(),
 });
 
 // Combined visit query schemas
 export const visitQuerySchema = paginationSchema.merge(visitFilterSchema);
-export const visitsByPatientQuerySchema = paginationSchema.merge(visitsByPatientFilterSchema);
+export const visitsByPatientQuerySchema = paginationSchema.merge(
+  visitsByPatientFilterSchema
+);
 export const visitsByJourneyQuerySchema = visitsByJourneyFilterSchema;
-export const visitsByStatusQuerySchema = paginationSchema.merge(visitsByStatusFilterSchema);
+export const visitsByStatusQuerySchema = paginationSchema.merge(
+  visitsByStatusFilterSchema
+);
 
 // Param schemas for visit endpoints
 export const getVisitByIdParamsSchema = z.object({
@@ -245,41 +320,75 @@ export const getVisitsByJourneyParamsSchema = z.object({
 });
 
 export const getVisitsByStatusParamsSchema = z.object({
-  status: z.enum(['scheduled', 'confirmed', 'completed', 'cancelled', 'not_present', 'rescheduled'], {
-    errorMap: () => ({ message: ERROR_MESSAGES.VISIT.INVALID_STATUS }),
-  }),
+  status: z.enum(
+    [
+      'scheduled',
+      'confirmed',
+      'completed',
+      'cancelled',
+      'not_present',
+      'rescheduled',
+    ],
+    {
+      errorMap: () => ({ message: ERROR_MESSAGES.VISIT.INVALID_STATUS }),
+    }
+  ),
 });
 
 // Journey filters and queries
 export const journeyFilterSchema = z.object({
   professionalId: z.string().uuid().optional(),
   zoneId: z.string().uuid().optional(),
-  status: z.enum(['planificado', 'en_curso', 'completado', 'cancelado', 'pausado']).optional(),
-  dateFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  dateTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  status: z
+    .enum(['planificado', 'en_curso', 'completado', 'cancelado', 'pausado'])
+    .optional(),
+  dateFrom: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  dateTo: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
   isActive: z.boolean().optional(),
 });
 
 export const journeysByDateFilterSchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, ERROR_MESSAGES.JOURNEY.INVALID_DATE_FORMAT),
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, ERROR_MESSAGES.JOURNEY.INVALID_DATE_FORMAT),
   professionalId: z.string().uuid().optional(),
   zoneId: z.string().uuid().optional(),
-  status: z.enum(['planificado', 'en_curso', 'completado', 'cancelado', 'pausado']).optional(),
+  status: z
+    .enum(['planificado', 'en_curso', 'completado', 'cancelado', 'pausado'])
+    .optional(),
   isActive: z.boolean().optional(),
 });
 
 export const journeysByProfessionalFilterSchema = z.object({
   zoneId: z.string().uuid().optional(),
-  status: z.enum(['planificado', 'en_curso', 'completado', 'cancelado', 'pausado']).optional(),
-  dateFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  dateTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  status: z
+    .enum(['planificado', 'en_curso', 'completado', 'cancelado', 'pausado'])
+    .optional(),
+  dateFrom: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  dateTo: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
   isActive: z.boolean().optional(),
 });
 
 // Combined journey query schemas
 export const journeyQuerySchema = paginationSchema.merge(journeyFilterSchema);
-export const journeysByDateQuerySchema = paginationSchema.merge(journeysByDateFilterSchema);
-export const journeysByProfessionalQuerySchema = paginationSchema.merge(journeysByProfessionalFilterSchema);
+export const journeysByDateQuerySchema = paginationSchema.merge(
+  journeysByDateFilterSchema
+);
+export const journeysByProfessionalQuerySchema = paginationSchema.merge(
+  journeysByProfessionalFilterSchema
+);
 
 // Journey param schemas
 export const getJourneyByIdParamsSchema = z.object({
@@ -287,7 +396,9 @@ export const getJourneyByIdParamsSchema = z.object({
 });
 
 export const getJourneysByProfessionalParamsSchema = z.object({
-  professionalId: z.string().uuid(ERROR_MESSAGES.JOURNEY.INVALID_PROFESSIONAL_ID),
+  professionalId: z
+    .string()
+    .uuid(ERROR_MESSAGES.JOURNEY.INVALID_PROFESSIONAL_ID),
 });
 
 export const startJourneyParamsSchema = z.object({
@@ -397,9 +508,128 @@ export type ProfessionalQueryInput = z.infer<typeof professionalQuerySchema>;
 
 export type ZoneQueryInput = z.infer<typeof zoneQuerySchema>;
 export type VisitQueryInput = z.infer<typeof visitQuerySchema>;
-export type VisitsByPatientQueryInput = z.infer<typeof visitsByPatientQuerySchema>;
-export type VisitsByJourneyQueryInput = z.infer<typeof visitsByJourneyQuerySchema>;
-export type VisitsByStatusQueryInput = z.infer<typeof visitsByStatusQuerySchema>;
+export type VisitsByPatientQueryInput = z.infer<
+  typeof visitsByPatientQuerySchema
+>;
+export type VisitsByJourneyQueryInput = z.infer<
+  typeof visitsByJourneyQuerySchema
+>;
+export type VisitsByStatusQueryInput = z.infer<
+  typeof visitsByStatusQuerySchema
+>;
 export type JourneyQueryInput = z.infer<typeof journeyQuerySchema>;
-export type JourneysByDateQueryInput = z.infer<typeof journeysByDateQuerySchema>;
-export type JourneysByProfessionalQueryInput = z.infer<typeof journeysByProfessionalQuerySchema>;
+export type JourneysByDateQueryInput = z.infer<
+  typeof journeysByDateQuerySchema
+>;
+export type JourneysByProfessionalQueryInput = z.infer<
+  typeof journeysByProfessionalQuerySchema
+>;
+
+// Audit specific schemas
+const complianceReportFilterSchema = z.object({
+  fromDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  toDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  entityType: z
+    .enum(['visita', 'recorrido', 'paciente', 'profesional', 'usuario'])
+    .optional(),
+  criticalActionsOnly: z.coerce.boolean().default(false),
+});
+
+const entityHistoryFilterSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  entityType: z.enum([
+    'visita',
+    'recorrido',
+    'paciente',
+    'profesional',
+    'usuario',
+  ]),
+  entityId: z.string().uuid(),
+  fromDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  toDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  action: z
+    .enum([
+      'creado',
+      'actualizado',
+      'eliminado',
+      'restaurado',
+      'confirmado',
+      'cancelado',
+      'reprogramado',
+      'completado',
+      'inicio_recorrido',
+      'fin_recorrido',
+    ])
+    .optional(),
+});
+
+const userActivityFilterSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  userId: z.string().uuid(),
+  fromDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  toDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  entityType: z
+    .enum(['visita', 'recorrido', 'paciente', 'profesional', 'usuario'])
+    .optional(),
+  action: z
+    .enum([
+      'creado',
+      'actualizado',
+      'eliminado',
+      'restaurado',
+      'confirmado',
+      'cancelado',
+      'reprogramado',
+      'completado',
+      'inicio_recorrido',
+      'fin_recorrido',
+    ])
+    .optional(),
+});
+
+// Export audit schemas
+export const complianceReportQuerySchema = complianceReportFilterSchema;
+export const entityHistoryQuerySchema = entityHistoryFilterSchema;
+export const userActivityQuerySchema = userActivityFilterSchema;
+
+// Audit param schemas
+export const getEntityHistoryParamsSchema = z.object({
+  entityType: z.enum(
+    ['visita', 'recorrido', 'paciente', 'profesional', 'usuario'],
+    {
+      errorMap: () => ({ message: ERROR_MESSAGES.AUDIT.INVALID_ENTITY }),
+    }
+  ),
+  entityId: z.string().uuid(ERROR_MESSAGES.AUDIT.INVALID_ENTITY_ID),
+});
+
+export const getUserActivityParamsSchema = z.object({
+  userId: z.string().uuid(ERROR_MESSAGES.AUDIT.INVALID_USER_ID),
+});
+
+// Audit types
+export type ComplianceReportQueryInput = z.infer<
+  typeof complianceReportQuerySchema
+>;
+export type EntityHistoryQueryInput = z.infer<typeof entityHistoryQuerySchema>;
+export type UserActivityQueryInput = z.infer<typeof userActivityQuerySchema>;

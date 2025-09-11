@@ -9,7 +9,7 @@ import {
   sendInternalErrorResponse,
   sendBadRequest,
 } from '../../utils/commons/responseFunctions';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { roleQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 
 export const getRoles = async (
@@ -20,17 +20,10 @@ export const getRoles = async (
     // Validar query parameters con schema Zod
     const validatedQuery = roleQuerySchema.parse(req.query);
 
-    const {
-      page,
-      limit,
-      sortBy = 'createdAt',
-      sortOrder = 'desc',
-      isActive,
-      search,
-    } = validatedQuery;
+    const { page, limit, sortBy, sortOrder, isActive, search } = validatedQuery;
 
     // Construir whereClause
-    const whereClause: any = {};
+    const whereClause: WhereOptions = {};
 
     // Filtro por estado activo
     if (isActive !== undefined) {
@@ -59,15 +52,18 @@ export const getRoles = async (
     const totalPages = Math.ceil(rolesData.count / limit);
 
     const response = {
-      roles: rolesData.rows.map((role: IRole | any) => ({
-        id: role.id,
-        name: role.name,
-        description: role.description,
-        permissions: role.permissions,
-        isActive: role.isActive,
-        createdAt: role.createdAt,
-        updatedAt: role.updatedAt,
-      })),
+      roles: rolesData.rows.map(role => {
+        const roleJson: IRole = role.toJSON() as IRole;
+        return {
+          id: roleJson.id,
+          name: roleJson.name,
+          description: roleJson.description,
+          permissions: roleJson.permissions,
+          isActive: roleJson.isActive,
+          createdAt: roleJson.createdAt,
+          updatedAt: roleJson.updatedAt,
+        };
+      }),
       pagination: {
         total: rolesData.count,
         page: page,
@@ -82,7 +78,7 @@ export const getRoles = async (
       },
     };
 
-    sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLES_FETCHED, response);
+    return sendSuccessResponse(res, SUCCESS_MESSAGES.ROLE.ROLES_FETCHED, response);
   } catch (error) {
     if (error instanceof ZodError) {
       const firstError = error.errors[0].message;

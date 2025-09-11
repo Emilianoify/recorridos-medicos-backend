@@ -14,13 +14,6 @@ import { RoleModel } from '../../models';
 import { IRole } from '../../interfaces/role.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 
-interface CreateRole {
-  name: string;
-  description?: string | null;
-  permissions?: string[] | null;
-  isActive?: boolean | null;
-}
-
 export const createRole = async (
   req: AuthRequest,
   res: Response
@@ -32,7 +25,7 @@ export const createRole = async (
       return sendBadRequest(res, ERROR_MESSAGES.SERVER.EMPTY_BODY);
     }
 
-    const validRole: CreateRole = roleBaseSchema.parse(body);
+    const validRole = roleBaseSchema.parse(body);
 
     const { name, description, permissions, isActive } = validRole;
 
@@ -61,13 +54,11 @@ export const createRole = async (
       },
     };
 
-    if (newRole) {
-      return sendSuccessResponse(
-        res,
-        SUCCESS_MESSAGES.ROLE.ROLE_CREATED,
-        response
-      );
-    }
+    return sendSuccessResponse(
+      res,
+      SUCCESS_MESSAGES.ROLE.ROLE_CREATED,
+      response
+    );
   } catch (error) {
     if (error instanceof ZodError) {
       const firstError = error.errors[0];

@@ -30,13 +30,15 @@ export const getHealthcareProviderById = async (
       return sendBadRequest(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.INVALID_ID);
     }
 
-    const provider = (await HealthcareProviderModel.findByPk(id, {
+    const providerInstance = await HealthcareProviderModel.findByPk(id, {
       attributes: { exclude: ['deletedAt'] },
-    })) as IHealthcareProvider | null;
+    });
 
-    if (!provider) {
+    if (!providerInstance) {
       return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
     }
+
+    const provider: IHealthcareProvider = providerInstance.toJSON() as IHealthcareProvider;
 
     const response = {
       healthcareProvider: {

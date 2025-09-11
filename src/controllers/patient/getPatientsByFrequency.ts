@@ -16,7 +16,7 @@ import {
 import { IPatient } from '../../interfaces/patient.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { getPatientsByFrequencyQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
@@ -29,20 +29,17 @@ export const getPatientsByFrequency = async (
 
     // 1. Manual ID validation (standard pattern)
     if (!frequencyId) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.PATIENT.FREQUENCY_ID_REQUIRED
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.ID_REQUIRED);
     }
 
     if (!isValidUUID(frequencyId)) {
-      return sendBadRequest(res, ERROR_MESSAGES.PATIENT.INVALID_FREQUENCY_ID);
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.INVALID_ID);
     }
 
     const { page, limit, zoneId, state, search, includeInactive } =
       getPatientsByFrequencyQuerySchema.parse(req.query);
 
-    const whereClause: any = { frequencyId };
+    const whereClause: WhereOptions = { frequencyId };
 
     if (zoneId) {
       whereClause.zoneId = zoneId;
@@ -57,14 +54,14 @@ export const getPatientsByFrequency = async (
     }
 
     if (search) {
-      whereClause[Op.or] = [
+      whereClause[Op.or.toString()] = [
         { fullName: { [Op.iLike]: `%${search.trim()}%` } },
         { healthcareId: { [Op.iLike]: `%${search.trim()}%` } },
         { locality: { [Op.iLike]: `%${search.trim()}%` } },
       ];
     }
 
-    const patientsData = (await PatientModel.findAndCountAll({
+    const patientsData = await PatientModel.findAndCountAll({
       where: whereClause,
       limit: limit,
       offset: (page - 1) * limit,
@@ -102,28 +99,31 @@ export const getPatientsByFrequency = async (
           required: false,
         },
       ],
-    })) as IPatient | any;
+    });
 
     const totalPages = Math.ceil(patientsData.count / limit);
 
     const response = {
-      patients: patientsData.rows.map((patient: IPatient | any) => ({
-        id: patient.id,
-        fullName: patient.fullName,
-        healthcareId: patient.healthcareId,
-        healthcareProvider: patient.healthcareProvider,
-        address: patient.address,
-        locality: patient.locality,
-        zone: patient.zone,
-        phone: patient.phone,
-        state: patient.state,
-        lastVisitDate: patient.lastVisitDate,
-        nextScheduledVisitDate: patient.nextScheduledVisitDate,
-        completedVisitsThisMonth: patient.completedVisitsThisMonth,
-        authorizedVisitsPerMonth: patient.authorizedVisitsPerMonth,
-        primaryProfessional: patient.primaryProfessional,
-        isActive: patient.isActive,
-      })),
+      patients: patientsData.rows.map(patient => {
+        const patientJson: IPatient = patient.toJSON() as IPatient;
+        return {
+          id: patientJson.id,
+          fullName: patientJson.fullName,
+          healthcareId: patientJson.healthcareId,
+          healthcareProvider: patientJson.healthcareProvider,
+          address: patientJson.address,
+          locality: patientJson.locality,
+          zone: patientJson.zone,
+          phone: patientJson.phone,
+          state: patientJson.state,
+          lastVisitDate: patientJson.lastVisitDate,
+          nextScheduledVisitDate: patientJson.nextScheduledVisitDate,
+          completedVisitsThisMonth: patientJson.completedVisitsThisMonth,
+          authorizedVisitsPerMonth: patientJson.authorizedVisitsPerMonth,
+          primaryProfessional: patientJson.primaryProfessional,
+          isActive: patientJson.isActive,
+        };
+      }),
       pagination: {
         total: patientsData.count,
         page: page,

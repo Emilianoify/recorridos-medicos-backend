@@ -7,7 +7,7 @@ import {
   sendInternalErrorResponse,
   sendBadRequest,
 } from '../../utils/commons/responseFunctions';
-import { Model, Op } from 'sequelize';
+import { Model, Op, WhereOptions } from 'sequelize';
 import { ProfessionalModel, SpecialtyModel } from '../../models';
 import { professionalQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 import { IProfessional } from '../../interfaces/professional.interface';
@@ -23,8 +23,8 @@ export const getProfessionals = async (
     const {
       page,
       limit,
-      sortBy = 'createdAt',
-      sortOrder = 'desc',
+      sortBy,
+      sortOrder,
       specialtyId,
       state,
       search,
@@ -32,7 +32,7 @@ export const getProfessionals = async (
     } = validatedQuery;
 
     // Construir whereClause
-    const whereClause: any = {};
+    const whereClause: WhereOptions = {};
 
     // Filtro por especialidad
     if (specialtyId) {
@@ -46,7 +46,7 @@ export const getProfessionals = async (
 
     // Filtro por búsqueda
     if (search) {
-      whereClause[Op.or] = [
+      whereClause[Op.or.toString()] = [
         { firstname: { [Op.iLike]: `%${search.trim()}%` } },
         { lastname: { [Op.iLike]: `%${search.trim()}%` } },
         { username: { [Op.iLike]: `%${search.trim()}%` } },
@@ -57,12 +57,15 @@ export const getProfessionals = async (
     // Filtro por horario
     if (hasSchedule !== undefined) {
       if (hasSchedule === 'true') {
-        whereClause[Op.and] = [
+        whereClause[Op.and.toString()] = [
           { start_at: { [Op.ne]: null } },
           { finish_at: { [Op.ne]: null } },
         ];
       } else {
-        whereClause[Op.or] = [{ start_at: null }, { finish_at: null }];
+        whereClause[Op.or.toString()] = [
+          { start_at: null },
+          { finish_at: null },
+        ];
       }
     }
 
@@ -88,9 +91,8 @@ export const getProfessionals = async (
     const totalPages = Math.ceil(professionalData.count / limit);
 
     const response = {
-      professionals: professionalData.rows.map(
-        (professional: Model<any, any>) => {
-          const professionalJson = professional.toJSON() as IProfessional;
+      professionals: professionalData.rows.map(professional => {
+          const professionalJson: IProfessional = professional.toJSON() as IProfessional;
           return {
             id: professionalJson.id,
             firstname: professionalJson.firstname,

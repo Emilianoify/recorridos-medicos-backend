@@ -26,15 +26,28 @@ export const isWorkingDay = async (
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
 
     // Check if it's a holiday
-    const holiday = (await HolidayModel.findOne({
+    const holidayInstance = await HolidayModel.findOne({
       where: {
         date: date,
         isActive: true,
       },
       attributes: ['id', 'name', 'description', 'isNational'],
-    })) as IHoliday | null;
+    });
 
-    const isHoliday = !!holiday;
+    let isHoliday = false;
+    let holidayInfo = {};
+
+    if (holidayInstance) {
+      const holiday: IHoliday = holidayInstance.toJSON() as IHoliday;
+      isHoliday = true;
+      holidayInfo = {
+        id: holiday.id,
+        name: holiday.name,
+        description: holiday.description,
+        isNational: holiday.isNational,
+      };
+    }
+
     const isWorkingDay = !isWeekend && !isHoliday;
 
     const response = {
@@ -44,14 +57,7 @@ export const isWorkingDay = async (
       isHoliday: isHoliday,
       dayOfWeek: inputDate.toLocaleDateString('es-AR', { weekday: 'long' }),
       dayOfWeekNumber: dayOfWeek,
-      holiday: holiday
-        ? {
-            id: holiday.id,
-            name: holiday.name,
-            description: holiday.description,
-            isNational: holiday.isNational,
-          }
-        : null,
+      holiday: isHoliday ? holidayInfo : {},
       businessRules: {
         weekendsAreNonWorking: true,
         holidaysAreNonWorking: true,

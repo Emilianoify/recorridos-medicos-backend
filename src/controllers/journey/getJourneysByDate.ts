@@ -6,12 +6,11 @@ import {
   sendInternalErrorResponse,
   sendSuccessResponse,
 } from '../../utils/commons/responseFunctions';
-import { Op } from 'sequelize';
 import { JourneyModel, ProfessionalModel, ZoneModel } from '../../models';
-import { IJourney, IJourneyWhereClause } from '../../interfaces/journey.interface';
+import { IJourney } from '../../interfaces/journey.interface';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
-import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { journeysByDateQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
+import { WhereOptions } from 'sequelize';
 
 export const getJourneysByDate = async (
   req: AuthRequest,
@@ -32,7 +31,7 @@ export const getJourneysByDate = async (
       isActive,
     } = validatedQuery;
 
-    const whereClause: IJourneyWhereClause = {
+    const whereClause: WhereOptions = {
       date: date,
       isActive: typeof isActive === 'boolean' ? isActive : true,
     };
