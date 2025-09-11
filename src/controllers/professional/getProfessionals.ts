@@ -7,7 +7,7 @@ import {
   sendInternalErrorResponse,
   sendBadRequest,
 } from '../../utils/commons/responseFunctions';
-import { Model, Op, WhereOptions } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { ProfessionalModel, SpecialtyModel } from '../../models';
 import { professionalQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 import { IProfessional } from '../../interfaces/professional.interface';
@@ -92,23 +92,23 @@ export const getProfessionals = async (
 
     const response = {
       professionals: professionalData.rows.map(professional => {
-          const professionalJson: IProfessional = professional.toJSON() as IProfessional;
-          return {
-            id: professionalJson.id,
-            firstname: professionalJson.firstname,
-            lastname: professionalJson.lastname,
-            username: professionalJson.username,
-            email: professionalJson.email,
-            phone: professionalJson.phone,
-            state: professionalJson.state,
-            specialty: professionalJson.specialty,
-            start_at: professionalJson.start_at,
-            finish_at: professionalJson.finish_at,
-            updatedAt: professionalJson.updatedAt,
-            createdAt: professionalJson.createdAt,
-          };
-        }
-      ),
+        const professionalJson: IProfessional =
+          professional.toJSON() as IProfessional;
+        return {
+          id: professionalJson.id,
+          firstname: professionalJson.firstname,
+          lastname: professionalJson.lastname,
+          username: professionalJson.username,
+          email: professionalJson.email,
+          phone: professionalJson.phone,
+          state: professionalJson.state,
+          specialty: professionalJson.specialty,
+          start_at: professionalJson.start_at,
+          finish_at: professionalJson.finish_at,
+          updatedAt: professionalJson.updatedAt,
+          createdAt: professionalJson.createdAt,
+        };
+      }),
       pagination: {
         total: professionalData.count,
         page: page,

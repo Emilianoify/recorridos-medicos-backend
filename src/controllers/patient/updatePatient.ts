@@ -31,10 +31,7 @@ export const updatePatient = async (
 
     // 1. Manual ID validation (standard pattern)
     if (!id) {
-      return sendBadRequest(
-        res,
-        ERROR_MESSAGES.PATIENT.ID_REQUIRED
-      );
+      return sendBadRequest(res, ERROR_MESSAGES.PATIENT.ID_REQUIRED);
     }
 
     if (!isValidUUID(id)) {
@@ -53,8 +50,6 @@ export const updatePatient = async (
     if (!patientInstance) {
       return sendNotFound(res, ERROR_MESSAGES.PATIENT.NOT_FOUND);
     }
-
-    const patient: IPatient = patientInstance.toJSON() as IPatient;
 
     // Check for healthcare ID conflicts if being updated
     if (validatedData.healthcareId && validatedData.healthcareProviderId) {
@@ -165,7 +160,8 @@ export const updatePatient = async (
       return sendNotFound(res, ERROR_MESSAGES.PATIENT.NOT_FOUND);
     }
 
-    const updatedPatient: IPatient = updatedPatientInstance.toJSON() as IPatient;
+    const updatedPatient: IPatient =
+      updatedPatientInstance.toJSON() as IPatient;
 
     const response = {
       patient: {

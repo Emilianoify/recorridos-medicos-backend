@@ -124,7 +124,7 @@ export const SUCCESS_MESSAGES = {
     JOURNEYS_BY_DATE_FETCHED: 'Recorridos por fecha obtenidos exitosamente.',
     JOURNEYS_BY_PROFESSIONAL_FETCHED:
       'Recorridos del profesional obtenidos exitosamente.',
-    OPTIMAL_ROUTE_GENERATED: 'Ruta óptima generada exitosamente.',
+    ROUTE_GENERATED: 'Ruta óptima generada exitosamente.',
   },
 
   VISIT: {

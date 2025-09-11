@@ -199,9 +199,9 @@ export const getEntityHistory = async (
       filters: {
         entityType: entityType,
         entityId: entityId,
-        fromDate: fromDate || null,
-        toDate: toDate || null,
-        action: action || null,
+        fromDate: fromDate || '',
+        toDate: toDate || '',
+        action: action || '',
       },
       statistics: {
         totalChanges: totalChanges,

@@ -180,6 +180,12 @@ export const ERROR_MESSAGES = {
     NOT_STARTED: 'El recorrido debe ser iniciado antes de poder finalizarlo.',
     HAS_ACTIVE_VISITS:
       'No se puede eliminar el recorrido porque tiene visitas activas.',
+    NO_VISITS_FOUND: 'No se encontraron visitas para generar la ruta óptima.',
+    NO_VALID_COORDINATES:
+      'No se encontraron coordenadas válidas para optimizar la ruta.',
+    INVALID_ALGORITHM:
+      'Algoritmo no válido. Use "nearest_neighbor" o "greedy".',
+    PATIENT_NO_ZONE: 'El paciente no tiene una zona asignada.',
   },
 
   VISIT: {
@@ -227,6 +233,12 @@ export const ERROR_MESSAGES = {
   },
 
   HOLIDAY: {
+    INVALID_YEAR: 'El año debe estar entre 1900 y 2030.',
+    DATE_IN_USE: 'Ya existe un feriado para esta fecha.',
+    PAST_DATE_NOT_ALLOWED: 'No se permiten feriados en fechas pasadas.',
+    NOT_FOUND: 'Feriado no encontrado.',
+    ID_REQUIRED: 'El ID es requerido para esta acción.',
+    INVALID_ID: 'ID debe ser un UUID válido.',
     INVALID_NAME: 'El nombre del feriado debe tener entre 2 y 100 caracteres.',
     INVALID_NAME_FORMAT:
       'El nombre del feriado contiene caracteres no válidos.',

@@ -9,7 +9,7 @@ import {
 import { VisitChangeAuditModel, UserModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 
-import { Model, Op, WhereOptions } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { auditQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 import { IVisitChangeAudit } from '../../interfaces/audit.interface';
 
@@ -75,8 +75,8 @@ export const getAuditTrail = async (
     const totalPages = Math.ceil(auditData.count / limit);
 
     const response = {
-      auditTrail: auditData.rows.map((audit: Model<any, any>) => {
-        const auditJson = audit.toJSON() as IVisitChangeAudit;
+      auditTrail: auditData.rows.map(auditInstance => {
+        const auditJson = auditInstance.toJSON() as IVisitChangeAudit;
         return {
           id: auditJson.id,
           entityType: auditJson.entityType,
@@ -102,12 +102,12 @@ export const getAuditTrail = async (
         hasPreviousPage: page > 1,
       },
       filters: {
-        entityType: entityType || null,
-        entityId: entityId || null,
-        userId: userId || null,
-        action: action || null,
-        fromDate: fromDate || null,
-        toDate: toDate || null,
+        entityType: entityType || '',
+        entityId: entityId || '',
+        userId: userId || '',
+        action: action || '',
+        fromDate: fromDate || '',
+        toDate: toDate || '',
       },
     };
 

@@ -627,6 +627,16 @@ export const getUserActivityParamsSchema = z.object({
   userId: z.string().uuid(ERROR_MESSAGES.AUDIT.INVALID_USER_ID),
 });
 
+export const generateOptimalRouteSchema = z.object({
+  algorithm: z
+    .enum(['nearest_neighbor', 'greedy'], {
+      errorMap: () => ({ message: ERROR_MESSAGES.JOURNEY.INVALID_ALGORITHM }),
+    })
+    .optional()
+    .default('nearest_neighbor'),
+  includeReturnToOrigin: z.coerce.boolean().default(true),
+});
+
 // Audit types
 export type ComplianceReportQueryInput = z.infer<
   typeof complianceReportQuerySchema

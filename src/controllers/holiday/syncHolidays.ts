@@ -86,11 +86,16 @@ export const syncHolidays = async (
 
     for (const holidayData of nationalHolidays) {
       try {
-        const existingHoliday = await HolidayModel.findOne({
+        const existingHolidayInstace = await HolidayModel.findOne({
           where: { date: holidayData.date },
           paranoid: false,
         });
 
+        if (!existingHolidayInstace) {
+          return sendBadRequest(res, ERROR_MESSAGES.HOLIDAY.NOT_FOUND);
+        }
+        const existingHoliday: IHoliday =
+          existingHolidayInstace.toJSON() as IHoliday;
         if (existingHoliday) {
           if (overwriteExisting) {
             await HolidayModel.update(
@@ -109,7 +114,8 @@ export const syncHolidays = async (
               existingHoliday.id
             );
             if (updatedHolidayInstance) {
-              const updatedHoliday: IHoliday = updatedHolidayInstance.toJSON() as IHoliday;
+              const updatedHoliday: IHoliday =
+                updatedHolidayInstance.toJSON() as IHoliday;
               syncResults.holidays.push(updatedHoliday);
               syncResults.updated++;
             }
@@ -132,7 +138,10 @@ export const syncHolidays = async (
           syncResults.created++;
         }
       } catch (holidayError) {
-        console.error(`Error syncing holiday ${holidayData.name}:`, holidayError);
+        console.error(
+          `Error syncing holiday ${holidayData.name}:`,
+          holidayError
+        );
         syncResults.errors++;
       }
     }

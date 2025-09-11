@@ -20,7 +20,7 @@ export interface IHoliday {
 
   // Control empresarial
   allowWork: boolean;
-
+  affectsScheduling: boolean;
   // Información adicional
   externalId?: string | null;
   lastSyncDate?: Date | null;

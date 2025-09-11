@@ -269,10 +269,10 @@ export const getUserActivity = async (
       },
       filters: {
         userId: userId,
-        fromDate: fromDate || null,
-        toDate: toDate || null,
-        entityType: entityType || null,
-        action: action || null,
+        fromDate: fromDate || '',
+        toDate: toDate || '',
+        entityType: entityType || '',
+        action: action || '',
       },
       user: {
         id: user.id,

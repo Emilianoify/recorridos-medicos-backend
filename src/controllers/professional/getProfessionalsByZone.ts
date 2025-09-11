@@ -33,19 +33,13 @@ export const getProfessionalsByZone = async (
     // 2. Query validation
     const validatedQuery = paginationSchema.parse(req.query);
 
-    const {
-      page,
-      limit,
-      sortBy,
-      sortOrder,
-      search,
-    } = validatedQuery;
+    const { page, limit, sortBy, sortOrder, search } = validatedQuery;
 
     // Build where clause for professionals working in the specified zone
     const whereClause: WhereOptions = {
       workingZoneIds: {
-        [Op.contains]: [zoneId]
-      }
+        [Op.contains]: [zoneId],
+      },
     };
 
     // Search functionality
@@ -82,7 +76,8 @@ export const getProfessionalsByZone = async (
 
     const response = {
       professionals: professionalsData.rows.map(professional => {
-        const professionalJson: IProfessional = professional.toJSON() as IProfessional;
+        const professionalJson: IProfessional =
+          professional.toJSON() as IProfessional;
         return {
           id: professionalJson.id,
           firstname: professionalJson.firstname,
@@ -94,8 +89,7 @@ export const getProfessionalsByZone = async (
           specialty: professionalJson.specialty,
           start_at: professionalJson.start_at,
           finish_at: professionalJson.finish_at,
-          workingZoneIds: professionalJson.workingZoneIds,
-          isActive: professionalJson.isActive,
+
           createdAt: professionalJson.createdAt,
           updatedAt: professionalJson.updatedAt,
         };

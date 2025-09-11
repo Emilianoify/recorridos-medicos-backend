@@ -112,7 +112,11 @@ export const updateVisit = async (
       where: { id, isActive: true },
     });
 
-    const updatedVisitJson = updatedVisit!.toJSON() as IVisit;
+    if (!updatedVisit) {
+      return sendInternalErrorResponse(res);
+    }
+
+    const updatedVisitJson = updatedVisit.toJSON() as IVisit;
 
     const response = {
       visit: {

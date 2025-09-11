@@ -117,12 +117,12 @@ export const getJourneys = async (
         hasPreviousPage: page > 1,
       },
       filters: {
-        professionalId: professionalId || null,
-        zoneId: zoneId || null,
-        status: status || null,
-        dateFrom: dateFrom || null,
-        dateTo: dateTo || null,
-        isActive: isActive ?? null,
+        professionalId: professionalId || '',
+        zoneId: zoneId || '',
+        status: status || '',
+        dateFrom: dateFrom || '',
+        dateTo: dateTo || '',
+        isActive: isActive ?? false,
       },
     };
 

@@ -30,14 +30,14 @@ export const restoreZone = async (
       where: { id },
       paranoid: false,
     });
-    
-    const deletedZone: IZone | null = deletedZoneInstance ? (deletedZoneInstance.toJSON() as IZone) : null;
 
-    if (!deletedZone) {
+    if (!deletedZoneInstance) {
       return sendNotFound(res, ERROR_MESSAGES.ZONE.NOT_FOUND);
     }
 
-    if (deletedZone.deletedAt === null) {
+    const deletedZone: IZone = deletedZoneInstance.toJSON() as IZone;
+
+    if (deletedZone.deletedAt?.toDateString() === '') {
       return sendBadRequest(res, ERROR_MESSAGES.ZONE.ALREADY_ACTIVE);
     }
 
@@ -46,21 +46,21 @@ export const restoreZone = async (
     });
 
     const restoredZoneInstance = await ZoneModel.findByPk(id);
-    const restoredZone: IZone = restoredZoneInstance?.toJSON() as IZone;
-
-    if (!restoredZone) {
+    if (!restoredZoneInstance) {
       return sendNotFound(res, ERROR_MESSAGES.ZONE.NOT_FOUND);
     }
 
+    const restoredZone: IZone = restoredZoneInstance.toJSON() as IZone;
+
     const response = {
       zone: {
-        id: restoredZone!.id,
-        name: restoredZone!.name,
-        description: restoredZone!.description,
-        polygonCoordinates: restoredZone!.polygonCoordinates,
-        isActive: restoredZone!.isActive,
-        createdAt: restoredZone!.createdAt,
-        updatedAt: restoredZone!.updatedAt,
+        id: restoredZone.id,
+        name: restoredZone.name,
+        description: restoredZone.description,
+        polygonCoordinates: restoredZone.polygonCoordinates,
+        isActive: restoredZone.isActive,
+        createdAt: restoredZone.createdAt,
+        updatedAt: restoredZone.updatedAt,
       },
     };
 

@@ -64,7 +64,9 @@ export const getZones = async (
     const totalPages = Math.ceil(zonesData.count / limit);
 
     const response = {
-      zones: zonesData.rows.map((zone: IZone | any) => ({
+      zones: zonesData.rows.map((zoneInstance) => {
+        const zone: IZone = zoneInstance.toJSON() as IZone;
+        return {
         id: zone.id,
         name: zone.name,
         description: zone.description,
@@ -72,7 +74,8 @@ export const getZones = async (
         isActive: zone.isActive,
         createdAt: zone.createdAt,
         updatedAt: zone.updatedAt,
-      })),
+        };
+      }),
       pagination: {
         total: zonesData.count,
         page: page,
@@ -82,9 +85,9 @@ export const getZones = async (
         hasPreviousPage: page > 1,
       },
       filters: {
-        isActive: isActive || null,
-        search: search || null,
-        hasCoordinates: hasCoordinates || null,
+        isActive: isActive || '',
+        search: search || '',
+        hasCoordinates: hasCoordinates || '',
       },
     };
 

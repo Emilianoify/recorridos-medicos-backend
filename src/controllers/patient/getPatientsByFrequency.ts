@@ -132,7 +132,7 @@ export const getPatientsByFrequency = async (
         hasNextPage: page < totalPages,
         hasPreviousPage: page > 1,
       },
-      frequency: patientsData.frequency || null,
+      frequency: patientsData || null, //FIX
     };
 
     return sendSuccessResponse(

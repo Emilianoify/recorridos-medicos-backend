@@ -36,7 +36,12 @@ export const changePassword = async (
 
     const { currentPassword, newPassword }: ChangePasswordRequest =
       validNewPassword;
-    const userId = req.user!.id;
+    
+    if (!req.user) {
+      return sendInternalErrorResponse(res);
+    }
+    
+    const userId = req.user.id;
 
     if (currentPassword === newPassword) {
       return sendBadRequest(res, ERROR_MESSAGES.AUTH.SAME_PASSWORD);
@@ -79,7 +84,7 @@ export const changePassword = async (
       return sendBadRequest(res, ERROR_MESSAGES.AUTH.SAME_PASSWORD);
     }
 
-    const saltRounds = parseInt(process.env.SALT_ROUNDS!!);
+    const saltRounds = parseInt(process.env.SALT_ROUNDS || '10');
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
 
     await UserModel.update(

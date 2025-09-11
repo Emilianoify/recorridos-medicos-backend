@@ -14,8 +14,12 @@ export const logout = async (
   res: Response
 ): Promise<void> => {
   try {
-    const userId = req.user!.id;
-    const token = req.rawToken!;
+    if (!req.user || !req.rawToken) {
+      return sendInternalErrorResponse(res);
+    }
+    
+    const userId = req.user.id;
+    const token = req.rawToken;
     const now = new Date();
 
     revokeToken(token, TokenRevocationReason.LOGOUT);

@@ -93,5 +93,18 @@ export interface IJourneyProductivity {
   punctuality: number;
 }
 
+// Interfaces para optimización de rutas
+export interface IOptimalRouteResult {
+  optimizedOrder: string[];
+  totalDistance: number;
+  estimatedTravelTime: number;
+  routeSegments: Array<{
+    from: string;
+    to: string;
+    distance: number;
+    estimatedTime: number;
+  }>;
+}
+
 // Tipos auxiliares
 export type JourneyTimeString = string; // 'HH:MM:SS' format

@@ -49,9 +49,12 @@ export const updateZone = async (
 
     if (name) {
       const currentZoneInstance = await ZoneModel.findByPk(id);
-      const currentZone: IZone = currentZoneInstance?.toJSON() as IZone;
+      if (!currentZoneInstance) {
+        return sendNotFound(res, ERROR_MESSAGES.ZONE.NOT_FOUND);
+      }
+      const currentZone: IZone = currentZoneInstance.toJSON() as IZone;
 
-      if (currentZone && currentZone.name !== name) {
+      if (currentZone.name !== name) {
         const nameExists = await existingZoneName(name);
         if (nameExists) {
           return sendConflict(res, ERROR_MESSAGES.ZONE.NAME_ALREADY_IN_USE);
