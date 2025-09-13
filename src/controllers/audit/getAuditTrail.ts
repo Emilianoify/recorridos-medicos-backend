@@ -12,6 +12,7 @@ import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { Op, WhereOptions } from 'sequelize';
 import { auditQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 import { IVisitChangeAudit } from '../../interfaces/audit.interface';
+import { AUDIT_MESSAGES } from '../../constants/messages/audit.messages';
 
 export const getAuditTrail = async (
   req: AuthRequest,
@@ -102,9 +103,9 @@ export const getAuditTrail = async (
         hasPreviousPage: page > 1,
       },
       filters: {
-        entityType: entityType || '',
+        entityType: entityType || AUDIT_MESSAGES.COMPLIANCE.NO_ACTIVITY,
         entityId: entityId || '',
-        userId: userId || '',
+        userId: userId || AUDIT_MESSAGES.COMPLIANCE.SYSTEM_USER,
         action: action || '',
         fromDate: fromDate || '',
         toDate: toDate || '',

@@ -86,12 +86,14 @@ export const getPatientsByZone = async (
           required: false,
         },
       ],
-    })) as IPatient | any;
+    }));
 
     const totalPages = Math.ceil(patientsData.count / limit);
 
     const response = {
-      patients: patientsData.rows.map((patient: IPatient | any) => ({
+      patients: patientsData.rows.map((patientInstance) => {
+        const patient: IPatient = patientInstance.toJSON() as IPatient;
+        return {
         id: patient.id,
         fullName: patient.fullName,
         healthcareId: patient.healthcareId,
@@ -104,7 +106,8 @@ export const getPatientsByZone = async (
         primaryProfessional: patient.primaryProfessional,
         nextScheduledVisitDate: patient.nextScheduledVisitDate,
         isActive: patient.isActive,
-      })),
+        };
+      }),
       pagination: {
         total: patientsData.count,
         page: page,
@@ -113,7 +116,7 @@ export const getPatientsByZone = async (
         hasNextPage: page < totalPages,
         hasPreviousPage: page > 1,
       },
-      zone: patientsData.rows[0]?.zone || null,
+      zone: patientsData.rows.length > 0 ? (patientsData.rows[0].toJSON() as IPatient).zone || null : null,
     };
 
     return sendSuccessResponse(

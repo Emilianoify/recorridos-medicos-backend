@@ -43,7 +43,11 @@ export const updateUserProfile = async (
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
 
-    const updateData: any = {};
+    interface IUpdateData {
+      firstname?: string;
+      lastname?: string;
+    }
+    const updateData: IUpdateData = {};
 
     if (firstname) updateData.firstname = firstname;
     if (lastname) updateData.lastname = lastname;

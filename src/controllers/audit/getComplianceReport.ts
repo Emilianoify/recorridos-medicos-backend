@@ -17,21 +17,28 @@ import {
   IUserActivityReport,
   IVisitChangeAudit,
 } from '../../interfaces/audit.interface';
-import { AuditAction, AuditEntity } from '../../enums/Audit';
+import { AuditAction } from '../../enums/Audit';
 import { ComplianceLevel } from '../../enums/ComplianceLevel';
+import { CONFIG } from '../../constants/config';
+import { AUDIT_MESSAGES } from '../../constants/messages/audit.messages';
 
 export const getComplianceReport = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const validatedQuery = complianceReportQuerySchema.parse(req.query);
+    const query = req.query;
+    if (!query || typeof query !== 'object') {
+      return sendBadRequest(res, ERROR_MESSAGES.SERVER.INVALID_BODY);
+    }
+
+    const validatedQuery = complianceReportQuerySchema.parse(query);
     const { fromDate, toDate, entityType, criticalActionsOnly } =
       validatedQuery;
 
-    // Set default date range if not provided (last 30 days)
+    // Set default date range if not provided
     const defaultFromDate = new Date();
-    defaultFromDate.setDate(defaultFromDate.getDate() - 30);
+    defaultFromDate.setDate(defaultFromDate.getDate() - CONFIG.AUDIT.DEFAULT_DAYS_RANGE);
 
     const startDate = fromDate ? new Date(fromDate) : defaultFromDate;
     const endDate = toDate ? new Date(`${toDate}T23:59:59.999Z`) : new Date();
@@ -40,7 +47,7 @@ export const getComplianceReport = async (
       return sendBadRequest(res, ERROR_MESSAGES.GENERAL.INVALID_DATE_RANGE);
     }
 
-    // Build base where conditions using proper typing
+    // Build base where conditions
     const whereClause: WhereOptions = {
       changeDateTime: {
         [Op.gte]: startDate,
@@ -49,7 +56,7 @@ export const getComplianceReport = async (
     };
 
     if (entityType) {
-      whereClause.entityType = entityType as AuditEntity;
+      whereClause.entityType = entityType;
     }
 
     // Critical actions using enum values
@@ -132,7 +139,7 @@ export const getComplianceReport = async (
       order: [
         [VisitChangeAuditModel.sequelize!.literal('changeCount'), 'DESC'],
       ],
-      limit: 10,
+      limit: CONFIG.AUDIT.MAX_TOP_CHANGERS,
     });
 
     const topChangers: IUserActivityReport[] = await Promise.all(
@@ -143,7 +150,7 @@ export const getComplianceReport = async (
         const userId = itemData.userId;
         const userName = itemData.user
           ? `${itemData.user.firstname} ${itemData.user.lastname}`
-          : 'Usuario desconocido';
+          : AUDIT_MESSAGES.COMPLIANCE.UNKNOWN_USER;
 
         // Get detailed breakdown for this user
         const userChanges = await VisitChangeAuditModel.findAll({
@@ -187,7 +194,7 @@ export const getComplianceReport = async (
         );
 
         return {
-          userId: userId || 'unknown',
+          userId: userId || AUDIT_MESSAGES.COMPLIANCE.SYSTEM_USER,
           userName: userName,
           totalChanges: parseInt(itemData.changeCount),
           actionBreakdown,
@@ -196,7 +203,7 @@ export const getComplianceReport = async (
           lastActivity: lastActivity
             ? new Date(lastActivity.toJSON().changeDateTime)
             : new Date(),
-          mostActiveDay: '',
+          mostActiveDay: AUDIT_MESSAGES.ACTIVITY.NO_PEAK_DETECTED,
           averageChangesPerDay: Math.round(
             parseInt(itemData.changeCount) / daysDiff
           ),
@@ -223,7 +230,7 @@ export const getComplianceReport = async (
         },
       ],
       order: [['changeDateTime', 'DESC']],
-      limit: 50,
+      limit: CONFIG.AUDIT.MAX_FLAGGED_ACTIVITIES,
     });
 
     const flaggedActivities: IVisitChangeAudit[] = flaggedActivitiesData.map(
@@ -237,9 +244,9 @@ export const getComplianceReport = async (
         : 100;
     let riskLevel: ComplianceLevel;
 
-    if (flaggedChanges > totalChanges * 0.1) {
+    if (flaggedChanges > totalChanges * CONFIG.AUDIT.HIGH_RISK_THRESHOLD) {
       riskLevel = ComplianceLevel.HIGH;
-    } else if (flaggedChanges > totalChanges * 0.05) {
+    } else if (flaggedChanges > totalChanges * CONFIG.AUDIT.MEDIUM_RISK_THRESHOLD) {
       riskLevel = ComplianceLevel.MEDIUM;
     } else {
       riskLevel = ComplianceLevel.LOW;
@@ -247,17 +254,13 @@ export const getComplianceReport = async (
 
     const recommendations: string[] = [];
     if (unauthorizedChanges > 0) {
-      recommendations.push(
-        'Implementar autenticaci�n obligatoria para todos los cambios'
-      );
+      recommendations.push(AUDIT_MESSAGES.RECOMMENDATIONS.IMPLEMENT_MANDATORY_AUTH);
     }
-    if (criticalChanges > totalChanges * 0.05) {
-      recommendations.push(
-        'Revisar procesos de autorizaci�n para cambios cr�ticos'
-      );
+    if (criticalChanges > totalChanges * CONFIG.AUDIT.CRITICAL_CHANGES_THRESHOLD) {
+      recommendations.push(AUDIT_MESSAGES.RECOMMENDATIONS.REVIEW_AUTHORIZATION_PROCESSES);
     }
     if (requiresReview > 0) {
-      recommendations.push('Completar documentaci�n de cambios cr�ticos');
+      recommendations.push(AUDIT_MESSAGES.RECOMMENDATIONS.COMPLETE_CRITICAL_DOCUMENTATION);
     }
 
     const complianceReport: IComplianceAuditReport = {

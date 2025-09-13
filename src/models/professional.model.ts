@@ -55,6 +55,11 @@ const ProfessionalModel = sequelize.define(
         len: [5, 255],
       },
     },
+    licenseNumber: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+      unique: true,
+    },
     specialtyId: {
       type: DataTypes.UUID,
       allowNull: false,

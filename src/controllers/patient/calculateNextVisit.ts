@@ -11,6 +11,7 @@ import { PatientModel, FrequencyModel, HolidayModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { IPatient } from '../../interfaces/patient.interface';
+import { IFrequency } from '../../interfaces/frequency.interface';
 import { FrequencyType } from '../../enums/Frequency';
 import { calculateNextVisitQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
@@ -53,7 +54,7 @@ const isHoliday = async (date: Date): Promise<boolean> => {
 // Helper function to find next valid visit date
 const findNextValidDate = async (
   baseDate: Date,
-  frequency: any
+  frequency: IFrequency
 ): Promise<Date> => {
   let candidateDate = new Date(baseDate);
 
@@ -101,7 +102,7 @@ export const calculateNextVisit = async (
 
     const { fromDate, updatePatient } = calculateNextVisitQuerySchema.parse(req.query);
 
-    const patient = (await PatientModel.findByPk(id, {
+    const patientInstance = await PatientModel.findByPk(id, {
       include: [
         {
           model: FrequencyModel,
@@ -120,11 +121,13 @@ export const calculateNextVisit = async (
           ],
         },
       ],
-    })) as IPatient | null;
+    });
 
-    if (!patient) {
+    if (!patientInstance) {
       return sendNotFound(res, ERROR_MESSAGES.PATIENT.NOT_FOUND);
     }
+
+    const patient: IPatient = patientInstance.toJSON() as IPatient;
 
     const frequency = patient.frequency;
     if (!frequency) {

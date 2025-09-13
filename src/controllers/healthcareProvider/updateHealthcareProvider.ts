@@ -46,7 +46,7 @@ export const updateHealthcareProvider = async (
 
     const validData = updateHealthcareProviderSchema.parse(body);
 
-    let { name, code } = validData;
+    const { name, code: originalCode } = validData;
 
     const providerExists = await existingHealthcareProvider(id);
     if (!providerExists) {
@@ -63,13 +63,15 @@ export const updateHealthcareProvider = async (
       }
     }
 
-    if (code !== undefined) {
-      if (code === '') {
-        code = null;
+    // Process code field properly
+    let processedCode = originalCode;
+    if (originalCode !== undefined) {
+      if (originalCode === '') {
+        processedCode = null;
       }
 
-      if (code) {
-        const codeExists = await existingHealthcareProviderCode(code);
+      if (processedCode) {
+        const codeExists = await existingHealthcareProviderCode(processedCode);
         if (codeExists) {
           return sendConflict(
             res,
@@ -79,13 +81,23 @@ export const updateHealthcareProvider = async (
       }
     }
 
+    // Build the update data with processed code
+    const updateData = {
+      ...validData,
+      ...(originalCode !== undefined && { code: processedCode }),
+    };
+
     const [affectedCount, updatedProviders] =
-      await HealthcareProviderModel.update(validData, {
+      await HealthcareProviderModel.update(updateData, {
         where: { id },
         returning: true,
       });
 
     if (affectedCount === 0) {
+      return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
+    }
+
+    if (!updatedProviders || updatedProviders.length === 0) {
       return sendNotFound(res, ERROR_MESSAGES.HEALTHCARE_PROVIDER.NOT_FOUND);
     }
 
@@ -114,7 +126,7 @@ export const updateHealthcareProvider = async (
       return sendBadRequest(res, firstError);
     }
 
-    console.error('Error creating healthcare provider:', error);
+    console.error('Error updating healthcare provider:', error);
     return sendInternalErrorResponse(res);
   }
 };

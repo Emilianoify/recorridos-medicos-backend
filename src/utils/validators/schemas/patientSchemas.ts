@@ -2,6 +2,7 @@ import { PatientState } from '../../../enums/PatientState';
 import { PATIENT_STATE_VALUES, CONTACT_METHOD_VALUES } from '../enumValidators';
 import { ERROR_MESSAGES } from '../../../constants/messages/error.messages';
 import z from 'zod';
+import { optionalDateStringSchema } from './dateSchemas';
 
 // Esquemas para enums
 export const patientStateSchema = z.enum(
@@ -84,11 +85,7 @@ export const patientBaseSchema = z.object({
 
   state: patientStateSchema.default(PatientState.ACTIVE),
 
-  lastAuthorizationDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, ERROR_MESSAGES.PATIENT.INVALID_DATE_FORMAT)
-    .optional()
-    .nullable(),
+  lastAuthorizationDate: optionalDateStringSchema.nullable(),
 
   authorizedVisitsPerMonth: z
     .number()

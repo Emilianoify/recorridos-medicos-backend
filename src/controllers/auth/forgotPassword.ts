@@ -15,16 +15,12 @@ import {
   generateTokenExpiration,
 } from '../../utils/helpers/tokenRecovery';
 
-interface ForgotPasswordRequest {
-  identifier: string;
-}
-
 export const forgotPassword = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const { identifier }: ForgotPasswordRequest = req.body;
+    const { identifier } = req.body;
 
     if (!identifier) {
       sendBadRequest(res, ERROR_MESSAGES.AUTH.IDENTIFIER_REQUIRED);

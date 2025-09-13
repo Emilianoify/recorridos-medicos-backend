@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../interfaces/auth.interface';
+import { ZodError } from 'zod';
 import {
   sendBadRequest,
   sendInternalErrorResponse,
@@ -67,6 +68,10 @@ export const getProfessionalById = async (
       response
     );
   } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.errors[0].message;
+      return sendBadRequest(res, firstError);
+    }
     return sendInternalErrorResponse(res);
   }
 };

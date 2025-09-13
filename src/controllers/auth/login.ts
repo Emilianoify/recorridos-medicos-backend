@@ -16,11 +16,6 @@ import { RoleModel, UserModel } from '../../models';
 import { IUser } from '../../interfaces/user.interface';
 import { UserState } from '../../enums/UserState';
 
-interface LoginRequest {
-  username: string;
-  password: string;
-}
-
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const body = req.body;
@@ -28,7 +23,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return sendBadRequest(res, ERROR_MESSAGES.SERVER.EMPTY_BODY);
     }
 
-    const validLoginFields: LoginRequest = LoginSchema.parse(body);
+    const validLoginFields = LoginSchema.parse(body);
     const { username, password } = validLoginFields;
 
     const userExists = await UserModel.findOne({

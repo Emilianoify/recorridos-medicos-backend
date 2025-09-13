@@ -63,7 +63,7 @@ export const getJourneysByDate = async (
         {
           model: ProfessionalModel,
           as: 'professional',
-          attributes: ['id', 'firstName', 'lastName', 'licenseNumber'],
+          attributes: ['id', 'firstname', 'lastname', 'licenseNumber'],
           where: { isActive: true },
           required: false,
         },

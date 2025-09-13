@@ -1,6 +1,7 @@
 import z from 'zod';
 import { ERROR_MESSAGES } from '../../../constants/messages/error.messages';
 import { JourneyStatus } from '../../../enums/JourneyStatus';
+import { dateStringSchema, optionalDateStringSchema } from './dateSchemas';
 import { JOURNEY_STATUS_VALUES } from '../enumValidators';
 
 // Esquema para enum
@@ -27,9 +28,7 @@ const journeyBaseObjectSchema = z.object({
     .string()
     .uuid(ERROR_MESSAGES.JOURNEY.INVALID_PROFESSIONAL_ID),
 
-  date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, ERROR_MESSAGES.JOURNEY.INVALID_DATE_FORMAT),
+  date: dateStringSchema,
 
   zoneId: z.string().uuid(ERROR_MESSAGES.JOURNEY.INVALID_ZONE_ID),
 
@@ -131,14 +130,8 @@ export const journeyFilterSchema = z.object({
   professionalId: z.string().uuid().optional(),
   zoneId: z.string().uuid().optional(),
   status: z.enum(JOURNEY_STATUS_VALUES as [string, ...string[]]).optional(),
-  dateFrom: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional(),
-  dateTo: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional(),
+  dateFrom: optionalDateStringSchema,
+  dateTo: optionalDateStringSchema,
   isActive: z.boolean().optional(),
 });
 

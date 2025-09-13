@@ -33,7 +33,7 @@ export const getFrequencies = async (
       };
     }
 
-    // Obtener frecuencias con paginaci�n
+    // Obtener frecuencias con paginación
     const { count, rows: frequencies } = await FrequencyModel.findAndCountAll({
       where: whereConditions,
       limit,

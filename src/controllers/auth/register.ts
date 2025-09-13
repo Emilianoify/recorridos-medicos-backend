@@ -21,15 +21,6 @@ import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ZodError } from 'zod';
 import { UserState } from '../../enums/UserState';
 
-interface RegisterRequest {
-  username: string;
-  firstname: string;
-  lastname: string;
-  corporative_email: string;
-  password: string;
-  roleId: string;
-}
-
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const body = req.body;
@@ -37,7 +28,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return sendBadRequest(res, ERROR_MESSAGES.SERVER.EMPTY_BODY);
     }
 
-    const validRegisterFields: RegisterRequest = UserRegisterSchema.parse(body);
+    const validRegisterFields = UserRegisterSchema.parse(body);
 
     const {
       username,

@@ -1,5 +1,7 @@
 import { JourneyStatus } from '../enums/JourneyStatus';
+import { IHoliday } from './holiday.interface';
 import { IProfessional } from './professional.interface';
+import { IVisit } from './visit.interface';
 import { IZone } from './zone.interface';
 
 export interface IJourney {
@@ -108,3 +110,17 @@ export interface IOptimalRouteResult {
 
 // Tipos auxiliares
 export type JourneyTimeString = string; // 'HH:MM:SS' format
+
+export interface IJourneyWithVisits extends IJourney {
+  visits?: IVisit[];
+}
+
+export interface IDaySchedule {
+  date: string;
+  dayOfWeek: string;
+  journeys: IJourneyWithVisits[];
+  totalVisits: number;
+  completedVisits: number;
+  isHoliday: boolean;
+  holiday: IHoliday | null;
+}

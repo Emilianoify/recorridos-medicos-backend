@@ -10,18 +10,8 @@ import { HolidayModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { IHoliday } from '../../interfaces/holiday.interface';
-import { z } from 'zod';
-
-// Schema for sync holidays request
-const syncHolidaysSchema = z.object({
-  year: z
-    .number()
-    .int()
-    .min(2020, ERROR_MESSAGES.HOLIDAY.INVALID_YEAR)
-    .max(2030, ERROR_MESSAGES.HOLIDAY.INVALID_YEAR),
-  country: z.string().optional().default('AR'),
-  overwriteExisting: z.boolean().optional().default(false),
-});
+import { syncHolidaysSchema } from '../../utils/validators/schemas/holidaySchemas';
+import { CONFIG } from '../../constants/config';
 
 export const syncHolidays = async (
   req: AuthRequest,
@@ -40,37 +30,37 @@ export const syncHolidays = async (
     // Mock national holidays for Argentina (in a real implementation, this would come from an external API)
     const nationalHolidays = [
       {
-        name: 'A�o Nuevo',
+        name: 'Año Nuevo',
         date: `${year}-01-01`,
-        description: 'Celebraci�n del A�o Nuevo',
+        description: 'Celebración del Año Nuevo',
         isNational: true,
         isRecurring: true,
       },
       {
-        name: 'D�a del Trabajador',
+        name: 'Día del Trabajador',
         date: `${year}-05-01`,
-        description: 'D�a Internacional del Trabajador',
+        description: 'Día Internacional del Trabajador',
         isNational: true,
         isRecurring: true,
       },
       {
-        name: 'D�a de la Independencia',
+        name: 'Día de la Independencia',
         date: `${year}-07-09`,
-        description: 'Declaraci�n de la Independencia Argentina',
+        description: 'Declaración de la Independencia Argentina',
         isNational: true,
         isRecurring: true,
       },
       {
-        name: 'D�a de la Inmaculada Concepci�n',
+        name: 'Día de la Inmaculada Concepción',
         date: `${year}-12-08`,
-        description: 'Festividad religiosa cat�lica',
+        description: 'Festividad religiosa católica',
         isNational: true,
         isRecurring: true,
       },
       {
         name: 'Navidad',
         date: `${year}-12-25`,
-        description: 'Celebraci�n del nacimiento de Jesucristo',
+        description: 'Celebración del nacimiento de Jesucristo',
         isNational: true,
         isRecurring: true,
       },
@@ -86,17 +76,14 @@ export const syncHolidays = async (
 
     for (const holidayData of nationalHolidays) {
       try {
-        const existingHolidayInstace = await HolidayModel.findOne({
+        const existingHolidayInstance = await HolidayModel.findOne({
           where: { date: holidayData.date },
           paranoid: false,
         });
 
-        if (!existingHolidayInstace) {
-          return sendBadRequest(res, ERROR_MESSAGES.HOLIDAY.NOT_FOUND);
-        }
-        const existingHoliday: IHoliday =
-          existingHolidayInstace.toJSON() as IHoliday;
-        if (existingHoliday) {
+        if (existingHolidayInstance) {
+          const existingHoliday: IHoliday =
+            existingHolidayInstance.toJSON() as IHoliday;
           if (overwriteExisting) {
             await HolidayModel.update(
               {
@@ -105,7 +92,7 @@ export const syncHolidays = async (
                 isNational: holidayData.isNational,
                 isRecurring: holidayData.isRecurring,
                 isActive: true,
-                deletedAt: '', // Restore if soft deleted
+                deletedAt: null, // Restore if soft deleted
               },
               { where: { id: existingHoliday.id }, paranoid: false }
             );
@@ -165,7 +152,7 @@ export const syncHolidays = async (
         isRecurring: holiday.isRecurring,
         affectsScheduling: holiday.affectsScheduling,
         isActive: holiday.isActive,
-        dayOfWeek: new Date(holiday.date).toLocaleDateString('es-AR', {
+        dayOfWeek: new Date(holiday.date).toLocaleDateString(CONFIG.HOLIDAYS.DEFAULT_LOCALE, {
           weekday: 'long',
         }),
         createdAt: holiday.createdAt,

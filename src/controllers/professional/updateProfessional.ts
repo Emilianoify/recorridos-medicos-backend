@@ -17,6 +17,7 @@ import {
   existingUsername,
   isSpecialtyActiveAndExists,
 } from '../../utils/validators/dbValidators';
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 import { ProfessionalModel, SpecialtyModel } from '../../models';
 import { IProfessional } from '../../interfaces/professional.interface';
 
@@ -30,6 +31,10 @@ export const updateProfessional = async (
 
     if (!id) {
       return sendBadRequest(res, ERROR_MESSAGES.PROFESSIONAL.ID_REQUIRED);
+    }
+
+    if (!isValidUUID(id)) {
+      return sendBadRequest(res, ERROR_MESSAGES.PROFESSIONAL.INVALID_ID);
     }
 
     if (!body || typeof body !== 'object' || Object.keys(body).length === 0) {

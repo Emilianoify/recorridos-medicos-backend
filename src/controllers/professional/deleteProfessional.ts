@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import { AuthRequest } from '../../interfaces/auth.interface';
+import { ZodError } from 'zod';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import {
@@ -45,6 +46,10 @@ export const deleteProfessional = async (
       SUCCESS_MESSAGES.PROFESSIONAL.PROFESSIONAL_DELETED
     );
   } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.errors[0].message;
+      return sendBadRequest(res, firstError);
+    }
     return sendInternalErrorResponse(res);
   }
 };

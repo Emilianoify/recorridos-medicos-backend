@@ -49,7 +49,7 @@ export const getJourneysByProfessional = async (
     // Validate that professional exists
     const professionalInstance = await ProfessionalModel.findOne({
       where: { id: professionalId, isActive: true },
-      attributes: ['id', 'firstName', 'lastName', 'licenseNumber'],
+      attributes: ['id', 'firstname', 'lastname', 'licenseNumber'],
     });
 
     if (!professionalInstance) {
@@ -93,7 +93,7 @@ export const getJourneysByProfessional = async (
         {
           model: ProfessionalModel,
           as: 'professional',
-          attributes: ['id', 'firstName', 'lastName', 'licenseNumber'],
+          attributes: ['id', 'firstname', 'lastname', 'licenseNumber'],
           where: { isActive: true },
           required: false,
         },
@@ -124,8 +124,8 @@ export const getJourneysByProfessional = async (
     const response = {
       professional: {
         id: professional.id,
-        firstName: professional.firstname,
-        lastName: professional.lastname,
+        firstname: professional.firstname,
+        lastname: professional.lastname,
         specialtyId: professional.specialtyId,
       },
       journeys: journeysData.rows.map(journeyInstance => {

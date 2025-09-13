@@ -9,6 +9,7 @@ export interface IProfessional {
   email: string;
   phone: string;
   specialtyId: string;
+  licenseNumber?: string;
   start_at?: number | null;
   finish_at?: number | null;
   state: ProfessionalState;

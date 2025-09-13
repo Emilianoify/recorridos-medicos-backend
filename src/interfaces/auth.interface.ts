@@ -15,3 +15,20 @@ export interface AuthRequest extends Request {
   rawToken?: string;
   userPermissions?: string[];
 }
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface RefreshTokenRequest {
+  refreshToken: string;
+}
+
+export interface RefreshTokenPayload {
+  id: string;
+  username: string;
+  type: string;
+  iat?: number;
+  exp?: number;
+}

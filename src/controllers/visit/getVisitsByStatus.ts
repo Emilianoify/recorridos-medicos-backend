@@ -78,7 +78,7 @@ export const getVisitsByStatus = async (
     }
 
     // Build includes with potential filters
-    const includeFilters: any[] = [
+    const includeFilters = [
       {
         model: PatientModel,
         as: 'patient',

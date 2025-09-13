@@ -97,7 +97,7 @@ export interface FrequencyData {
   intervalUnit?: FrequencyInterval | null;
   visitsPerDay?: number | null;
   weeklyPattern?: WeekDay[] | null;
-  customSchedule?: any;
+  customSchedule?: ICustomSchedule;
   respectBusinessHours?: boolean;
   allowWeekends?: boolean;
   allowHolidays?: boolean;

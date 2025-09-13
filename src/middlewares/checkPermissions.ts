@@ -9,7 +9,7 @@ import {
 
 // Definir permisos granulares
 export enum Permission {
-  // Usuario - Gestión
+  // Usuario - Gestiï¿½n
   USER_CREATE = 'user:create',
   USER_READ = 'user:read',
   USER_UPDATE = 'user:update',
@@ -67,15 +67,7 @@ export enum Permission {
   FREQUENCY_UPDATE = 'frequency:update',
   FREQUENCY_DELETE = 'frequency:delete',
 
-  // Reportes
-  REPORT_PRODUCTIVITY = 'report:productivity',
-  REPORT_COMPLETION = 'report:completion',
-  REPORT_PERFORMANCE = 'report:performance',
-  REPORT_PATIENT_STATS = 'report:patient_stats',
-  REPORT_OPERATIONAL_KPIS = 'report:operational_kpis',
-  REPORT_FINANCIAL = 'report:financial',
-
-  // Auditoría
+  // Auditorï¿½a
   AUDIT_VIEW = 'audit:view',
   AUDIT_COMPLIANCE = 'audit:compliance',
   AUDIT_USER_ACTIVITY = 'audit:user_activity',
@@ -95,7 +87,7 @@ export enum Permission {
 // Mapeo de roles a permisos
 const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
   // ===== ADMINISTRADOR - Acceso total =====
-  'Administrador': [
+  Administrador: [
     // Usuarios
     Permission.USER_CREATE,
     Permission.USER_READ,
@@ -154,15 +146,7 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
     Permission.FREQUENCY_UPDATE,
     Permission.FREQUENCY_DELETE,
 
-    // Reportes
-    Permission.REPORT_PRODUCTIVITY,
-    Permission.REPORT_COMPLETION,
-    Permission.REPORT_PERFORMANCE,
-    Permission.REPORT_PATIENT_STATS,
-    Permission.REPORT_OPERATIONAL_KPIS,
-    Permission.REPORT_FINANCIAL,
-
-    // Auditoría
+    // Auditorï¿½a
     Permission.AUDIT_VIEW,
     Permission.AUDIT_COMPLIANCE,
     Permission.AUDIT_USER_ACTIVITY,
@@ -179,8 +163,8 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
     Permission.HEALTHCARE_PROVIDER_MANAGE,
   ],
 
-  // ===== COORDINACIÓN - Gestión operativa =====
-  'Coordinacion': [
+  // ===== COORDINACIï¿½N - Gestiï¿½n operativa =====
+  Coordinacion: [
     // Usuarios (solo lectura)
     Permission.USER_READ,
     Permission.USER_VIEW_ALL,
@@ -192,13 +176,13 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
     Permission.PATIENT_VIEW_ALL,
     Permission.PATIENT_UPDATE_STATE,
 
-    // Profesionales (lectura y gestión de horarios)
+    // Profesionales (lectura y gestiï¿½n de horarios)
     Permission.PROFESSIONAL_READ,
     Permission.PROFESSIONAL_UPDATE,
     Permission.PROFESSIONAL_VIEW_ALL,
     Permission.PROFESSIONAL_VIEW_SCHEDULE,
 
-    // Visitas - Gestión completa
+    // Visitas - Gestiï¿½n completa
     Permission.VISIT_CREATE,
     Permission.VISIT_READ,
     Permission.VISIT_UPDATE,
@@ -222,12 +206,7 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
     // Frecuencias (lectura)
     Permission.FREQUENCY_READ,
 
-    // Reportes operativos
-    Permission.REPORT_PRODUCTIVITY,
-    Permission.REPORT_COMPLETION,
-    Permission.REPORT_OPERATIONAL_KPIS,
-
-    // Auditoría limitada
+    // Auditorï¿½a limitada
     Permission.AUDIT_VIEW,
     Permission.AUDIT_ENTITY_HISTORY,
 
@@ -237,14 +216,14 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
   ],
 
   // ===== PROFESIONALES - Trabajo de campo =====
-  'Profesionales': [
-    // Solo su propia información
+  Profesionales: [
+    // Solo su propia informaciï¿½n
     Permission.USER_READ,
 
     // Pacientes (lectura de sus pacientes asignados)
     Permission.PATIENT_READ,
 
-    // Profesionales (su propia información)
+    // Profesionales (su propia informaciï¿½n)
     Permission.PROFESSIONAL_READ,
     Permission.PROFESSIONAL_VIEW_SCHEDULE,
 
@@ -270,18 +249,18 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
     // Usuarios (lectura)
     Permission.USER_READ,
 
-    // Pacientes (gestión en su sector)
+    // Pacientes (gestiï¿½n en su sector)
     Permission.PATIENT_READ,
     Permission.PATIENT_UPDATE,
     Permission.PATIENT_VIEW_ALL,
 
-    // Profesionales (gestión en su sector)
+    // Profesionales (gestiï¿½n en su sector)
     Permission.PROFESSIONAL_READ,
     Permission.PROFESSIONAL_UPDATE,
     Permission.PROFESSIONAL_VIEW_ALL,
     Permission.PROFESSIONAL_VIEW_SCHEDULE,
 
-    // Visitas (gestión en su sector)
+    // Visitas (gestiï¿½n en su sector)
     Permission.VISIT_READ,
     Permission.VISIT_UPDATE,
     Permission.VISIT_CONFIRM,
@@ -289,7 +268,7 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
     Permission.VISIT_RESCHEDULE,
     Permission.VISIT_VIEW_ALL,
 
-    // Recorridos (gestión en su sector)
+    // Recorridos (gestiï¿½n en su sector)
     Permission.JOURNEY_READ,
     Permission.JOURNEY_UPDATE,
     Permission.JOURNEY_GENERATE_ROUTE,
@@ -298,15 +277,10 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
     // Zonas (lectura)
     Permission.ZONE_READ,
     Permission.ZONE_VIEW_ALL,
-
-    // Reportes de su sector
-    Permission.REPORT_PRODUCTIVITY,
-    Permission.REPORT_COMPLETION,
-    Permission.REPORT_PERFORMANCE,
   ],
 
-  // ===== CONTADURÍA - Reportes financieros =====
-  'Contaduria': [
+  // ===== CONTADURï¿½A - Reportes financieros =====
+  Contaduria: [
     // Usuarios (lectura)
     Permission.USER_READ,
 
@@ -334,21 +308,21 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
     Permission.REPORT_OPERATIONAL_KPIS,
     Permission.REPORT_FINANCIAL,
 
-    // Auditoría para compliance financiero
+    // Auditorï¿½a para compliance financiero
     Permission.AUDIT_VIEW,
     Permission.AUDIT_COMPLIANCE,
   ],
 
   // ===== RECURSOS HUMANOS =====
   'Recursos Humanos': [
-    // Usuarios (gestión completa)
+    // Usuarios (gestiï¿½n completa)
     Permission.USER_CREATE,
     Permission.USER_READ,
     Permission.USER_UPDATE,
     Permission.USER_VIEW_ALL,
     Permission.USER_UPDATE_STATE,
 
-    // Profesionales (gestión completa)
+    // Profesionales (gestiï¿½n completa)
     Permission.PROFESSIONAL_CREATE,
     Permission.PROFESSIONAL_READ,
     Permission.PROFESSIONAL_UPDATE,
@@ -360,20 +334,20 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
     Permission.REPORT_PRODUCTIVITY,
     Permission.REPORT_PERFORMANCE,
 
-    // Auditoría de usuarios
+    // Auditorï¿½a de usuarios
     Permission.AUDIT_VIEW,
     Permission.AUDIT_USER_ACTIVITY,
 
-    // Sistema (gestión de roles)
+    // Sistema (gestiï¿½n de roles)
     Permission.SYSTEM_MANAGE_ROLES,
 
     // Especialidades
     Permission.SPECIALTY_MANAGE,
   ],
 
-  // ===== FACTURACIÓN =====
-  'Facturacion': [
-    // Lectura para facturación
+  // ===== FACTURACIï¿½N =====
+  Facturacion: [
+    // Lectura para facturaciï¿½n
     Permission.PATIENT_READ,
     Permission.PATIENT_VIEW_ALL,
     Permission.PROFESSIONAL_READ,
@@ -393,14 +367,14 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
     Permission.HEALTHCARE_PROVIDER_MANAGE,
   ],
 
-  // ===== RECEPCIÓN - Gestión de confirmaciones =====
-  'Recepcion': [
-    // Pacientes (lectura y actualización de contactos)
+  // ===== RECEPCIï¿½N - Gestiï¿½n de confirmaciones =====
+  Recepcion: [
+    // Pacientes (lectura y actualizaciï¿½n de contactos)
     Permission.PATIENT_READ,
     Permission.PATIENT_UPDATE,
     Permission.PATIENT_VIEW_ALL,
 
-    // Visitas (confirmación y gestión)
+    // Visitas (confirmaciï¿½n y gestiï¿½n)
     Permission.VISIT_READ,
     Permission.VISIT_CONFIRM,
     Permission.VISIT_RESCHEDULE,
@@ -419,13 +393,13 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
   ],
 
   // ===== OTROS ROLES CON ACCESO LIMITADO =====
-  'Compras': [
+  Compras: [
     Permission.USER_READ,
     Permission.PROFESSIONAL_READ,
     Permission.REPORT_OPERATIONAL_KPIS,
   ],
 
-  'Liquidaciones': [
+  Liquidaciones: [
     Permission.PROFESSIONAL_READ,
     Permission.PROFESSIONAL_VIEW_ALL,
     Permission.VISIT_READ,
@@ -437,7 +411,7 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
     Permission.REPORT_FINANCIAL,
   ],
 
-  'Reclamos': [
+  Reclamos: [
     Permission.PATIENT_READ,
     Permission.PATIENT_UPDATE,
     Permission.VISIT_READ,
@@ -448,7 +422,7 @@ const ROLE_PERMISSIONS: { [roleName: string]: Permission[] } = {
 };
 
 /**
- * Middleware para verificar permisos específicos
+ * Middleware para verificar permisos especï¿½ficos
  * @param requiredPermissions Lista de permisos requeridos (OR logic)
  * @param requireAll Si es true, requiere TODOS los permisos (AND logic)
  */
@@ -509,9 +483,12 @@ export const checkPermissions = (
 };
 
 /**
- * Helper para verificar si un usuario tiene un permiso específico
+ * Helper para verificar si un usuario tiene un permiso especï¿½fico
  */
-export const hasPermission = (userRole: string, permission: Permission): boolean => {
+export const hasPermission = (
+  userRole: string,
+  permission: Permission
+): boolean => {
   const rolePermissions = ROLE_PERMISSIONS[userRole] || [];
   return rolePermissions.includes(permission);
 };
@@ -540,7 +517,8 @@ export const checkResourceOwnership = (
       }
 
       const userRoleName = req.user.role.name;
-      const requestedUserId = req.params.userId || req.body.userId || req.query.userId;
+      const requestedUserId =
+        req.params.userId || req.body.userId || req.query.userId;
       const currentUserId = req.user.id;
 
       // Si es su propio recurso, siempre permitir
@@ -561,9 +539,9 @@ export const checkResourceOwnership = (
   };
 };
 
-// ===== MIDDLEWARES ESPECÍFICOS PRE-CONFIGURADOS =====
+// ===== MIDDLEWARES ESPECï¿½FICOS PRE-CONFIGURADOS =====
 
-// Gestión de usuarios
+// Gestiï¿½n de usuarios
 export const requireUserManagement = checkPermissions([
   Permission.USER_CREATE,
   Permission.USER_UPDATE,
@@ -572,7 +550,7 @@ export const requireUserManagement = checkPermissions([
 
 export const requireUserView = checkPermissions(Permission.USER_READ);
 
-// Gestión de pacientes
+// Gestiï¿½n de pacientes
 export const requirePatientManagement = checkPermissions([
   Permission.PATIENT_CREATE,
   Permission.PATIENT_UPDATE,
@@ -581,18 +559,22 @@ export const requirePatientManagement = checkPermissions([
 
 export const requirePatientView = checkPermissions(Permission.PATIENT_READ);
 
-// Gestión de visitas
+// Gestiï¿½n de visitas
 export const requireVisitManagement = checkPermissions([
   Permission.VISIT_CREATE,
   Permission.VISIT_UPDATE,
   Permission.VISIT_DELETE,
 ]);
 
-export const requireVisitConfirmation = checkPermissions(Permission.VISIT_CONFIRM);
+export const requireVisitConfirmation = checkPermissions(
+  Permission.VISIT_CONFIRM
+);
 
-export const requireVisitCompletion = checkPermissions(Permission.VISIT_COMPLETE);
+export const requireVisitCompletion = checkPermissions(
+  Permission.VISIT_COMPLETE
+);
 
-// Gestión de recorridos
+// Gestiï¿½n de recorridos
 export const requireJourneyManagement = checkPermissions([
   Permission.JOURNEY_CREATE,
   Permission.JOURNEY_UPDATE,
@@ -605,19 +587,26 @@ export const requireJourneyControl = checkPermissions([
 ]);
 
 // Reportes
-export const requireFinancialReports = checkPermissions(Permission.REPORT_FINANCIAL);
+export const requireFinancialReports = checkPermissions(
+  Permission.REPORT_FINANCIAL
+);
 
-export const requireProductivityReports = checkPermissions(Permission.REPORT_PRODUCTIVITY);
+export const requireProductivityReports = checkPermissions(
+  Permission.REPORT_PRODUCTIVITY
+);
 
-// Auditoría
+// Auditorï¿½a
 export const requireAuditAccess = checkPermissions(Permission.AUDIT_VIEW);
 
 // Sistema
-export const requireSystemAdmin = checkPermissions([
-  Permission.SYSTEM_MANAGE_ROLES,
-  Permission.SYSTEM_MANAGE_HOLIDAYS,
-  Permission.SYSTEM_SYNC_DATA,
-], true); // Requiere TODOS los permisos
+export const requireSystemAdmin = checkPermissions(
+  [
+    Permission.SYSTEM_MANAGE_ROLES,
+    Permission.SYSTEM_MANAGE_HOLIDAYS,
+    Permission.SYSTEM_SYNC_DATA,
+  ],
+  true
+); // Requiere TODOS los permisos
 
 export const requireZoneManagement = checkPermissions([
   Permission.ZONE_CREATE,

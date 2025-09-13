@@ -15,7 +15,6 @@ import journeyRoutes from './routes/journey.routes';
 import visitRoutes from './routes/visit.routes';
 import frequencyRoutes from './routes/frequency.routes';
 import holidayRoutes from './routes/holiday.routes';
-import reportsRoutes from './routes/reports.routes';
 import auditRoutes from './routes/audit.routes';
 import zoneRoutes from './routes/zone.routes';
 import {
@@ -53,7 +52,6 @@ app.use('/journey', journeyRoutes);
 app.use('/visit', visitRoutes);
 app.use('/frequency', frequencyRoutes);
 app.use('/holiday', holidayRoutes);
-app.use('/reports', reportsRoutes);
 app.use('/audit', auditRoutes);
 app.use('/zone', zoneRoutes);
 

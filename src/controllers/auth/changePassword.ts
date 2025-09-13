@@ -1,7 +1,10 @@
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { TokenRevocationReason } from '../../enums/TokenRevocationReason';
-import { AuthRequest } from '../../interfaces/auth.interface';
+import {
+  AuthRequest,
+  ChangePasswordRequest,
+} from '../../interfaces/auth.interface';
 import {
   sendBadRequest,
   sendNotFound,
@@ -17,11 +20,6 @@ import { UserState } from '../../enums/UserState';
 import bcrypt from 'bcrypt';
 import { ZodError } from 'zod';
 
-interface ChangePasswordRequest {
-  currentPassword: string;
-  newPassword: string;
-}
-
 export const changePassword = async (
   req: AuthRequest,
   res: Response
@@ -36,11 +34,11 @@ export const changePassword = async (
 
     const { currentPassword, newPassword }: ChangePasswordRequest =
       validNewPassword;
-    
+
     if (!req.user) {
       return sendInternalErrorResponse(res);
     }
-    
+
     const userId = req.user.id;
 
     if (currentPassword === newPassword) {

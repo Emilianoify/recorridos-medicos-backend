@@ -55,7 +55,7 @@ export const createDefaultHealthcareProviders = async (
       console.log('🚀 Iniciando creación de obras sociales por defecto...\n');
     }
 
-    const createdProviders: any[] = [];
+    const createdProviders: IHealthcareProvider[] = [];
     let newProvidersCount = 0;
 
     for (const providerData of defaultHealthcareProviders) {

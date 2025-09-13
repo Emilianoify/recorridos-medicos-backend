@@ -13,18 +13,10 @@ import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { isTokenRevoked } from '../../utils/jwt/tokenManager';
 import { UserState } from '../../enums/UserState';
-
-interface RefreshTokenRequest {
-  refreshToken: string;
-}
-
-interface RefreshTokenPayload {
-  id: string;
-  username: string;
-  type: string;
-  iat?: number;
-  exp?: number;
-}
+import {
+  RefreshTokenRequest,
+  RefreshTokenPayload,
+} from '../../interfaces/auth.interface';
 
 export const refreshToken = async (
   req: Request,

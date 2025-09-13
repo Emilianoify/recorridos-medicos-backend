@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { ERROR_MESSAGES } from '../../../constants/messages/error.messages';
 import { VisitStatus } from '../../../enums/Visits';
+import { optionalDateStringSchema } from './dateSchemas';
 import {
   CONFIRMATION_METHOD_VALUES,
   VISIT_STATUS_VALUES,
@@ -249,14 +250,8 @@ export const visitFilterSchema = z.object({
   professionalId: z.string().uuid().optional(),
   status: z.enum(VISIT_STATUS_VALUES as [string, ...string[]]).optional(),
   confirmationStatusId: z.string().uuid().optional(),
-  scheduledFrom: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional(),
-  scheduledTo: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/)
-    .optional(),
+  scheduledFrom: optionalDateStringSchema,
+  scheduledTo: optionalDateStringSchema,
   isActive: z.boolean().optional(),
 });
 

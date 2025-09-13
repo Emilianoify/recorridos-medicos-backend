@@ -11,6 +11,7 @@ import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { IHoliday } from '../../interfaces/holiday.interface';
 import { Op, WhereOptions } from 'sequelize';
 import { holidayQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
+import { CONFIG } from '../../constants/config';
 
 export const getHolidays = async (
   req: AuthRequest,
@@ -84,7 +85,7 @@ export const getHolidays = async (
           description: holiday.description,
           isNational: holiday.isNational,
           isActive: holiday.isActive,
-          dayOfWeek: new Date(holiday.date).toLocaleDateString('es-AR', {
+          dayOfWeek: new Date(holiday.date).toLocaleDateString(CONFIG.HOLIDAYS.DEFAULT_LOCALE, {
             weekday: 'long',
           }),
           createdAt: holiday.createdAt,

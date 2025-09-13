@@ -133,8 +133,8 @@ export class AuditService {
       userAgent: context?.userAgent,
       ipAddress: context?.ipAddress,
       metadata: {
-        beforeState: snapshot.beforeState,
-        afterState: snapshot.afterState,
+        beforeState: JSON.stringify(snapshot.beforeState),
+        afterState: JSON.stringify(snapshot.afterState),
       },
     });
   }

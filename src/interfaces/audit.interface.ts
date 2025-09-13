@@ -27,7 +27,7 @@ export interface IVisitChangeAudit {
   // Información adicional
   relatedEntityType?: AuditEntity | null;
   relatedEntityId?: string | null;
-  metadata?: any | null;
+  metadata?: string | { [key: string]: string | number | boolean } | null;
 
   // Timestamp
   changeDateTime: Date;
@@ -53,7 +53,7 @@ export interface IVisitChangeAuditData {
   ipAddress?: string;
   relatedEntityType?: AuditEntity;
   relatedEntityId?: string;
-  metadata?: any;
+  metadata?: string | { [key: string]: string | number | boolean };
 }
 
 // Para cambios múltiples en una sola operación
@@ -69,7 +69,7 @@ export interface IBulkAuditData {
   ipAddress?: string;
   relatedEntityType?: AuditEntity;
   relatedEntityId?: string;
-  metadata?: any;
+  metadata?: string | { [key: string]: string | number | boolean };
 }
 
 export interface IFieldChange {
@@ -176,7 +176,28 @@ export type AuditContext = {
 export type EntitySnapshot = {
   entityType: AuditEntity;
   entityId: string;
-  beforeState: any;
-  afterState: any;
+  beforeState: { [key: string]: string | number | boolean | Date };
+  afterState: { [key: string]: string | number | boolean | Date };
   changes: IFieldChange[];
 };
+
+export interface IEntitySummary {
+  createdBy?: string;
+  lastModifiedBy?: string;
+  majorChanges: number;
+  minorChanges: number;
+}
+
+export interface IActivityStatistics {
+  totalChanges: number;
+  uniqueEntities: number;
+  activityDays: number;
+  peakActivityDay: string;
+  mostChangedEntity: IMostChangedEntity;
+}
+
+export interface IMostChangedEntity {
+  entityType: string;
+  entityId: string;
+  changeCount: number;
+}

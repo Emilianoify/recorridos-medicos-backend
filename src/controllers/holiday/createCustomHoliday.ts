@@ -12,6 +12,7 @@ import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
 import { createHolidaySchema } from '../../utils/validators/schemas/holidaySchemas';
 import { IHoliday } from '../../interfaces/holiday.interface';
+import { CONFIG } from '../../constants/config';
 
 export const createCustomHoliday = async (
   req: AuthRequest,
@@ -68,7 +69,7 @@ export const createCustomHoliday = async (
         isRecurring: newHoliday.isRecurring,
         affectsScheduling: newHoliday.affectsScheduling,
         isActive: newHoliday.isActive,
-        dayOfWeek: new Date(newHoliday.date).toLocaleDateString('es-AR', {
+        dayOfWeek: new Date(newHoliday.date).toLocaleDateString(CONFIG.HOLIDAYS.DEFAULT_LOCALE, {
           weekday: 'long',
         }),
         createdAt: newHoliday.createdAt,

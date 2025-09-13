@@ -11,6 +11,7 @@ import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 
 import { isWorkingDayQuerySchema } from '../../utils/validators/schemas/paginationSchemas';
 import { IHoliday } from '../../interfaces/holiday.interface';
+import { CONFIG } from '../../constants/config';
 
 export const isWorkingDay = async (
   req: AuthRequest,
@@ -55,7 +56,7 @@ export const isWorkingDay = async (
       isWorkingDay: isWorkingDay,
       isWeekend: isWeekend,
       isHoliday: isHoliday,
-      dayOfWeek: inputDate.toLocaleDateString('es-AR', { weekday: 'long' }),
+      dayOfWeek: inputDate.toLocaleDateString(CONFIG.HOLIDAYS.DEFAULT_LOCALE, { weekday: 'long' }),
       dayOfWeekNumber: dayOfWeek,
       holiday: isHoliday ? holidayInfo : {},
       businessRules: {

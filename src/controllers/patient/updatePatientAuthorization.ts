@@ -48,8 +48,8 @@ export const updatePatientAuthorization = async (
 
     const patient: IPatient = patientInstance.toJSON() as IPatient;
 
-    const updateData: any = {
-      lastAuthorizationDate: validatedData.lastAuthorizationDate,
+    const updateData: Partial<IPatient> = {
+      lastAuthorizationDate: new Date(validatedData.lastAuthorizationDate),
       authorizedVisitsPerMonth: validatedData.authorizedVisitsPerMonth,
     };
 

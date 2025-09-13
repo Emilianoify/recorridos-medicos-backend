@@ -26,7 +26,7 @@ export const createFrequency = async (
     });
 
     if (existingFrequency) {
-      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.INVALID_NAME);
+      return sendBadRequest(res, ERROR_MESSAGES.FREQUENCY.NAME_IN_USE);
     }
 
     const newFrequencyInstance = await FrequencyModel.create(validatedData);
@@ -66,7 +66,7 @@ export const createFrequency = async (
       return sendBadRequest(res, firstError);
     }
 
-    console.error('Error deleting frequency:', error);
+    console.error('Error creating frequency:', error);
     return sendInternalErrorResponse(res);
   }
 };

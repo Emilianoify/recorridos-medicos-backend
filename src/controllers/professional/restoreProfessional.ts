@@ -27,14 +27,16 @@ export const restoreProfessional = async (
       return sendBadRequest(res, ERROR_MESSAGES.PROFESSIONAL.INVALID_ID);
     }
 
-    const deletedProfessional = (await ProfessionalModel.findOne({
+    const deletedProfessionalInstance = await ProfessionalModel.findOne({
       where: { id },
       paranoid: false,
-    })) as IProfessional | null;
+    });
 
-    if (!deletedProfessional) {
+    if (!deletedProfessionalInstance) {
       return sendNotFound(res, ERROR_MESSAGES.PROFESSIONAL.NOT_FOUND);
     }
+
+    const deletedProfessional: IProfessional = deletedProfessionalInstance.toJSON() as IProfessional;
 
     if (deletedProfessional.deletedAt === null) {
       return sendBadRequest(res, ERROR_MESSAGES.PROFESSIONAL.ALREADY_ACTIVE);

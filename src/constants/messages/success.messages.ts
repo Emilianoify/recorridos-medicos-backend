@@ -150,15 +150,4 @@ export const SUCCESS_MESSAGES = {
     USER_ACTIVITY_FETCHED: 'Actividad del usuario obtenida exitosamente.',
     COMPLIANCE_REPORT_FETCHED: 'Reporte de cumplimiento obtenido exitosamente.',
   },
-
-  REPORTS: {
-    PRODUCTIVITY_REPORT_FETCHED:
-      'Reporte de productividad obtenido exitosamente.',
-    VISIT_COMPLETION_REPORT_FETCHED:
-      'Reporte de finalización de visitas obtenido exitosamente.',
-    PROFESSIONAL_PERFORMANCE_FETCHED:
-      'Rendimiento del profesional obtenido exitosamente.',
-    PATIENT_STATS_FETCHED: 'Estadísticas del paciente obtenidas exitosamente.',
-    OPERATIONAL_KPIS_FETCHED: 'KPIs operacionales obtenidos exitosamente.',
-  },
 };

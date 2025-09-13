@@ -16,11 +16,6 @@ import { ZodError } from 'zod';
 import { UserState } from '../../enums/UserState';
 import { ResetPasswordSchema } from '../../utils/validators/schemas/authSchemas';
 
-interface ResetPasswordRequest {
-  token: string;
-  newPassword: string;
-}
-
 export const resetPassword = async (
   req: Request,
   res: Response
@@ -33,7 +28,7 @@ export const resetPassword = async (
 
     const validResetPassword = ResetPasswordSchema.parse(body);
 
-    const { token, newPassword }: ResetPasswordRequest = validResetPassword;
+    const { token, newPassword } = validResetPassword;
 
     const userExists = await UserModel.findOne({
       where: {

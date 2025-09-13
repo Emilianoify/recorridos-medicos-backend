@@ -74,7 +74,7 @@ export const createDefaultHolidays = async (
       console.log('🚀 Iniciando creación de feriados por defecto...\n');
     }
 
-    const createdHolidays: any[] = [];
+    const createdHolidays: IHoliday[] = [];
     let newHolidaysCount = 0;
 
     for (const holidayData of defaultHolidays) {

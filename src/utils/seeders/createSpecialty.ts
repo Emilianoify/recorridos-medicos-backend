@@ -51,7 +51,7 @@ export const createDefaultSpecialties = async (
       console.log('🚀 Iniciando creacion de especialidades por defecto...\n');
     }
 
-    const createdSpecialties: any[] = [];
+    const createdSpecialties: ISpecialty[] = [];
     let newSpecialtiesCount = 0;
 
     for (const specialtyData of defaultSpecialties) {

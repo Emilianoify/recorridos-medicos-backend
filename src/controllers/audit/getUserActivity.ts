@@ -10,36 +10,20 @@ import {
 import { VisitChangeAuditModel, UserModel } from '../../models';
 import { SUCCESS_MESSAGES } from '../../constants/messages/success.messages';
 import { ERROR_MESSAGES } from '../../constants/messages/error.messages';
-import { Op } from 'sequelize';
-import { 
+import { Op, WhereOptions } from 'sequelize';
+import {
   userActivityQuerySchema,
-  getUserActivityParamsSchema 
+  getUserActivityParamsSchema,
 } from '../../utils/validators/schemas/paginationSchemas';
-import { IUserActivityReport, IVisitChangeAudit } from '../../interfaces/audit.interface';
-import { AuditAction, AuditEntity } from '../../enums/Audit';
-
-interface IUserActivityWhereClause {
-  userId: string;
-  changeDateTime?: {
-    [Op.gte]?: Date;
-    [Op.lte]?: Date;
-  };
-  entityType?: AuditEntity;
-  action?: AuditAction;
-  [key: string]: unknown;
-}
-
-interface IActivityStatistics {
-  totalChanges: number;
-  uniqueEntities: number;
-  activityDays: number;
-  peakActivityDay: string;
-  mostChangedEntity: {
-    entityType: string;
-    entityId: string;
-    changeCount: number;
-  } | null;
-}
+import {
+  IActivityStatistics,
+  IMostChangedEntity,
+  IUserActivityReport,
+  IVisitChangeAudit,
+} from '../../interfaces/audit.interface';
+import { AUDIT_MESSAGES } from '../../constants/messages/audit.messages';
+import { CONFIG } from '../../constants/config';
+import { isValidUUID } from '../../utils/validators/schemas/uuidSchema';
 
 export const getUserActivity = async (
   req: AuthRequest,
@@ -48,27 +32,41 @@ export const getUserActivity = async (
   try {
     const validatedParams = getUserActivityParamsSchema.parse(req.params);
     const validatedQuery = userActivityQuerySchema.parse(req.query);
-    
+
     const { userId } = validatedParams;
-    const { page, limit, fromDate, toDate, entityType, action } = validatedQuery;
+    const { page, limit, fromDate, toDate, entityType, action } =
+      validatedQuery;
+
+    // Manual ID validation
+    if (!userId) {
+      return sendBadRequest(res, ERROR_MESSAGES.USER.ID_REQUIRED);
+    }
+    if (!isValidUUID(userId)) {
+      return sendBadRequest(res, ERROR_MESSAGES.USER.INVALID_ID);
+    }
 
     // Verify user exists
-    const userExists = await UserModel.findByPk(userId);
-    if (!userExists) {
+    const userInstance = await UserModel.findByPk(userId);
+    if (!userInstance) {
       return sendNotFound(res, ERROR_MESSAGES.USER.NOT_FOUND);
     }
 
-    const user = userExists.toJSON() as { id: string; firstname: string; lastname: string; username: string };
+    const user = userInstance.toJSON() as {
+      id: string;
+      firstname: string;
+      lastname: string;
+      username: string;
+    };
 
-    // Set default date range if not provided (last 30 days)
+    // Set default date range if not provided
     const defaultFromDate = new Date();
-    defaultFromDate.setDate(defaultFromDate.getDate() - 30);
-    
+    defaultFromDate.setDate(defaultFromDate.getDate() - CONFIG.AUDIT.DEFAULT_DAYS_RANGE);
+
     const startDate = fromDate ? new Date(fromDate) : defaultFromDate;
     const endDate = toDate ? new Date(`${toDate}T23:59:59.999Z`) : new Date();
 
-    // Build where conditions using proper typing
-    const whereClause: IUserActivityWhereClause = {
+    // Build where conditions
+    const whereClause: WhereOptions = {
       userId: userId,
     };
 
@@ -80,11 +78,11 @@ export const getUserActivity = async (
     }
 
     if (entityType) {
-      whereClause.entityType = entityType as AuditEntity;
+      whereClause.entityType = entityType;
     }
 
     if (action) {
-      whereClause.action = action as AuditAction;
+      whereClause.action = action;
     }
 
     // Get paginated activity for the user
@@ -114,8 +112,8 @@ export const getUserActivity = async (
     }
 
     // Convert to proper interface
-    const recentActivity: IVisitChangeAudit[] = activityData.rows.map(audit => 
-      audit.toJSON() as IVisitChangeAudit
+    const recentActivity: IVisitChangeAudit[] = activityData.rows.map(
+      audit => audit.toJSON() as IVisitChangeAudit
     );
 
     // Get comprehensive statistics for the user
@@ -124,11 +122,14 @@ export const getUserActivity = async (
     });
 
     // Get unique entities count
-    const uniqueEntities = await VisitChangeAuditModel.count({
+    const uniqueEntitiesResult = await VisitChangeAuditModel.count({
       where: whereClause,
       distinct: true,
       col: 'entityId',
     });
+    const uniqueEntities = Array.isArray(uniqueEntitiesResult)
+      ? uniqueEntitiesResult.length
+      : uniqueEntitiesResult;
 
     // Get action breakdown
     const actionBreakdownData = await VisitChangeAuditModel.findAll({
@@ -142,7 +143,7 @@ export const getUserActivity = async (
     });
 
     const actionBreakdown: { [action: string]: number } = {};
-    actionBreakdownData.forEach((item) => {
+    actionBreakdownData.forEach(item => {
       const itemData = item.toJSON() as { action: string; count: string };
       actionBreakdown[itemData.action] = parseInt(itemData.count);
     });
@@ -162,7 +163,7 @@ export const getUserActivity = async (
     });
 
     const reasonBreakdown: { [reason: string]: number } = {};
-    reasonBreakdownData.forEach((item) => {
+    reasonBreakdownData.forEach(item => {
       const itemData = item.toJSON() as { changeReason: string; count: string };
       reasonBreakdown[itemData.changeReason] = parseInt(itemData.count);
     });
@@ -179,7 +180,7 @@ export const getUserActivity = async (
     });
 
     const entityBreakdown: { [entityType: string]: number } = {};
-    entityBreakdownData.forEach((item) => {
+    entityBreakdownData.forEach(item => {
       const itemData = item.toJSON() as { entityType: string; count: string };
       entityBreakdown[itemData.entityType] = parseInt(itemData.count);
     });
@@ -192,7 +193,12 @@ export const getUserActivity = async (
     });
 
     // Calculate average changes per day
-    const daysDiff = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+    const daysDiff = Math.max(
+      1,
+      Math.ceil(
+        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+      )
+    );
     const averageChangesPerDay = Math.round(totalChanges / daysDiff);
 
     // Get most changed entity
@@ -204,16 +210,24 @@ export const getUserActivity = async (
         [VisitChangeAuditModel.sequelize!.fn('COUNT', '*'), 'changeCount'],
       ],
       group: ['entityType', 'entityId'],
-      order: [[VisitChangeAuditModel.sequelize!.literal('changeCount'), 'DESC']],
+      order: [
+        [VisitChangeAuditModel.sequelize!.literal('changeCount'), 'DESC'],
+      ],
     });
 
-    let mostChangedEntity = null;
+    let mostChangedEntity: IMostChangedEntity = {
+      entityType: '',
+      entityId: '',
+      changeCount: 0,
+    };
+
     if (mostChangedEntityData) {
-      const entityData = mostChangedEntityData.toJSON() as { 
-        entityType: string; 
-        entityId: string; 
-        changeCount: string 
+      const entityData = mostChangedEntityData.toJSON() as {
+        entityType: string;
+        entityId: string;
+        changeCount: string;
       };
+
       mostChangedEntity = {
         entityType: entityData.entityType,
         entityId: entityData.entityId,
@@ -225,7 +239,10 @@ export const getUserActivity = async (
     const activityDaysData = await VisitChangeAuditModel.findAll({
       where: whereClause,
       attributes: [
-        [VisitChangeAuditModel.sequelize!.fn('DATE', 'changeDateTime'), 'activityDate'],
+        [
+          VisitChangeAuditModel.sequelize!.fn('DATE', 'changeDateTime'),
+          'activityDate',
+        ],
       ],
       group: [VisitChangeAuditModel.sequelize!.fn('DATE', 'changeDateTime')],
     });
@@ -240,8 +257,10 @@ export const getUserActivity = async (
       actionBreakdown: actionBreakdown,
       reasonBreakdown: reasonBreakdown,
       entityBreakdown: entityBreakdown,
-      lastActivity: lastActivity ? new Date(lastActivity.toJSON().changeDateTime) : new Date(),
-      mostActiveDay: '', // Could be calculated with more complex date analysis
+      lastActivity: lastActivity
+        ? new Date(lastActivity.toJSON().changeDateTime)
+        : new Date(),
+      mostActiveDay: AUDIT_MESSAGES.ACTIVITY.NO_PEAK_DETECTED,
       averageChangesPerDay: averageChangesPerDay,
     };
 
@@ -249,7 +268,7 @@ export const getUserActivity = async (
       totalChanges: totalChanges,
       uniqueEntities: uniqueEntities,
       activityDays: activityDays,
-      peakActivityDay: '', // Could be calculated with additional queries
+      peakActivityDay: AUDIT_MESSAGES.ACTIVITY.NO_PEAK_DETECTED,
       mostChangedEntity: mostChangedEntity,
     };
 

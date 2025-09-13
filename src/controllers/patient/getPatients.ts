@@ -76,10 +76,10 @@ export const getPatients = async (
     // Search functionality
     if (search) {
       whereClause[Op.or.toString()] = [
-        { firstname: { [Op.iLike]: `%${search.trim()}%` } },
-        { lastname: { [Op.iLike]: `%${search.trim()}%` } },
-        { username: { [Op.iLike]: `%${search.trim()}%` } },
-        { corporative_email: { [Op.iLike]: `%${search.trim()}%` } },
+        { fullName: { [Op.iLike]: `%${search.trim()}%` } },
+        { healthcareId: { [Op.iLike]: `%${search.trim()}%` } },
+        { locality: { [Op.iLike]: `%${search.trim()}%` } },
+        { diagnosis: { [Op.iLike]: `%${search.trim()}%` } },
       ];
     }
 

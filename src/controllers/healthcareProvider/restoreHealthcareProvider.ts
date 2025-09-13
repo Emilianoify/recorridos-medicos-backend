@@ -49,12 +49,12 @@ export const restoreHealthcareProvider = async (
 
     const response = {
       healthcareProvider: {
-        id: restoredProvider!.id,
-        name: restoredProvider!.name,
-        code: restoredProvider!.code,
-        isActive: restoredProvider!.isActive,
-        createdAt: restoredProvider!.createdAt,
-        updatedAt: restoredProvider!.updatedAt,
+        id: restoredProvider.id,
+        name: restoredProvider.name,
+        code: restoredProvider.code,
+        isActive: restoredProvider.isActive,
+        createdAt: restoredProvider.createdAt,
+        updatedAt: restoredProvider.updatedAt,
       },
     };
 
